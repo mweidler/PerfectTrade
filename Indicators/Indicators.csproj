@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{13AF4002-AC3A-488F-9E9F-C8161402D4BB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Indicators</RootNamespace>
+    <AssemblyName>Indicators</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="AverageDeviation.cs" />
+    <Compile Include="Beta.cs" />
+    <Compile Include="Correlation.cs" />
+    <Compile Include="CoVariance.cs" />
+    <Compile Include="Difference.cs" />
+    <Compile Include="FixGrowthInvestment.cs" />
+    <Compile Include="MovingAverage.cs" />
+    <Compile Include="PeakLine.cs" />
+    <Compile Include="PriceOscillator.cs" />
+    <Compile Include="RelativeChange.cs" />
+    <Compile Include="RelativePerformance.cs" />
+    <Compile Include="ReturnRiskMargin.cs" />
+    <Compile Include="TrendChannel.cs" />
+    <Compile Include="TrendScanner.cs" />
+    <Compile Include="Tunnel.cs" />
+    <Compile Include="Volatility.cs" />
+    <Compile Include="RelativeDifference.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FinancialObjects\FinancialObjects.csproj">
+      <Project>{2A6EA628-4F82-47AA-AB17-CBCC31C88A58}</Project>
+      <Name>FinancialObjects</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

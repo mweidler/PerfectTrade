@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2A6EA628-4F82-47AA-AB17-CBCC31C88A58}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FinancialObjects</RootNamespace>
+    <AssemblyName>FinancialObjects</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Calendar.cs" />
+    <Compile Include="DataContainer.cs" />
+    <Compile Include="DBEngine.cs" />
+    <Compile Include="Depot.cs" />
+    <Compile Include="DepotPosition.cs" />
+    <Compile Include="EasyStoreReader.cs" />
+    <Compile Include="EasyStoreWriter.cs" />
+    <Compile Include="Instrument.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="Ranking.cs" />
+    <Compile Include="Stock.cs" />
+    <Compile Include="Variants.cs" />
+    <Compile Include="WorkDate.cs" />
+    <Compile Include="World.cs" />
+    <Compile Include="Chart.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
