@@ -1,6 +1,6 @@
-// 
+//
 // <filename>.cs
-// 
+//
 // (C)OPYRIGHT 2010 BY MARC WEIDLER, ULRICHSTR. 12/1, 71672 MARBACH, GERMANY.
 // 
 // All rights reserved. This product and related documentation are protected by
@@ -24,48 +24,86 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Net;
+using System.Xml;
 using FinancialObjects;
 
 namespace QuoteLoader
 {
     public class BoerseOnlineQuoteLoaderEngine : QuoteLoaderEngine
     {
-        public BoerseOnlineQuoteLoaderEngine()
+        protected override string BuildURI(Stock stock, WorkDate startdate, WorkDate enddate)
         {
+            //www.boerse-online.de/kurse-tools/historische-kurse?do=historie
+            //&isin=DE0005003404&land=276&boerse=XETRA
+            //&starttag=01&startmonat=01&startjahr=1998
+            //&endtag=12&endmonat=08&endjahr=2010
+            //&x=17&y=9
+
+            string strQuoteString = "www.boerse-online.de/kurse-tools/historische-kurse?do=historie";
+            strQuoteString += "&isin=" + stock.ISIN;
+            strQuoteString += "&land=276&boerse=XETRA";
+            strQuoteString += "&starttag=" + startdate.Day;
+            strQuoteString += "&startmonat" + startdate.Month;
+            strQuoteString += "&startjahr=" + startdate.Year;
+            strQuoteString += "&endtag=" + enddate.Day;
+            strQuoteString += "&endmonat" + enddate.Month;
+            strQuoteString += "&endjahr=" + enddate.Year;
+            strQuoteString += "&x=17&y=9";
+            return strQuoteString;
         }
 
-        protected override string BuildURI(Stock stock, WorkDate workdate)
+        protected override bool EnableImport(string strLine)
         {
-            string strQuoteString = "http://ichart.yahoo.com/table.csv?s=";
-            strQuoteString += stock.ISIN;
-            strQuoteString += "&d=" + (workdate.Month-1);
-            strQuoteString += "&e=" + workdate.Day;
-            strQuoteString += "&f=" + workdate.Year;
-            strQuoteString += "&g=d&a=8&b=3&c=2000&ignore=.csv";
-            return strQuoteString;
+            if (strLine.StartsWith("<h2>Historische Kursdaten"))
+                return true;
+
+            return false;
+        }
+
+        protected override bool DisableImport(string strLine)
+        {
+            if (strLine.Contains("<!-- EINBINDUNG ENDE -->"))
+                return true;
+
+            return false;
         }
 
         protected override void ParseAndStore(string input, Stock stock)
         {
-            input = input.Replace(',', ';');
-            input = input.Replace('.', ',');
+            // plausibility check, if the quotes line can match
+            if (input.Contains("<tr><td>&nbsp;") == false)
+                return;
 
-            //char[] chSplit = { ';' };
-            //string[] arrTokens = input.Split(chSplit);
-            //Date,Open,High,Low,Close,Volume,Adj. Close
-            // 0    1    2    3   4    5       6
+            int i = 0;
+            string[] arrTokens = new string[7];
+            int iStartIndex = input.IndexOf("<tr><td>&nbsp;");
+            string strLine = input.Substring(iStartIndex);
 
-            //DataContainer quotes = stock.Quotes;
-            //WorkDate priceDate = new WorkDate();
-            /*DateTime.TryParse(arrTokens[0], out priceDate);
+            XmlTextReader reader = new XmlTextReader(new StringReader(strLine));
+            reader.WhitespaceHandling = WhitespaceHandling.None;
 
-            quote.Date = priceDate;
-            quote.Open = Double.Parse(arrTokens[1]);
-            quote.High = Double.Parse(arrTokens[2]);
-            quote.Low = Double.Parse(arrTokens[3]);
-            quote.Close = Double.Parse(arrTokens[4]);
-            quote.Volume = Double.Parse(arrTokens[5]);
-            quoteList.Add(quote);*/
+            while (reader.Read()) {
+                if (reader.NodeType == XmlNodeType.Text) {
+                    arrTokens[i] = reader.Value;
+                    i++;
+                }
+            }
+
+            reader.Close();
+
+            //Date,Open,Close,High,Low,misc
+            // 0    1     2    3    4    5
+
+            DateTime priceDate = new DateTime();
+            DateTime.TryParse(arrTokens[0], out priceDate);
+            WorkDate workdate = new WorkDate(priceDate);
+            double priceClose = Double.Parse(arrTokens[2]);
+            double priceLow = Double.Parse(arrTokens[4]);
+
+            stock.QuotesClose[workdate] = priceClose;
+            stock.QuotesLow[workdate] = priceLow;
+
+            System.Console.Write(workdate.ToString() + "\r");
         }
     }
 }

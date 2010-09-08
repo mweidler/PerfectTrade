@@ -31,35 +31,38 @@ namespace QuoteLoader
 {
     class MainClass
     {
-        static void SetWorldPaths(string strApplicationName)
+        public static void Usage()
         {
-            string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-
-            string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
-            if (Directory.Exists(strResultPath) == false) {
-                Directory.CreateDirectory(strResultPath);
-            }
-
-            string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
-            if (Directory.Exists(strDataPath) == false) {
-                Directory.CreateDirectory(strDataPath);
-            }
-
-            World.GetInstance().ResultPath = strResultPath;
-            World.GetInstance().DataPath = strDataPath;
-            World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+            System.Console.WriteLine("QuoteLoader <command> <parameter>\n" + "\n" + "<command>:\n" + "    init    inistalize the given wkn number\n" + "    update  update wkn quotes\n" + "\n");
         }
 
         public static void Main(string[] args)
         {
-            SetWorldPaths("RelativeStrength");
+            string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+
+            if (args.Length < 1) {
+                Usage();
+                return;
+            }
 
             try {
+
                 QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
 
-                loaderEngine.Read("486217", new WorkDate());
-
-            }catch (Exception e) {
+                if (args[0].Equals("init")) {
+                    string strISIN = args[1];
+                    loaderEngine.Init(strISIN);
+                } else if (args[0].Equals("update")) {
+                    string[] strStockFilenames = Directory.GetFiles(World.GetInstance().QuotesPath, "*.sto");
+                    foreach (string strStockFilename in strStockFilenames) {
+                        loaderEngine.Update(strStockFilename);
+                    }
+                } else {
+                    System.Console.WriteLine("Unknown command {0}.", args[0]);
+                }
+                
+            } catch (Exception e) {
                 System.Console.WriteLine(e.Message);
                 System.Console.WriteLine(e.StackTrace);
             }
