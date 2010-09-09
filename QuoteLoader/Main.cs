@@ -26,57 +26,53 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
 using System.Text;
 using System.IO;
-using System.ComponentModel;
 using FinancialObjects;
 
 namespace QuoteLoader
 {
-    class MainClass
-    {
-        public static void Usage()
-        {
-            System.Console.WriteLine("QuoteLoader <command> <parameter>\n" + "\n" + "<command>:\n" + "    init    inistalize the given wkn number\n" + "    update  update wkn quotes\n" + "\n");
-        }
+   class MainClass
+   {
+      public static void Usage()
+      {
+         System.Console.WriteLine("QuoteLoader <command> <parameter>\n" +
+                                  "\n" +
+                                  "<command>:\n" +
+                                  "    init    initialize the given wkn number\n" +
+                                  "    update  update wkn quotes\n" + "\n");
+      }
 
-        public static void Main(string[] args)
-        {
-            string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+      public static void Main(string[] args)
+      {
+         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+         World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
 
-            if (args.Length < 1) {
-                Usage();
-                return;
+         if (args.Length < 1) {
+            Usage();
+            return;
+         }
+
+         try {
+
+            QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
+
+            if (args[0].Equals("init")) {
+               string strISIN = args[1];
+               loaderEngine.Init(strISIN);
+            } else if (args[0].Equals("update")) {
+               string[] strStockFilenames = Directory.GetFiles(World.GetInstance().QuotesPath, "*.sto");
+               foreach (string strStockFilename in strStockFilenames) {
+                  loaderEngine.Update(strStockFilename);
+               }
+            } else {
+               System.Console.WriteLine("Unknown command {0}.", args[0]);
             }
 
-            try {
-
-                QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
-
-                if (args[0].Equals("init")) {
-                    string strISIN = args[1];
-                    loaderEngine.Init(strISIN);
-                } else if (args[0].Equals("update")) {
-                    string[] strStockFilenames = Directory.GetFiles(World.GetInstance().QuotesPath, "*.sto");
-                    foreach (string strStockFilename in strStockFilenames) {
-                        loaderEngine.Update(strStockFilename);
-                    }
-                } else {
-                    System.Console.WriteLine("Unknown command {0}.", args[0]);
-                }
-                
-            } catch (Exception e) {
-                System.Console.WriteLine(e.Message);
-                System.Console.WriteLine(e.StackTrace);
-            }
-        }
-    }
+         } catch (Exception e) {
+            System.Console.WriteLine(e.Message);
+            System.Console.WriteLine(e.StackTrace);
+         }
+      }
+   }
 }
-
-
-
-

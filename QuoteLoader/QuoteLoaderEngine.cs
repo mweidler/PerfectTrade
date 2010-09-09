@@ -37,7 +37,7 @@ namespace QuoteLoader
    public abstract class QuoteLoaderEngine
    {
       protected abstract string BuildURI(Stock stock, WorkDate startdate, WorkDate enddate);
-      protected abstract void ParseAndStore(string strLine, Stock stock);
+      protected abstract bool ParseAndStore(string strLine, Stock stock);
       protected abstract bool EnableImport(string strLine);
       protected abstract bool DisableImport(string strLine);
 
@@ -58,7 +58,7 @@ namespace QuoteLoader
             stock.WKN = strWKN;
             
             System.Console.WriteLine("Initializing {0}", strISIN);
-
+            
             stock.Save(World.GetInstance().QuotesPath + strISIN + ".sto");
          }
       }
@@ -68,16 +68,18 @@ namespace QuoteLoader
          string strWKN = Path.GetFileNameWithoutExtension(strStockFilename);
          Stock stock = dbengine.GetStock(strWKN);
          System.Console.WriteLine("Updating {0}", strWKN);
-         Read(stock, new WorkDate());
+         int nImported = Read(stock, new WorkDate());
          
+         System.Console.WriteLine("{0} quotes imported.", nImported);
          System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
          System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
          stock.Save();
       }
 
-      public void Load(Stock stock, WorkDate workdate, int nHistoricalDays)
+      public int Load(Stock stock, WorkDate workdate, int nHistoricalDays)
       {
          bool bDoImport = false;
+         int nImported = 0;
          
          Log.Info("Load entered, datetime = " + workdate);
          
@@ -101,7 +103,9 @@ namespace QuoteLoader
                bDoImport = false;
             if (bDoImport) {
                Log.Info(strLine);
-               ParseAndStore(strLine, stock);
+               if (ParseAndStore(strLine, stock)) {
+                  nImported++;
+               }
             }
          }
          
@@ -109,11 +113,13 @@ namespace QuoteLoader
          stream.Close();
          
          Log.Info("Leaving Load");
+         return nImported;
       }
 
-      public void Read(Stock stock, WorkDate workdate)
+      public int Read(Stock stock, WorkDate workdate)
       {
          bool bDoImport = false;
+         int nImported = 0;
          
          string strFilename = "/home/mweidler/dax-kurse.htm";
          
@@ -125,12 +131,17 @@ namespace QuoteLoader
                   bDoImport = true;
                if (DisableImport(input))
                   bDoImport = false;
-               if (bDoImport)
-                  ParseAndStore(input, stock);
+               if (bDoImport) {
+                  if (ParseAndStore(input, stock)) {
+                     nImported++;
+                  }
+               }
             }
             
             re.Close();
          }
+         
+         return nImported;
       }
    }
 }

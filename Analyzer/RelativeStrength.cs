@@ -69,14 +69,14 @@ namespace Analyzer
             Chart chart = new Chart();
             chart.AutoDeleteTempFiles = false;
             chart.Width = 1500;
-            chart.Height = 400;
+            chart.Height = 900;
             Stock dax = dbengine.GetStock("846900");
             DataContainer quotes = dax.Quotes;
             DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
             DataContainer dax_ma200 = MovingAverage.CreateFrom(quotes, 200);
 
             WorkDate startDate = quotes.YoungestDate.Clone();
-            startDate.Set(startDate.Year - 5, startDate.Month, 1);
+            startDate.Set(startDate.Year - 1, startDate.Month, 1);
 
             DataContainer dax_ranged = quotes.Clone(startDate);
 
