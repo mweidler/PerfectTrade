@@ -32,41 +32,42 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    /// <summary>
-    /// Das ReturnRiskMargin ist vergleichbar mit dem SharpeRatio und gibt das Rendite/Risiko-
-    /// Verhaeltnis eines Wertpapiers an.
-    /// </summary>
-    /// Das RRR einer risikolosen Anlage betraegt dessen Zinssatz.
-    ///
-    /// Das ReturnRiskMargin wird wie folgt berechnet:
-    /// \f[ RRR_T = \frac{{Rendite_T}}{1+\sigma_T} \f]
-    public class ReturnRiskMargin
-    {
-        /// <summary>
-        /// Berechnet die ReturnRiskRatio und legt das Ergebnis in einem neuen Datencontainer ab.
-        /// </summary>
-        /// <param name="source">Datensatz, von dem die ReturnRiskRatio gebildet werden soll</param>
-        /// <param name="nRange">Anzahl der einzubeziehenden Daten pro Berechnung</param>
-        /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-        public static DataContainer CreateFrom(DataContainer source, uint nRange)
-        {
-            //DataContainer sourceperf   = RelativePerformance.CreateFrom(source);
-            DataContainer sourcechange = RelativeChange.CreateFrom(source);
-            DataContainer changemovavg = MovingAverage.CreateFrom(sourcechange, nRange);
-            DataContainer volatility   = Volatility.CreateFrom(sourcechange, nRange);
-            DataContainer result       = new DataContainer();
+   /// <summary>
+   /// Das ReturnRiskMargin ist vergleichbar mit dem SharpeRatio und gibt das Rendite/Risiko-
+   /// Verhaeltnis eines Wertpapiers an.
+   /// </summary>
+   /// Das RRR einer risikolosen Anlage betraegt dessen Zinssatz.
+   ///
+   /// Das ReturnRiskMargin wird wie folgt berechnet:
+   /// \f[ RRR_T = \frac{{Rendite_T}}{1+\sigma_T} \f]
+   public class ReturnRiskMargin
+   {
+      /// <summary>
+      /// Berechnet die ReturnRiskRatio und legt das Ergebnis in einem neuen Datencontainer ab.
+      /// </summary>
+      /// <param name="source">Datensatz, von dem die ReturnRiskRatio gebildet werden soll</param>
+      /// <param name="nRange">Anzahl der einzubeziehenden Daten pro Berechnung</param>
+      /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
+      public static DataContainer CreateFrom(DataContainer source, uint nRange)
+      {
+         //DataContainer sourceperf   = RelativePerformance.CreateFrom(source);
+         DataContainer sourcechange = RelativeChange.CreateFrom(source);
+         DataContainer changemovavg = MovingAverage.CreateFrom(sourcechange, nRange);
+         DataContainer volatility   = Volatility.CreateFrom(sourcechange, nRange);
+         DataContainer result       = new DataContainer();
 
-            //WorkDate historydate = volatility.OldestDate.Clone() - (int)nRange;
-            WorkDate workdate = volatility.OldestDate.Clone();
-            for (; workdate <= volatility.YoungestDate; workdate++/*, historydate++*/)
-            {
-                double dReturn = changemovavg[workdate]; //sourceperf[workdate] - sourceperf[historydate];
-                double dRisk   = volatility[workdate]; // Standardabweichung
-                //result[workdate] = dReturn  / (dRisk + 1.0);
-                result[workdate] = dReturn - dRisk;
-            }
+         //WorkDate historydate = volatility.OldestDate.Clone() - (int)nRange;
+         WorkDate workdate = volatility.OldestDate.Clone();
 
-            return result;
-        }
-    }
+         for (; workdate <= volatility.YoungestDate; workdate++/*, historydate++*/)
+         {
+            double dReturn = changemovavg[workdate]; //sourceperf[workdate] - sourceperf[historydate];
+            double dRisk   = volatility[workdate]; // Standardabweichung
+            //result[workdate] = dReturn  / (dRisk + 1.0);
+            result[workdate] = dReturn - dRisk;
+         }
+
+         return result;
+      }
+   }
 }

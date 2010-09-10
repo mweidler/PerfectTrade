@@ -32,48 +32,48 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    /// <summary>
-    /// </summary>
-    public class AverageDeviation
-    {
-        /// <summary>
-        /// Berechnet die durchschnittliche Abweichung in dB% vom Durchschnitt.
-        /// </summary>
-        /// <param name="source">Daten, von dem die durchschnittliche Abweichung gebildet werden soll</param>
-        /// <param name="nAverage">Anzahl der Daten, von dem die durchschnittliche Abweichung gebildet werden soll</param>
-        /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-        public static DataContainer CreateFrom(DataContainer source, uint nAverage)
-        {
-            if (nAverage < 1)
-                throw new ArgumentOutOfRangeException("nAverage", nAverage, "Must be greater than zero.");
+   /// <summary>
+   /// </summary>
+   public class AverageDeviation
+   {
+      /// <summary>
+      /// Berechnet die durchschnittliche Abweichung in dB% vom Durchschnitt.
+      /// </summary>
+      /// <param name="source">Daten, von dem die durchschnittliche Abweichung gebildet werden soll</param>
+      /// <param name="nAverage">Anzahl der Daten, von dem die durchschnittliche Abweichung gebildet werden soll</param>
+      /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
+      public static DataContainer CreateFrom(DataContainer source, uint nAverage)
+      {
+         if (nAverage < 1)
+            throw new ArgumentOutOfRangeException("nAverage", nAverage, "Must be greater than zero.");
 
-            DataContainer result = new DataContainer();
-            DataContainer relperf = RelativePerformance.CreateFrom(source);
-            DataContainer movavg = MovingAverage.CreateFrom(relperf, nAverage);
+         DataContainer result = new DataContainer();
+         DataContainer relperf = RelativePerformance.CreateFrom(source);
+         DataContainer movavg = MovingAverage.CreateFrom(relperf, nAverage);
 
-            if (movavg.Count >= nAverage)
+         if (movavg.Count >= nAverage)
+         {
+            double dSum = 0;
+            WorkDate workdate = movavg.OldestDate.Clone();
+            WorkDate historyworkdate = movavg.OldestDate.Clone();
+
+            for (int i = 0; i < nAverage - 1; i++, workdate++)
             {
-                double dSum = 0;
-                WorkDate workdate = movavg.OldestDate.Clone();
-                WorkDate historyworkdate = movavg.OldestDate.Clone();
-
-                for (int i = 0; i < nAverage-1; i++, workdate++)
-                {
-                    dSum += Math.Abs(relperf[workdate] - movavg[workdate]);
-                }
-
-                do
-                {
-                    dSum += Math.Abs(relperf[workdate] - movavg[workdate]);
-                    result[workdate] = dSum / nAverage;
-                    workdate++;
-                    dSum -= Math.Abs(relperf[historyworkdate] - movavg[historyworkdate]);
-                    historyworkdate++;
-                }
-                while (workdate <= source.YoungestDate);
+               dSum += Math.Abs(relperf[workdate] - movavg[workdate]);
             }
 
-            return result;
-        }
-    }
+            do
+            {
+               dSum += Math.Abs(relperf[workdate] - movavg[workdate]);
+               result[workdate] = dSum / nAverage;
+               workdate++;
+               dSum -= Math.Abs(relperf[historyworkdate] - movavg[historyworkdate]);
+               historyworkdate++;
+            }
+            while (workdate <= source.YoungestDate);
+         }
+
+         return result;
+      }
+   }
 }

@@ -32,63 +32,63 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    public class TrendScanner : PeakLine
-    {
-        public const int OUTPERFORM = 10;
-        public const int CANCEL_OUTPERFORM = 5;
-        public const int TREND_UNKNOWN = 0;
-        public const int CANCEL_UNDERPERFORM = -5;
-        public const int UNDERPERFORM = -10;
+   public class TrendScanner : PeakLine
+   {
+      public const int OUTPERFORM = 10;
+      public const int CANCEL_OUTPERFORM = 5;
+      public const int TREND_UNKNOWN = 0;
+      public const int CANCEL_UNDERPERFORM = -5;
+      public const int UNDERPERFORM = -10;
 
-        public static DataContainer CreateFrom(DataContainer source, int nRange)
-        {
-            DataContainer result = new DataContainer();
+      public static DataContainer CreateFrom(DataContainer source, int nRange)
+      {
+         DataContainer result = new DataContainer();
 
-            WorkDate reference = source.OldestDate.Clone();
-            reference += nRange;
-            WorkDate today = reference.Clone();
-            today += nRange;
-            WorkDate enddate = source.YoungestDate.Clone();
-            enddate -= nRange;
+         WorkDate reference = source.OldestDate.Clone();
+         reference += nRange;
+         WorkDate today = reference.Clone();
+         today += nRange;
+         WorkDate enddate = source.YoungestDate.Clone();
+         enddate -= nRange;
 
-            double dUpperPeak = Double.MaxValue;
-            double dLowerPeak = Double.MinValue;
-            double dTrend = TREND_UNKNOWN;
+         double dUpperPeak = Double.MaxValue;
+         double dLowerPeak = Double.MinValue;
+         double dTrend = TREND_UNKNOWN;
 
-            while (today <= source.YoungestDate)
+         while (today <= source.YoungestDate)
+         {
+            result[today] = dTrend;
+
+            if (reference <= enddate)
             {
-                result[today] = dTrend;
+               if (IsPeak(reference, nRange, PeakType.UPPER, source))
+               {
+                  dUpperPeak = source[reference];
+               }
 
-                if (reference <= enddate)
-                {
-                    if (IsPeak(reference, nRange, PeakType.UPPER, source))
-                    {
-                        dUpperPeak = source[reference];
-                    }
-
-                    if (IsPeak(reference, nRange, PeakType.LOWER, source))
-                    {
-                        dLowerPeak = source[reference];
-                    }
-                }
-
-                if (source[today] > dUpperPeak)
-                {
-                    result[today] = OUTPERFORM;
-                    dTrend = CANCEL_OUTPERFORM;
-                }
-
-                if (source[today] < dLowerPeak)
-                {
-                    result[today] = UNDERPERFORM;
-                    dTrend = CANCEL_UNDERPERFORM;
-                }
-
-                today++;
-                reference++;
+               if (IsPeak(reference, nRange, PeakType.LOWER, source))
+               {
+                  dLowerPeak = source[reference];
+               }
             }
 
-            return result;
-        }
-    }
+            if (source[today] > dUpperPeak)
+            {
+               result[today] = OUTPERFORM;
+               dTrend = CANCEL_OUTPERFORM;
+            }
+
+            if (source[today] < dLowerPeak)
+            {
+               result[today] = UNDERPERFORM;
+               dTrend = CANCEL_UNDERPERFORM;
+            }
+
+            today++;
+            reference++;
+         }
+
+         return result;
+      }
+   }
 }

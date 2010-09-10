@@ -31,49 +31,70 @@ using System.Text;
 
 namespace FinancialObjects
 {
-    public class World
-    {
-        private static World m_WorldObject = null;
-        private string m_strQuotesPath = null;
-        private string m_strDataPath = null;
-        private string m_strResultPath = null;
-        private SortedList<string, Instrument> m_instruments = new SortedList<string, Instrument>();
+   public class World
+   {
+      private static World m_WorldObject = null;
+      private string m_strQuotesPath = null;
+      private string m_strDataPath = null;
+      private string m_strResultPath = null;
+      private SortedList<string, Instrument> m_instruments = new SortedList<string, Instrument>();
 
-        private World()
-        {
-        }
+      private World()
+      {
+      }
 
-        public static World GetInstance()
-        {
-            if (m_WorldObject == null)
-            {
-                m_WorldObject = new World();
-            }
+      public static World GetInstance()
+      {
+         if (m_WorldObject == null)
+         {
+            m_WorldObject = new World();
+         }
 
-            return m_WorldObject;
-        }
+         return m_WorldObject;
+      }
 
-        public string QuotesPath
-        {
-            get { return m_strQuotesPath; }
-            set { m_strQuotesPath = value; }
-        }
+      public string QuotesPath
+      {
+         get
+         {
+            return m_strQuotesPath;
+         }
+         set
+         {
+            m_strQuotesPath = value;
+         }
+      }
 
-        public string DataPath
-        {
-            get { return m_strDataPath; }
-            set { m_strDataPath = value; }
-        }
+      public string DataPath
+      {
+         get
+         {
+            return m_strDataPath;
+         }
+         set
+         {
+            m_strDataPath = value;
+         }
+      }
 
-        public string ResultPath
-        {
-            get { return m_strResultPath; }
-            set { m_strResultPath = value; }
-        }
+      public string ResultPath
+      {
+         get
+         {
+            return m_strResultPath;
+         }
+         set
+         {
+            m_strResultPath = value;
+         }
+      }
 
-        public SortedList<string, Instrument> Instruments
-        {
-            get { return m_instruments; }
-        }
-    }
+      public SortedList<string, Instrument> Instruments
+      {
+         get
+         {
+            return m_instruments;
+         }
+      }
+   }
 }

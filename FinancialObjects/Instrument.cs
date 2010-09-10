@@ -31,50 +31,62 @@ using System.Text;
 
 namespace FinancialObjects
 {
-    /// <summary>
-    /// Zusammenfassung von Meta-Daten eines Wertpapieres.
-    /// </summary>
-    public class Instrument
-    {
-        private string m_strName;
-        private string m_strID;
+   /// <summary>
+   /// Zusammenfassung von Meta-Daten eines Wertpapieres.
+   /// </summary>
+   public class Instrument
+   {
+      private string m_strName;
+      private string m_strID;
 
-        /// <summary>
-        /// Legt ein neues Objekt von Instrument an.
-        /// </summary>
-        /// <param name="strName">Name des Wertpapieres</param>
-        /// <param name="strID">WKN oder ISIN des Wertpapieres</param>
-        public Instrument(string strName, string strID)
-        {
-            m_strName = strName;
-            m_strID = strID;
-        }
+      /// <summary>
+      /// Legt ein neues Objekt von Instrument an.
+      /// </summary>
+      /// <param name="strName">Name des Wertpapieres</param>
+      /// <param name="strID">WKN oder ISIN des Wertpapieres</param>
+      public Instrument(string strName, string strID)
+      {
+         m_strName = strName;
+         m_strID = strID;
+      }
 
-        /// <summary>
-        /// Legt ein neues Objekt von Instrument an.
-        /// </summary>
-        public Instrument()
-        {
-            m_strName = null;
-            m_strID = null;
-        }
+      /// <summary>
+      /// Legt ein neues Objekt von Instrument an.
+      /// </summary>
+      public Instrument()
+      {
+         m_strName = null;
+         m_strID = null;
+      }
 
-        /// <summary>
-        /// Setzt oder liefert den Namen des wertpapieres
-        /// </summary>
-        public string Name
-        {
-            get { return m_strName; }
-            set { m_strName = value; }
-        }
+      /// <summary>
+      /// Setzt oder liefert den Namen des wertpapieres
+      /// </summary>
+      public string Name
+      {
+         get
+         {
+            return m_strName;
+         }
+         set
+         {
+            m_strName = value;
+         }
+      }
 
-        /// <summary>
-        /// Setzt oder liefert die WKN/ISIN des wertpapieres
-        /// </summary>
-        public string ID
-        {
-            get { return m_strID; }
-            set { m_strID = value; }
-        }
-    }
+      /// <summary>
+      /// Setzt oder liefert die WKN/ISIN des wertpapieres
+      /// </summary>
+      public string ID
+      {
+         get
+         {
+            return m_strID;
+         }
+         set
+         {
+            m_strID = value;
+         }
+      }
+   }
 }

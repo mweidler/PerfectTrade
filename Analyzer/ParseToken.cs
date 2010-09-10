@@ -30,57 +30,96 @@ using System.Collections.Generic;
 
 namespace Analyzer
 {
-    public class ParseToken
-    {
-        private bool m_bUnary;
-        private string m_strTarget;
-        private string m_strCommand;
-        private string m_strOriginalLine;
-        private int    m_nLineNumber;
-        private List<string> m_lParameters;
+   public class ParseToken
+   {
+      private bool m_bUnary;
+      private string m_strTarget;
+      private string m_strCommand;
+      private string m_strOriginalLine;
+      private int    m_nLineNumber;
+      private List<string> m_lParameters;
 
-        public ParseToken()
-        {
-            m_lParameters = new List<string>();
-        }
+      public ParseToken()
+      {
+         m_lParameters = new List<string>();
+      }
 
-        /// <summary>
-        /// Liefert die Anzahl der Kaeufe.
-        /// </summary>
-        public bool IsUnary {
-            get { return m_bUnary; }
-            set { m_bUnary = value; }
-        }
+      /// <summary>
+      /// Liefert die Anzahl der Kaeufe.
+      /// </summary>
+      public bool IsUnary
+      {
+         get
+         {
+            return m_bUnary;
+         }
+         set
+         {
+            m_bUnary = value;
+         }
+      }
 
-        /// <summary>
-        /// Liefert die Anzahl der Kaeufe.
-        /// </summary>
-        public string Target {
-            get { return m_strTarget; }
-            set { m_strTarget = value; }
-        }
+      /// <summary>
+      /// Liefert die Anzahl der Kaeufe.
+      /// </summary>
+      public string Target
+      {
+         get
+         {
+            return m_strTarget;
+         }
+         set
+         {
+            m_strTarget = value;
+         }
+      }
 
-        /// <summary>
-        /// Liefert die Anzahl der Kaeufe.
-        /// </summary>
-        public string Command {
-            get { return m_strCommand; }
-            set { m_strCommand = value; }
-        }
+      /// <summary>
+      /// Liefert die Anzahl der Kaeufe.
+      /// </summary>
+      public string Command
+      {
+         get
+         {
+            return m_strCommand;
+         }
+         set
+         {
+            m_strCommand = value;
+         }
+      }
 
-        public string OriginalLine {
-            get { return  m_strOriginalLine; }
-            set { m_strOriginalLine = value; }
-        }
+      public string OriginalLine
+      {
+         get
+         {
+            return  m_strOriginalLine;
+         }
+         set
+         {
+            m_strOriginalLine = value;
+         }
+      }
 
-        public int LineNumber {
-            get { return m_nLineNumber; }
-            set { m_nLineNumber = value; }
-        }
+      public int LineNumber
+      {
+         get
+         {
+            return m_nLineNumber;
+         }
+         set
+         {
+            m_nLineNumber = value;
+         }
+      }
 
-        public List<string> Parameters {
-            get { return m_lParameters; }
-        }
-    }
+      public List<string> Parameters
+      {
+         get
+         {
+            return m_lParameters;
+         }
+      }
+   }
 }
 

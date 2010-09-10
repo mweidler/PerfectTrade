@@ -32,66 +32,66 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    public class PeakLine
-    {
-        public enum PeakType
-        {
-            UPPER = 1,
-            LOWER = 2
-        };
+   public class PeakLine
+   {
+      public enum PeakType
+      {
+         UPPER = 1,
+         LOWER = 2
+      };
 
-        public static DataContainer CreateFrom(DataContainer source, int nRange, PeakType peaktype)
-        {
-            if (nRange < 1)
-                throw new ArgumentOutOfRangeException("nRange", nRange, "Must be greater than zero.");
+      public static DataContainer CreateFrom(DataContainer source, int nRange, PeakType peaktype)
+      {
+         if (nRange < 1)
+            throw new ArgumentOutOfRangeException("nRange", nRange, "Must be greater than zero.");
 
-            DataContainer result = new DataContainer();
+         DataContainer result = new DataContainer();
 
-            WorkDate reference = source.OldestDate.Clone();
-            reference += nRange;
-            WorkDate today = reference.Clone();
-            today += nRange;
-            WorkDate enddate = source.YoungestDate.Clone();
-            enddate -= nRange;
-            double dPeakValue = 0;
+         WorkDate reference = source.OldestDate.Clone();
+         reference += nRange;
+         WorkDate today = reference.Clone();
+         today += nRange;
+         WorkDate enddate = source.YoungestDate.Clone();
+         enddate -= nRange;
+         double dPeakValue = 0;
 
-            while (today <= source.YoungestDate)
+         while (today <= source.YoungestDate)
+         {
+            if (reference <= enddate)
             {
-                if (reference <= enddate)
-                {
-                    if (IsPeak(reference, nRange, peaktype, source))
-                    {
-                        dPeakValue = source[reference];
-                    }
-                }
-
-                result[today] = dPeakValue;
-                today++;
-                reference++;
+               if (IsPeak(reference, nRange, peaktype, source))
+               {
+                  dPeakValue = source[reference];
+               }
             }
 
-            return result;
-        }
+            result[today] = dPeakValue;
+            today++;
+            reference++;
+         }
 
-        protected static bool IsPeak(WorkDate testdate, int nRange, PeakType peaktype, DataContainer source)
-        {
-            WorkDate workdate = testdate.Clone();
-            workdate -= nRange;
-            WorkDate rangeend = testdate.Clone();
-            rangeend += nRange;
+         return result;
+      }
 
-            while (workdate <= rangeend)
+      protected static bool IsPeak(WorkDate testdate, int nRange, PeakType peaktype, DataContainer source)
+      {
+         WorkDate workdate = testdate.Clone();
+         workdate -= nRange;
+         WorkDate rangeend = testdate.Clone();
+         rangeend += nRange;
+
+         while (workdate <= rangeend)
+         {
+            if ((peaktype == PeakType.LOWER && source[workdate] < source[testdate]) ||
+                  (peaktype == PeakType.UPPER && source[workdate] > source[testdate]))
             {
-                if ((peaktype == PeakType.LOWER && source[workdate] < source[testdate]) ||
-                    (peaktype == PeakType.UPPER && source[workdate] > source[testdate]))
-                {
-                   return false;
-                }
-
-               workdate++;
+               return false;
             }
 
-            return true;
-        }
-    }
+            workdate++;
+         }
+
+         return true;
+      }
+   }
 }

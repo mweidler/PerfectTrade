@@ -32,33 +32,36 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    public class Tunnel
-    {
-        public static DataContainer CreateFrom(DataContainer source, int nRange)
-        {
-            DataContainer result = new DataContainer();
+   public class Tunnel
+   {
+      public static DataContainer CreateFrom(DataContainer source, int nRange)
+      {
+         DataContainer result = new DataContainer();
 
-            WorkDate workdate = new WorkDate(source.OldestDate+nRange);
-            for (; workdate <= source.YoungestDate; workdate++ )
+         WorkDate workdate = new WorkDate(source.OldestDate + nRange);
+
+         for (; workdate <= source.YoungestDate; workdate++)
+         {
+            WorkDate startdate = new WorkDate(workdate - nRange);
+            WorkDate enddate = new WorkDate(workdate);
+            double dMax = Double.MinValue;
+            double dMin = Double.MaxValue;
+
+            for (; startdate <= enddate && startdate <= source.YoungestDate; startdate++)
             {
-                WorkDate startdate = new WorkDate(workdate - nRange);
-                WorkDate enddate = new WorkDate(workdate);
-                double dMax = Double.MinValue;
-                double dMin = Double.MaxValue;
+               double dValue = source[startdate];
 
-                for (; startdate <= enddate && startdate <= source.YoungestDate; startdate++)
-                {
-                    double dValue = source[startdate];
-                    if (dValue > dMax)
-                        dMax = dValue;
-                    if (dValue < dMin)
-                        dMin = dValue;
-                }
+               if (dValue > dMax)
+                  dMax = dValue;
 
-                result[workdate] = dMax - dMin;
+               if (dValue < dMin)
+                  dMin = dValue;
             }
 
-            return result;
-        }
-    }
+            result[workdate] = dMax - dMin;
+         }
+
+         return result;
+      }
+   }
 }

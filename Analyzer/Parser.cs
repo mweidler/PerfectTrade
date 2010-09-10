@@ -32,103 +32,111 @@ using System.IO;
 
 namespace Analyzer
 {
-    /// <summary>
-    /// Ermoeglicht das Lesen aus einem strukturierter Datenspeicher fuer String-Basierte Daten.
-    /// </summary>
-    ///
-    /// Daten koennen aehnlich wie in einer XML-Datei gelesen werden.
-    /// Die Struktur der Datei ist aber nicht festgelegt. Die Daten koennen
-    /// in Sektionen strukturiert werden.
-    public class Parser
-    {
-        private StreamReader sr;
-        private int m_nCurrentLine;
+   /// <summary>
+   /// Ermoeglicht das Lesen aus einem strukturierter Datenspeicher fuer String-Basierte Daten.
+   /// </summary>
+   ///
+   /// Daten koennen aehnlich wie in einer XML-Datei gelesen werden.
+   /// Die Struktur der Datei ist aber nicht festgelegt. Die Daten koennen
+   /// in Sektionen strukturiert werden.
+   public class Parser
+   {
+      private StreamReader sr;
+      private int m_nCurrentLine;
 
-        /// <summary>
-        /// Legt ein neues Objekt von EasyStoreReader an.
-        /// </summary>
-        public Parser()
-        {
-        }
+      /// <summary>
+      /// Legt ein neues Objekt von EasyStoreReader an.
+      /// </summary>
+      public Parser()
+      {
+      }
 
-        /// <summary>
-        /// Oeffnet eine Datei, aus der Daten gelesen werden sollen.
-        /// </summary>
-        /// <param name="strPathName">Dateiname mit Pfad auf die zu oeffnende Datei</param>
-        public void Open(string strPath)
-        {
-            sr = new StreamReader(strPath);
-            m_nCurrentLine = 0;
-        }
+      /// <summary>
+      /// Oeffnet eine Datei, aus der Daten gelesen werden sollen.
+      /// </summary>
+      /// <param name="strPathName">Dateiname mit Pfad auf die zu oeffnende Datei</param>
+      public void Open(string strPath)
+      {
+         sr = new StreamReader(strPath);
+         m_nCurrentLine = 0;
+      }
 
-        /// <summary>
-        /// Schliesst die Datei.
-        /// </summary>
-        public void Close()
-        {
-            sr.Close();
-        }
+      /// <summary>
+      /// Schliesst die Datei.
+      /// </summary>
+      public void Close()
+      {
+         sr.Close();
+      }
 
-        public int Line
-        {
-            get { return m_nCurrentLine; }
-        }
+      public int Line
+      {
+         get
+         {
+            return m_nCurrentLine;
+         }
+      }
 
-        /// <summary>
-        /// Springt zur naechsten Sektion und liefert dessen Namen oder
-        ///  null bei Dateiende zurueck.
-        /// </summary>
-        /// <returns>Name der naechsten Sektion oder null bei Dateiende</returns>
-        public ParseToken GetNextToken()
-        {
-            string strLine;
+      /// <summary>
+      /// Springt zur naechsten Sektion und liefert dessen Namen oder
+      ///  null bei Dateiende zurueck.
+      /// </summary>
+      /// <returns>Name der naechsten Sektion oder null bei Dateiende</returns>
+      public ParseToken GetNextToken()
+      {
+         string strLine;
 
-            do {
-                strLine = sr.ReadLine();
-                m_nCurrentLine++;
-                if (strLine == null)
-                    return null;
+         do
+         {
+            strLine = sr.ReadLine();
+            m_nCurrentLine++;
 
-                strLine = strLine.Trim();
-            } while (strLine.StartsWith("#") || strLine.Length == 0);
+            if (strLine == null)
+               return null;
 
-            ParseToken token = new ParseToken();
+            strLine = strLine.Trim();
+         }
+         while (strLine.StartsWith("#") || strLine.Length == 0);
 
-            token.OriginalLine = strLine;
-            token.LineNumber = m_nCurrentLine;
+         ParseToken token = new ParseToken();
 
-            string[] strTokens;
-            string rightPart;
+         token.OriginalLine = strLine;
+         token.LineNumber = m_nCurrentLine;
 
-            if (strLine.Contains("="))
+         string[] strTokens;
+         string rightPart;
+
+         if (strLine.Contains("="))
+         {
+            token.IsUnary = false;
+            strTokens = strLine.Split('=');
+            token.Target = strTokens[0].Trim();
+            rightPart = strTokens[1];
+         }
+         else
+         {
+            token.IsUnary = true;
+            token.Target = null;
+            rightPart = strLine;
+         }
+
+         strTokens = rightPart.Split('(');
+
+         token.Command = strTokens[0].Trim();
+
+         if (strTokens.Length > 1)
+         {
+            rightPart = strTokens[1];
+            rightPart = rightPart.Remove(rightPart.IndexOf(')'));
+            strTokens = rightPart.Split(',');
+
+            foreach (string strToken in strTokens)
             {
-                token.IsUnary = false;
-                strTokens = strLine.Split('=');
-                token.Target = strTokens[0].Trim();
-                rightPart = strTokens[1];
+               token.Parameters.Add(strToken.Trim());
             }
-            else
-            {
-                token.IsUnary = true;
-                token.Target = null;
-                rightPart = strLine;
-            }
+         }
 
-            strTokens = rightPart.Split('(');
-
-            token.Command = strTokens[0].Trim();
-
-            if (strTokens.Length > 1) {
-                rightPart = strTokens[1];
-                rightPart = rightPart.Remove(rightPart.IndexOf(')'));
-                strTokens = rightPart.Split(',');
-                foreach (string strToken in strTokens)
-                {
-                    token.Parameters.Add(strToken.Trim());
-                }
-            }
-
-            return token;
-        }
-    }
+         return token;
+      }
+   }
 }

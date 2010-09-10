@@ -32,34 +32,35 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    /// <summary>
-    /// Berechnet die Differenz zweier Datensaetze.
-    /// </summary>
-    ///
-    /// Die Differenz wird wie folgt berechnet:
-    /// \f[ Diff = a - b \f]
-    public class Difference
-    {
-        /// <summary>
-        /// Berechnet die Differenz und legt das Ergebnis in einem neuen Datencontainer ab.
-        /// </summary>
-        /// <param name="a">Datensatz a, von dem Datensatz B abgezogen werden soll</param>
-        /// <param name="b">Datensatz b, der von Datensatz A abgezogen werden soll</param>
-        /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-        public static DataContainer CreateFrom(DataContainer a, DataContainer b)
-        {
-            DataContainer result = new DataContainer();
+   /// <summary>
+   /// Berechnet die Differenz zweier Datensaetze.
+   /// </summary>
+   ///
+   /// Die Differenz wird wie folgt berechnet:
+   /// \f[ Diff = a - b \f]
+   public class Difference
+   {
+      /// <summary>
+      /// Berechnet die Differenz und legt das Ergebnis in einem neuen Datencontainer ab.
+      /// </summary>
+      /// <param name="a">Datensatz a, von dem Datensatz B abgezogen werden soll</param>
+      /// <param name="b">Datensatz b, der von Datensatz A abgezogen werden soll</param>
+      /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
+      public static DataContainer CreateFrom(DataContainer a, DataContainer b)
+      {
+         DataContainer result = new DataContainer();
 
-            WorkDate workdate = a.OldestDate.Clone();
-            for (; workdate <= a.YoungestDate; workdate++)
+         WorkDate workdate = a.OldestDate.Clone();
+
+         for (; workdate <= a.YoungestDate; workdate++)
+         {
+            if (b.Contains(workdate))
             {
-                if (b.Contains(workdate))
-                {
-                    result[workdate] = a[workdate] - b[workdate];
-                }
+               result[workdate] = a[workdate] - b[workdate];
             }
+         }
 
-            return result;
-        }
-    }
+         return result;
+      }
+   }
 }

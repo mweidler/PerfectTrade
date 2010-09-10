@@ -88,8 +88,10 @@ namespace QuoteLoader
          XmlTextReader reader = new XmlTextReader(new StringReader(strLine));
          reader.WhitespaceHandling = WhitespaceHandling.None;
 
-         while (reader.Read()) {
-            if (reader.NodeType == XmlNodeType.Text) {
+         while (reader.Read())
+         {
+            if (reader.NodeType == XmlNodeType.Text)
+            {
                arrTokens[i] = reader.Value;
                i++;
             }

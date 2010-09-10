@@ -31,109 +31,124 @@ using System.Text;
 
 namespace FinancialObjects
 {
-    /// <summary>
-    /// </summary>
-    public class Matrix
-    {
-        private SortedList<string, SortedList<string, double>> m_matrix;
+   /// <summary>
+   /// </summary>
+   public class Matrix
+   {
+      private SortedList<string, SortedList<string, double>> m_matrix;
 
-        /// <summary>
-        /// Erzeugt ein neues Matrix-Objekt und fuehr einen Reset() durch.
-        /// </summary>
-        public Matrix()
-        {
-            m_matrix = new SortedList<string, SortedList<string, double>>();
-            Reset();
-        }
+      /// <summary>
+      /// Erzeugt ein neues Matrix-Objekt und fuehr einen Reset() durch.
+      /// </summary>
+      public Matrix()
+      {
+         m_matrix = new SortedList<string, SortedList<string, double>>();
+         Reset();
+      }
 
-        /// <summary>
-        /// Loescht alle Positionen der Matrix.
-        /// </summary>
-        public void Reset()
-        {
-            m_matrix.Clear();
-        }
+      /// <summary>
+      /// Loescht alle Positionen der Matrix.
+      /// </summary>
+      public void Reset()
+      {
+         m_matrix.Clear();
+      }
 
-        public void RemoveKey(string strRowID)
-        {
-            m_matrix.Remove(strRowID);
-        }
+      public void RemoveKey(string strRowID)
+      {
+         m_matrix.Remove(strRowID);
+      }
 
-        public void SearchMaximum(out string strRowID, out string strColID)
-        {
-            string maxrow = null;
-            string maxcol = null;
+      public void SearchMaximum(out string strRowID, out string strColID)
+      {
+         string maxrow = null;
+         string maxcol = null;
 
-            if (m_matrix.Keys.Count == 1)
+         if (m_matrix.Keys.Count == 1)
+         {
+            strRowID = m_matrix.Keys[0];
+            strColID = m_matrix.Keys[0];
+            return;
+         }
+
+         foreach (string row in m_matrix.Keys)
+         {
+            foreach (string col in m_matrix[row].Keys)
             {
-                strRowID = m_matrix.Keys[0];
-                strColID = m_matrix.Keys[0];
-                return;
+               if (row.Equals(col) == false)
+               {
+                  if (maxrow == null || (m_matrix[row][col] > m_matrix[maxrow][maxcol]))
+                  {
+                     maxrow = row;
+                     maxcol = col;
+                  }
+               }
             }
+         }
 
-            foreach ( string row in m_matrix.Keys )
-            {
-                foreach (string col in m_matrix[row].Keys)
-                {
-                    if (row.Equals(col) == false)
-                    {
-                        if (maxrow == null || (m_matrix[row][col] > m_matrix[maxrow][maxcol]))
-                        {
-                            maxrow = row;
-                            maxcol = col;
-                        }
-                    }
-                }
-            }
+         strRowID = maxrow;
+         strColID = maxcol;
+      }
 
-            strRowID = maxrow;
-            strColID = maxcol;
-        }
+      public void Add(string strRowID, string strColID, double dValue)
+      {
+         if (m_matrix.ContainsKey(strRowID) == false)
+         {
+            m_matrix[strRowID] = new SortedList<string, double>();
+         }
 
-        public void Add(string strRowID, string strColID, double dValue)
-        {
-           if (m_matrix.ContainsKey(strRowID) == false)
-           {
-              m_matrix[strRowID] = new SortedList<string, double>();
-           }
+         m_matrix[strRowID][strColID] = dValue;
+      }
 
-           m_matrix[strRowID][strColID] = dValue;
-        }
+      /// <summary>
+      ///
+      /// </summary>
+      /// <param name="strRowID"></param>
+      /// <param name="strColID"></param>
+      /// <returns></returns>
+      public double this[string strRowID, string strColID]
+      {
+         get
+         {
+            return m_matrix[strRowID][strColID];
+         }
+         set
+         {
+            this.Add(strRowID, strColID, value);
+         }
+      }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="strRowID"></param>
-        /// <param name="strColID"></param>
-        /// <returns></returns>
-        public double this[string strRowID, string strColID]
-        {
-            get { return m_matrix[strRowID][strColID]; }
-            set { this.Add(strRowID,strColID, value); }
-        }
+      public double this[string strID]
+      {
+         get
+         {
+            return m_matrix[strID][strID];
+         }
+         set
+         {
+            this.Add(strID, strID, value);
+         }
+      }
 
-        public double this[string strID]
-        {
-            get { return m_matrix[strID][strID]; }
-            set { this.Add(strID, strID, value); }
-        }
+      /// <summary>
+      /// Liefert die Anzahl der Positionen im Depot
+      /// </summary>
+      public uint Count
+      {
+         get
+         {
+            return (uint)m_matrix.Count;
+         }
+      }
 
-        /// <summary>
-        /// Liefert die Anzahl der Positionen im Depot
-        /// </summary>
-        public uint Count
-        {
-            get { return (uint)m_matrix.Count; }
-        }
-
-        /// <summary>
-        /// Prueft, ob ein Wertpapier (WKN) in der Matrix vorhanden ist.
-        /// </summary>
-        /// <param name="strWKN">Wertpapierkennnummer oder ID</param>
-        /// <returns><c>true</c>, wenn das Wertpapier existiert, ansonsten <c>false</c></returns>
-        public bool ContainsKey(string strWKN)
-        {
-            return m_matrix.ContainsKey(strWKN);
-        }
-    }
+      /// <summary>
+      /// Prueft, ob ein Wertpapier (WKN) in der Matrix vorhanden ist.
+      /// </summary>
+      /// <param name="strWKN">Wertpapierkennnummer oder ID</param>
+      /// <returns><c>true</c>, wenn das Wertpapier existiert, ansonsten <c>false</c></returns>
+      public bool ContainsKey(string strWKN)
+      {
+         return m_matrix.ContainsKey(strWKN);
+      }
+   }
 }

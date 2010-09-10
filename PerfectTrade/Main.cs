@@ -34,51 +34,55 @@ using Indicators;
 
 namespace PerfectTrade
 {
-	class MainClass
-	{
-        static void SetWorldPaths(string strApplicationName)
-        {
-            string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+   class MainClass
+   {
+      static void SetWorldPaths(string strApplicationName)
+      {
+         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-            string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
-            if (Directory.Exists(strResultPath) == false)
-            {
-                Directory.CreateDirectory(strResultPath);
-            }
+         string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
 
-            string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
-            if (Directory.Exists(strDataPath) == false)
-            {
-                Directory.CreateDirectory(strDataPath);
-            }
+         if (Directory.Exists(strResultPath) == false)
+         {
+            Directory.CreateDirectory(strResultPath);
+         }
 
-            World.GetInstance().ResultPath = strResultPath;
-            World.GetInstance().DataPath = strDataPath;
-            World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
-        }
+         string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
 
-        public static void Main(string[] args)
-        {
-            SetWorldPaths("Test");
+         if (Directory.Exists(strDataPath) == false)
+         {
+            Directory.CreateDirectory(strDataPath);
+         }
 
-            DBEngine dbengine = DBEngine.GetInstance();
-            if (dbengine.Exists("846900") == false)
-                return;
+         World.GetInstance().ResultPath = strResultPath;
+         World.GetInstance().DataPath = strDataPath;
+         World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+      }
 
-            Stock dax = dbengine.GetStock("846900");
-            if (dax.FillGaps() > 0)
-            {
-                dax.Save(World.GetInstance().QuotesPath + "846900.sto");
-            }
+      public static void Main(string[] args)
+      {
+         SetWorldPaths("Test");
 
-            DataContainer quotes = dax.QuotesLow;
+         DBEngine dbengine = DBEngine.GetInstance();
 
-            Chart chart = new Chart();
-            chart.Add(quotes,1,"Test");
-            chart.Create(World.GetInstance().ResultPath + "dax.png");
+         if (dbengine.Exists("846900") == false)
+            return;
 
-            DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, new WorkDate(2008, 4, 21));
-            dax_relperf.Save(World.GetInstance().ResultPath + "dax_relperf.csv", ";");
-        }
-    }
+         Stock dax = dbengine.GetStock("846900");
+
+         if (dax.FillGaps() > 0)
+         {
+            dax.Save(World.GetInstance().QuotesPath + "846900.sto");
+         }
+
+         DataContainer quotes = dax.QuotesLow;
+
+         Chart chart = new Chart();
+         chart.Add(quotes, 1, "Test");
+         chart.Create(World.GetInstance().ResultPath + "dax.png");
+
+         DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, new WorkDate(2008, 4, 21));
+         dax_relperf.Save(World.GetInstance().ResultPath + "dax_relperf.csv", ";");
+      }
+   }
 }

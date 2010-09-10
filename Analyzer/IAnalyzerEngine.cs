@@ -30,8 +30,8 @@ using FinancialObjects;
 
 namespace Analyzer
 {
-    public interface IAnalyzerEngine
-    {
-        void Setup();
-    }
+   public interface IAnalyzerEngine
+   {
+      void Setup();
+   }
 }

@@ -32,103 +32,108 @@ using Indicators;
 
 namespace Analyzer
 {
-    public class RelativeStrength : IAnalyzerEngine
-    {
-        public RelativeStrength()
-        {
-        }
+   public class RelativeStrength : IAnalyzerEngine
+   {
+      public RelativeStrength()
+      {
+      }
 
-        static void SetWorldPaths(string strApplicationName)
-        {
-            string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            
-            string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
-            if (Directory.Exists(strResultPath) == false) {
-                Directory.CreateDirectory(strResultPath);
-            }
-            
-            string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
-            if (Directory.Exists(strDataPath) == false) {
-                Directory.CreateDirectory(strDataPath);
-            }
-            
-            World.GetInstance().ResultPath = strResultPath;
-            World.GetInstance().DataPath = strDataPath;
-            World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
-        }
+      static void SetWorldPaths(string strApplicationName)
+      {
+         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-        #region IAnalyzerEngine Member
-        public void Setup()
-        {
-            SetWorldPaths("RelativeStrength");
+         string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
 
-            DBEngine dbengine = DBEngine.GetInstance();
-            if (dbengine.Exists("846900") == false)
-                return;
+         if (Directory.Exists(strResultPath) == false)
+         {
+            Directory.CreateDirectory(strResultPath);
+         }
 
-            Chart chart = new Chart();
-            chart.AutoDeleteTempFiles = false;
-            chart.Width = 1500;
-            chart.Height = 900;
-            Stock dax = dbengine.GetStock("846900");
-            DataContainer quotes = dax.Quotes;
-            DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
-            DataContainer dax_ma200 = MovingAverage.CreateFrom(quotes, 200);
+         string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
 
-            WorkDate startDate = quotes.YoungestDate.Clone();
-            startDate.Set(startDate.Year - 1, startDate.Month, 1);
+         if (Directory.Exists(strDataPath) == false)
+         {
+            Directory.CreateDirectory(strDataPath);
+         }
 
-            DataContainer dax_ranged = quotes.Clone(startDate);
+         World.GetInstance().ResultPath = strResultPath;
+         World.GetInstance().DataPath = strDataPath;
+         World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+      }
+
+      #region IAnalyzerEngine Member
+      public void Setup()
+      {
+         SetWorldPaths("RelativeStrength");
+
+         DBEngine dbengine = DBEngine.GetInstance();
+
+         if (dbengine.Exists("846900") == false)
+            return;
+
+         Chart chart = new Chart();
+         chart.AutoDeleteTempFiles = false;
+         chart.Width = 1500;
+         chart.Height = 900;
+         Stock dax = dbengine.GetStock("846900");
+         DataContainer quotes = dax.Quotes;
+         DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
+         DataContainer dax_ma200 = MovingAverage.CreateFrom(quotes, 200);
+
+         WorkDate startDate = quotes.YoungestDate.Clone();
+         startDate.Set(startDate.Year - 1, startDate.Month, 1);
+
+         DataContainer dax_ranged = quotes.Clone(startDate);
 
 
-            chart.Clear();
-            chart.SubSectionsX = 6;
-            chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
-            chart.LabelY = "Punkte";
-            chart.Add(dax_ranged, 1, "DAX");
-            chart.Add(dax_ma38, 2, "DAX (ma38)");
-            chart.Add(dax_ma200, 3, "DAX (ma200)");
-            chart.Create(World.GetInstance().ResultPath + "dax.png");
+         chart.Clear();
+         chart.SubSectionsX = 6;
+         chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
+         chart.LabelY = "Punkte";
+         chart.Add(dax_ranged, 1, "DAX");
+         chart.Add(dax_ma38, 2, "DAX (ma38)");
+         chart.Add(dax_ma200, 3, "DAX (ma200)");
+         chart.Create(World.GetInstance().ResultPath + "dax.png");
 
-            DataContainer dax_diff_ma38 = Difference.CreateFrom(quotes, dax_ma38).Clone(startDate);
-            DataContainer dax_diff_ma200 = Difference.CreateFrom(quotes, dax_ma200);
+         DataContainer dax_diff_ma38 = Difference.CreateFrom(quotes, dax_ma38).Clone(startDate);
+         DataContainer dax_diff_ma200 = Difference.CreateFrom(quotes, dax_ma200);
 
-            DataContainer dax_rel_diff_38 = RelativeDifference.CreateFrom(quotes, dax_ma38);
-            DataContainer dax_rel_diff_200 = RelativeDifference.CreateFrom(quotes, dax_ma200);
-            dax_rel_diff_38 = dax_rel_diff_38.Clone(startDate);
-            chart.Clear();
-            chart.LabelY = "dB%";
-            chart.Add(dax_rel_diff_38, 2, "DAX (rel diff 38)");
-            chart.Add(dax_rel_diff_200, 3, "DAX (rel diff 200)");
-            chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
+         DataContainer dax_rel_diff_38 = RelativeDifference.CreateFrom(quotes, dax_ma38);
+         DataContainer dax_rel_diff_200 = RelativeDifference.CreateFrom(quotes, dax_ma200);
+         dax_rel_diff_38 = dax_rel_diff_38.Clone(startDate);
+         chart.Clear();
+         chart.LabelY = "dB%";
+         chart.Add(dax_rel_diff_38, 2, "DAX (rel diff 38)");
+         chart.Add(dax_rel_diff_200, 3, "DAX (rel diff 200)");
+         chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
 
-            DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, startDate);
-            dax_relperf = dax_relperf.Clone(startDate);
+         DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, startDate);
+         dax_relperf = dax_relperf.Clone(startDate);
 
-            chart.Clear();
-            chart.SubSectionsX = 2;
-            chart.Title = dax_diff_ma38.OldestDate.ToString() + " - " + dax_diff_ma38.YoungestDate.ToString();
-            chart.LabelY = "Abstand zum Durchschnitt";
-            //chart.Add(dax_ranged, 1, "DAX (Performance)");
-            //chart.Add(dax_ma38, 2, "DAX (ma38)");
-            //chart.Add(dax_ma200, 3, "DAX (ma200)");
-            chart.Add(dax_diff_ma38, 2, "DAX rel. ma38");
-            chart.Add(dax_diff_ma200, 3, "DAX rel. ma200");
-            chart.Create(World.GetInstance().ResultPath + "dax_relperf.png");
+         chart.Clear();
+         chart.SubSectionsX = 2;
+         chart.Title = dax_diff_ma38.OldestDate.ToString() + " - " + dax_diff_ma38.YoungestDate.ToString();
+         chart.LabelY = "Abstand zum Durchschnitt";
+         //chart.Add(dax_ranged, 1, "DAX (Performance)");
+         //chart.Add(dax_ma38, 2, "DAX (ma38)");
+         //chart.Add(dax_ma200, 3, "DAX (ma200)");
+         chart.Add(dax_diff_ma38, 2, "DAX rel. ma38");
+         chart.Add(dax_diff_ma200, 3, "DAX rel. ma200");
+         chart.Create(World.GetInstance().ResultPath + "dax_relperf.png");
 
-/*            chart.Clear();
-            chart.Title = "DAX";
-            chart.LogScaleY = true;
-            //chart.LabelsY = labels;
-            chart.LabelY = "Punkte";
-            chart.TicsYInterval = 500;
-            
-            chart.Add(dax_ranged, "DAX(Performance)");
-            chart.Add(dax_ma38, "Moving Average (38)");
-            chart.Add(dax_ma200, "Moving Average (200)");
-            chart.Create(World.GetInstance().ResultPath + "dax.png");*/
-        }
-        #endregion
-    }
+         /*            chart.Clear();
+                     chart.Title = "DAX";
+                     chart.LogScaleY = true;
+                     //chart.LabelsY = labels;
+                     chart.LabelY = "Punkte";
+                     chart.TicsYInterval = 500;
+
+                     chart.Add(dax_ranged, "DAX(Performance)");
+                     chart.Add(dax_ma38, "Moving Average (38)");
+                     chart.Add(dax_ma200, "Moving Average (200)");
+                     chart.Create(World.GetInstance().ResultPath + "dax.png");*/
+      }
+      #endregion
+   }
 }
 

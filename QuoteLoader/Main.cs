@@ -48,28 +48,39 @@ namespace QuoteLoader
          string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
          World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
 
-         if (args.Length < 1) {
+         if (args.Length < 1)
+         {
             Usage();
             return;
          }
 
-         try {
+         try
+         {
 
             QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
 
-            if (args[0].Equals("init")) {
+            if (args[0].Equals("init"))
+            {
                string strISIN = args[1];
                loaderEngine.Init(strISIN);
-            } else if (args[0].Equals("update")) {
+            }
+            else if (args[0].Equals("update"))
+            {
                string[] strStockFilenames = Directory.GetFiles(World.GetInstance().QuotesPath, "*.sto");
-               foreach (string strStockFilename in strStockFilenames) {
+
+               foreach (string strStockFilename in strStockFilenames)
+               {
                   loaderEngine.Update(strStockFilename);
                }
-            } else {
+            }
+            else
+            {
                System.Console.WriteLine("Unknown command {0}.", args[0]);
             }
 
-         } catch (Exception e) {
+         }
+         catch (Exception e)
+         {
             System.Console.WriteLine(e.Message);
             System.Console.WriteLine(e.StackTrace);
          }

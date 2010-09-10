@@ -30,55 +30,68 @@ using System;
 namespace Analyzer
 {
 #if TESTXX
-    public class CommandSet
-    {
-       public string original;
-       public string m_strTarget;
-       public string m_strCommand;
-       public string[] parameters;
+   public class CommandSet
+   {
+      public string original;
+      public string m_strTarget;
+      public string m_strCommand;
+      public string[] parameters;
 
-       public CommandSet(string target, string command, string[] parameters)
-       {
-          this.target = target;
-          this.command = command;
-          this.parameters = parameters;
-       }
+      public CommandSet(string target, string command, string[] parameters)
+      {
+         this.target = target;
+         this.command = command;
+         this.parameters = parameters;
+      }
 
-       public void AddParameter(string parameter)
-       {
-          parameters.Add(parameter);
-       }
+      public void AddParameter(string parameter)
+      {
+         parameters.Add(parameter);
+      }
 
-       public string OriginalLine
-       {
-          get{ value = original; }
-
-          set{
-           original = value;
-          }
-       }
-
-       public string Command(string parameter)
-       {
-          get { return m_strCommand; }
-          set { m_strCommand = value; }
-
-          get{
-             value = command;
-          }
-
-          set{
-           command = parameter;
-          }
-       }
-
-       public int NumberOfParameters
-       {
-         get{
-           value = parameters.size;
+      public string OriginalLine
+      {
+         get
+         {
+            value = original;
          }
-       }
-    }
+
+         set
+         {
+            original = value;
+         }
+      }
+
+      public string Command(string parameter)
+      {
+         get
+         {
+            return m_strCommand;
+         }
+         set
+         {
+            m_strCommand = value;
+         }
+
+         get
+         {
+            value = command;
+         }
+
+         set
+         {
+            command = parameter;
+         }
+      }
+
+      public int NumberOfParameters
+      {
+         get
+         {
+            value = parameters.size;
+         }
+      }
+   }
 #endif
 }
 

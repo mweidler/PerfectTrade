@@ -32,36 +32,36 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    /// <summary>
-    /// Berechnet eine Performance-Entwicklung einer festverzinslichen Anlage
-    /// im angegebenen Zeitraum und mit dem gewuenschten Zinssatz.
-    /// </summary>
-    public class FixedGrowthInvestment
-    {
-        /// <summary>
-        /// Fuehrt eine Zinseszinsberechnung auf der Basis des angegebenen
-        /// Prozentsatzes und einem Startkapital von 100.0 aus.
-        /// Die Berechnung wird für jeden Arbeitstag (und Feiertage), jedoch
-        /// nicht fuer Wochenenden durchgefuehrt.
-        /// </summary>
-        /// <param name="fromDate">Beginn des Berechnungszeitraumes</param>
-        /// <param name="toDate">Ende des Berechnungszeitraumes</param>
-        /// <param name="dYearGrowth">Jahres-Performance in Prozent, z.B. 3.45</param>
-        public static DataContainer CreateFrom(WorkDate fromDate, WorkDate toDate, double dYearGrowth)
-        {
-            DataContainer result = new DataContainer();
+   /// <summary>
+   /// Berechnet eine Performance-Entwicklung einer festverzinslichen Anlage
+   /// im angegebenen Zeitraum und mit dem gewuenschten Zinssatz.
+   /// </summary>
+   public class FixedGrowthInvestment
+   {
+      /// <summary>
+      /// Fuehrt eine Zinseszinsberechnung auf der Basis des angegebenen
+      /// Prozentsatzes und einem Startkapital von 100.0 aus.
+      /// Die Berechnung wird für jeden Arbeitstag (und Feiertage), jedoch
+      /// nicht fuer Wochenenden durchgefuehrt.
+      /// </summary>
+      /// <param name="fromDate">Beginn des Berechnungszeitraumes</param>
+      /// <param name="toDate">Ende des Berechnungszeitraumes</param>
+      /// <param name="dYearGrowth">Jahres-Performance in Prozent, z.B. 3.45</param>
+      public static DataContainer CreateFrom(WorkDate fromDate, WorkDate toDate, double dYearGrowth)
+      {
+         DataContainer result = new DataContainer();
 
-            dYearGrowth /= 100.0;
-            double dPerformanceFactor = Math.Pow(1.0 + dYearGrowth, 1.0 / WorkDate.WorkDaysPerYear);
-            double dEquity = 100.0;
+         dYearGrowth /= 100.0;
+         double dPerformanceFactor = Math.Pow(1.0 + dYearGrowth, 1.0 / WorkDate.WorkDaysPerYear);
+         double dEquity = 100.0;
 
-            for (WorkDate workdate = fromDate.Clone(); workdate <= toDate; workdate++)
-            {
-                result[workdate] = dEquity;
-                dEquity *= dPerformanceFactor;
-            }
+         for (WorkDate workdate = fromDate.Clone(); workdate <= toDate; workdate++)
+         {
+            result[workdate] = dEquity;
+            dEquity *= dPerformanceFactor;
+         }
 
-            return result;
-        }
-    }
+         return result;
+      }
+   }
 }

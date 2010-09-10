@@ -32,34 +32,35 @@ using FinancialObjects;
 
 namespace Indicators
 {
-    /// <summary>
-    /// Berechnet die relative Differenz zweier Datensaetze.
-    /// </summary>
-    ///
-    /// Die RelativeDifference wird wie folgt berechnet:
-    /// \f[ x_r = 100 \cdot \log_2{\frac{a_n}{ b_{n}}} \f]
-    public class RelativeDifference
-    {
-        /// <summary>
-        /// Berechnet die relative Differenz und legt das Ergebnis in einem neuen Datencontainer ab.
-        /// </summary>
-        /// <param name="a">Datensatz a, von dem Datensatz B abgezogen werden soll</param>
-        /// <param name="b">Datensatz b, der von Datensatz A abgezogen werden soll</param>
-        /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-        public static DataContainer CreateFrom(DataContainer a, DataContainer b)
-        {
-            DataContainer result = new DataContainer();
+   /// <summary>
+   /// Berechnet die relative Differenz zweier Datensaetze.
+   /// </summary>
+   ///
+   /// Die RelativeDifference wird wie folgt berechnet:
+   /// \f[ x_r = 100 \cdot \log_2{\frac{a_n}{ b_{n}}} \f]
+   public class RelativeDifference
+   {
+      /// <summary>
+      /// Berechnet die relative Differenz und legt das Ergebnis in einem neuen Datencontainer ab.
+      /// </summary>
+      /// <param name="a">Datensatz a, von dem Datensatz B abgezogen werden soll</param>
+      /// <param name="b">Datensatz b, der von Datensatz A abgezogen werden soll</param>
+      /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
+      public static DataContainer CreateFrom(DataContainer a, DataContainer b)
+      {
+         DataContainer result = new DataContainer();
 
-            WorkDate workdate = a.OldestDate.Clone();
-            for (; workdate <= a.YoungestDate; workdate++)
+         WorkDate workdate = a.OldestDate.Clone();
+
+         for (; workdate <= a.YoungestDate; workdate++)
+         {
+            if (b.Contains(workdate))
             {
-                if (b.Contains(workdate))
-                {
-                    result[workdate] = Math.Log(a[workdate] / b[workdate], 2.0) * 100.0;
-                }
+               result[workdate] = Math.Log(a[workdate] / b[workdate], 2.0) * 100.0;
             }
+         }
 
-            return result;
-        }
-    }
+         return result;
+      }
+   }
 }

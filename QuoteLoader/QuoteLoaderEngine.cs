@@ -50,15 +50,16 @@ namespace QuoteLoader
       public void Init(string strISIN)
       {
          Stock stock = new Stock();
-         
-         if (strISIN.Length == 12) {
+
+         if (strISIN.Length == 12)
+         {
             string strWKN = strISIN.Substring(6, 6);
-            
+
             stock.ISIN = strISIN;
             stock.WKN = strWKN;
-            
+
             System.Console.WriteLine("Initializing {0}", strISIN);
-            
+
             stock.Save(World.GetInstance().QuotesPath + strISIN + ".sto");
          }
       }
@@ -69,7 +70,7 @@ namespace QuoteLoader
          Stock stock = dbengine.GetStock(strWKN);
          System.Console.WriteLine("Updating {0}", strWKN);
          int nImported = Read(stock, new WorkDate());
-         
+
          System.Console.WriteLine("{0} quotes imported.", nImported);
          System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
          System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
@@ -80,38 +81,44 @@ namespace QuoteLoader
       {
          bool bDoImport = false;
          int nImported = 0;
-         
+
          Log.Info("Load entered, datetime = " + workdate);
-         
+
          WebRequest webreq;
          WebResponse webres;
-         
+
          string strURI = BuildURI(stock, workdate, workdate - nHistoricalDays);
          Log.Info(strURI);
-         
+
          webreq = WebRequest.Create(strURI);
          webres = webreq.GetResponse();
-         
+
          Stream stream = webres.GetResponseStream();
          StreamReader strrdr = new StreamReader(stream);
          string strLine = strrdr.ReadLine();
-         
-         while ((strLine = strrdr.ReadLine()) != null) {
+
+         while ((strLine = strrdr.ReadLine()) != null)
+         {
             if (EnableImport(strLine))
                bDoImport = true;
+
             if (DisableImport(strLine))
                bDoImport = false;
-            if (bDoImport) {
+
+            if (bDoImport)
+            {
                Log.Info(strLine);
-               if (ParseAndStore(strLine, stock)) {
+
+               if (ParseAndStore(strLine, stock))
+               {
                   nImported++;
                }
             }
          }
-         
+
          strrdr.Close();
          stream.Close();
-         
+
          Log.Info("Leaving Load");
          return nImported;
       }
@@ -120,27 +127,34 @@ namespace QuoteLoader
       {
          bool bDoImport = false;
          int nImported = 0;
-         
+
          string strFilename = "/home/mweidler/dax-kurse.htm";
-         
-         if (File.Exists(strFilename)) {
+
+         if (File.Exists(strFilename))
+         {
             StreamReader re = File.OpenText(strFilename);
             string input = re.ReadLine();
-            while ((input = re.ReadLine()) != null) {
+
+            while ((input = re.ReadLine()) != null)
+            {
                if (EnableImport(input))
                   bDoImport = true;
+
                if (DisableImport(input))
                   bDoImport = false;
-               if (bDoImport) {
-                  if (ParseAndStore(input, stock)) {
+
+               if (bDoImport)
+               {
+                  if (ParseAndStore(input, stock))
+                  {
                      nImported++;
                   }
                }
             }
-            
+
             re.Close();
          }
-         
+
          return nImported;
       }
    }

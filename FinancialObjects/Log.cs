@@ -32,31 +32,31 @@ using System.IO;
 
 namespace FinancialObjects
 {
-    /// <summary>
-    /// Stellt grundlegende Logging-Funktionalitaet zur Verfuegung.
-    /// Die Log-Daten werden in eine Datei im Benutzerverzeichnis abgelegt.
-    /// </summary>
-    public static class Log
-    {
-        private static string m_path = null;
+   /// <summary>
+   /// Stellt grundlegende Logging-Funktionalitaet zur Verfuegung.
+   /// Die Log-Daten werden in eine Datei im Benutzerverzeichnis abgelegt.
+   /// </summary>
+   public static class Log
+   {
+      private static string m_path = null;
 
-        /// <summary>
-        /// Schreibt Informationen ins Logfile
-        /// </summary>
-        /// <param name="strLogText">Die zu schreibende Information</param>
-        public static void Info(string strLogText)
-        {
-            if (m_path == null)
-            {
-                m_path = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                m_path += "/PerfectTrade.log";
-            }
+      /// <summary>
+      /// Schreibt Informationen ins Logfile
+      /// </summary>
+      /// <param name="strLogText">Die zu schreibende Information</param>
+      public static void Info(string strLogText)
+      {
+         if (m_path == null)
+         {
+            m_path = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            m_path += "/PerfectTrade.log";
+         }
 
-            //Console.WriteLine(strLogText);
+         //Console.WriteLine(strLogText);
 
-            StreamWriter sw = new StreamWriter(m_path, true);
-            sw.WriteLine(strLogText);
-            sw.Close();
-        }
-    }
+         StreamWriter sw = new StreamWriter(m_path, true);
+         sw.WriteLine(strLogText);
+         sw.Close();
+      }
+   }
 }
