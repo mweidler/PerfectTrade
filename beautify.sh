@@ -2,6 +2,14 @@
 #
 # beautify.sh
 #
+# Usage: ./beautify.sh
+#        will reformat all *.cs files in the current directory
+#
+#        ./beautify.sh -r
+#        will reformat all *.cs files in the current directory and travels
+#        recursively through all sub-directories and reformat those files.
+#
+#
 # COPYRIGHT (C) 2010 AND ALL RIGHTS RESERVED BY
 # MARC WEIDLER, ULRICHSTR. 12/1, 71672 MARBACH, GERMANY (MARC.WEIDLER@WEB.DE).
 #
@@ -29,7 +37,7 @@
 
 RECURSIVE=""
 
-echo "-------------- Source Code Beautyfier --------------"
+echo "-------------- Source code beautyfier --------------"
 
 if [ $# -eq 1 ]
 then
