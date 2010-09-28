@@ -50,8 +50,9 @@ fi
 if [ -e /usr/bin/astyle ]
 then
    astyle --style=ansi --indent=spaces=3 --indent-switches --indent-namespaces\
-          --break-blocks --convert-tabs --suffix=none --options=none --verbose\
-          --pad-oper --unpad-paren --keep-one-line-statements $RECURSIVE\
+          --break-blocks --convert-tabs --suffix=none --options=none\
+          --verbose --pad-oper --unpad-paren\
+          --keep-one-line-blocks --keep-one-line-statements $RECURSIVE\
            "*.cs"
 else
    echo "Artistic style code beautyfier not found."
