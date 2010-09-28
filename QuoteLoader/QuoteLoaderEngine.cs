@@ -69,29 +69,44 @@ namespace QuoteLoader
          string strWKN = Path.GetFileNameWithoutExtension(strStockFilename);
          Stock stock = dbengine.GetStock(strWKN);
          System.Console.WriteLine("Updating {0}", strWKN);
-         int nImported = Read(stock, new WorkDate());
+         int nImported = Load(stock);
 
          System.Console.WriteLine("{0} quotes imported.", nImported);
          System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
          System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
-         stock.Save();
+
+         if (nImported > 0)
+         {
+            stock.Save();
+         }
       }
 
-      public int Load(Stock stock, WorkDate workdate, int nHistoricalDays)
+      public int Load(Stock stock)
       {
          bool bDoImport = false;
          int nImported = 0;
 
-         Log.Info("Load entered, datetime = " + workdate);
-
          WebRequest webreq;
          WebResponse webres;
 
-         string strURI = BuildURI(stock, workdate, workdate - nHistoricalDays);
+         WorkDate startdate = stock.QuotesClose.YoungestDate.Clone() - 1;
+         WorkDate enddate = new WorkDate();
+
+         Log.Info("Load entered, startdate = " + startdate + ", enddate = " + enddate);
+
+         string strURI = BuildURI(stock, startdate, enddate);
          Log.Info(strURI);
 
-         webreq = WebRequest.Create(strURI);
-         webres = webreq.GetResponse();
+         try
+         {
+            webreq = WebRequest.Create(strURI);
+            webres = webreq.GetResponse();
+         }
+         catch (UriFormatException)
+         {
+            System.Console.WriteLine("Can not send a web request. No network?");
+            return 0;
+         }
 
          Stream stream = webres.GetResponseStream();
          StreamReader strrdr = new StreamReader(stream);
@@ -123,7 +138,7 @@ namespace QuoteLoader
          return nImported;
       }
 
-      public int Read(Stock stock, WorkDate workdate)
+      public int Read(Stock stock)
       {
          bool bDoImport = false;
          int nImported = 0;

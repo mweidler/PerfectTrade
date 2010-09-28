@@ -53,7 +53,7 @@ namespace Indicators
       /// <param name="b">Datensatz B, zwischen denen die Korrelation gebildet werden soll</param>
       /// <param name="nRange">Anzahl der einzubeziehenden Daten pro Korrelationsberechnung</param>
       /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer a, DataContainer b, uint nRange)
+      public static DataContainer CreateFrom(DataContainer a, DataContainer b, int nRange)
       {
          if (nRange < 1)
             throw new ArgumentOutOfRangeException("Range", nRange, "Must be greater than zero.");

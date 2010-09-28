@@ -133,11 +133,11 @@ namespace FinancialObjects
       /// <summary>
       /// Liefert die Anzahl der Positionen im Depot
       /// </summary>
-      public uint Count
+      public int Count
       {
          get
          {
-            return (uint)m_matrix.Count;
+            return m_matrix.Count;
          }
       }
 

@@ -37,7 +37,7 @@ namespace FinancialObjects
    public class DepotPosition
    {
       private readonly string m_strWKN;
-      private uint     m_nQuantity;
+      private int     m_nQuantity;
       private WorkDate m_BuyDate;
       private double m_dBuyPrice;
       private double m_dStopLoss;
@@ -46,7 +46,7 @@ namespace FinancialObjects
       /// <summary>
       /// Erzeugt eine neue Dpotposition
       /// </summary>
-      public DepotPosition(string strWKN, uint nQuantity, WorkDate buyDate, double dBuyPrice)
+      public DepotPosition(string strWKN, int nQuantity, WorkDate buyDate, double dBuyPrice)
       {
          m_strWKN      = strWKN;
          this.Quantity = nQuantity;
@@ -70,7 +70,7 @@ namespace FinancialObjects
       /// <summary>
       /// Stueckzahl
       /// </summary>
-      public uint Quantity
+      public int Quantity
       {
          get
          {

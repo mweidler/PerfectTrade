@@ -59,7 +59,7 @@ namespace Indicators
       /// <param name="source">Datensatz, von dem die Volatilitaet gebildet werden soll</param>
       /// <param name="nRange">Anzahl der einzubeziehenden Daten pro Berechnung</param>
       /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer source, uint nRange)
+      public static DataContainer CreateFrom(DataContainer source, int nRange)
       {
          if (nRange < 1)
             throw new ArgumentOutOfRangeException("Average", nRange, "Must be greater than zero.");

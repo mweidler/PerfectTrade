@@ -57,7 +57,7 @@ namespace Indicators
       /// <param name="reference">Referenz, zu dem Beta gebildet werden soll</param>
       /// <param name="nRange">Anzahl der einzubeziehenden Daten pro Beta-Berechnung</param>
       /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer source, DataContainer reference, uint nRange)
+      public static DataContainer CreateFrom(DataContainer source, DataContainer reference, int nRange)
       {
          if (nRange < 1)
             throw new ArgumentOutOfRangeException("Range", nRange, "Must be greater than zero.");

@@ -45,14 +45,14 @@ namespace QuoteLoader
          //&endtag=12&endmonat=08&endjahr=2010
          //&x=17&y=9
 
-         string strQuoteString = "www.boerse-online.de/kurse-tools/historische-kurse?do=historie";
+         string strQuoteString = "http://www.boerse-online.de/kurse-tools/historische-kurse?do=historie";
          strQuoteString += "&isin=" + stock.ISIN;
          strQuoteString += "&land=276&boerse=XETRA";
-         strQuoteString += "&starttag=" + startdate.Day;
-         strQuoteString += "&startmonat" + startdate.Month;
+         strQuoteString += "&starttag=" + ((startdate.Day<10)?"0":"") + startdate.Day;
+         strQuoteString += "&startmonat=" + ((startdate.Month<10)?"0":"") + startdate.Month;
          strQuoteString += "&startjahr=" + startdate.Year;
-         strQuoteString += "&endtag=" + enddate.Day;
-         strQuoteString += "&endmonat" + enddate.Month;
+         strQuoteString += "&endtag=" + ((enddate.Day<10)?"0":"") + enddate.Day;
+         strQuoteString += "&endmonat=" + ((enddate.Month<10)?"0":"") + enddate.Month;
          strQuoteString += "&endjahr=" + enddate.Year;
          strQuoteString += "&x=17&y=9";
          return strQuoteString;

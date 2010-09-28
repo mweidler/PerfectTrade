@@ -70,7 +70,7 @@ namespace Indicators
       /// <param name="b">Datenreihe B</param>
       /// <param name="nRange">Anzahl der Daten, von dem die Kovarianz gebildet werden soll</param>
       /// <returns>Neuer DatenContainer mit n Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer a, DataContainer b, uint nRange)
+      public static DataContainer CreateFrom(DataContainer a, DataContainer b, int nRange)
       {
          if (nRange < 1)
             throw new ArgumentOutOfRangeException("Range", nRange, "Must be greater than zero.");

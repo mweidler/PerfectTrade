@@ -52,7 +52,7 @@ namespace Indicators
       /// <param name="nAverageFast">Anzahl der Daten, des kuerzeren GD</param>
       /// <param name="nAverageSlow">Anzahl der Daten, des laengerem GD</param>
       /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer source, uint nAverageFast, uint nAverageSlow)
+      public static DataContainer CreateFrom(DataContainer source, int nAverageFast, int nAverageSlow)
       {
          if (nAverageFast > nAverageSlow)
             throw(new ArgumentOutOfRangeException());

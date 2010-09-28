@@ -143,7 +143,7 @@ namespace FinancialObjects
       /// <param name="strID">WKN oder ID</param>
       /// <returns>Liefert true, wenn das Wertpapier zu den <c>nTopRange</c> besten Wertpapieren
       /// im Ranking gehoehrt, ansonsten false.</returns>
-      public bool IsTopRanked(uint nTopRange, string strID)
+      public bool IsTopRanked(int nTopRange, string strID)
       {
          if (m_bIsSorted == false)
          {

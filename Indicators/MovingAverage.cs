@@ -52,7 +52,7 @@ namespace Indicators
       /// <param name="source">Daten, von dem der gleitende Durchschnitt gebildet werden soll</param>
       /// <param name="nAverage">Anzahl der Daten, von dem der Durchschnitt gebildet werden soll</param>
       /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer source, uint nAverage)
+      public static DataContainer CreateFrom(DataContainer source, int nAverage)
       {
          if (nAverage < 1)
             throw new ArgumentOutOfRangeException("nAverage", nAverage, "Must be greater than zero.");

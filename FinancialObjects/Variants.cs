@@ -84,11 +84,11 @@ namespace FinancialObjects
       /// <summary>
       /// Liefert die Anzahl der moeglichen Werte zureuck.
       /// </summary>
-      public uint Size
+      public int Size
       {
          get
          {
-            return (uint)m_items.Length;
+            return m_items.Length;
          }
       }
 
@@ -134,8 +134,8 @@ namespace FinancialObjects
       // global variant items storage
       private static SortedList<string, VariantsItem> m_slVariants = new SortedList<string, VariantsItem>();
       private static List<VariantsItem> m_lVariants = new List<VariantsItem>();
-      private static uint m_nIterations;
-      private static uint m_nTotalIterations;
+      private static int m_nIterations;
+      private static int m_nTotalIterations;
 
       // local variant items storage
       private SortedList<string, int> m_slValues = new SortedList<string, int>();
@@ -201,7 +201,7 @@ namespace FinancialObjects
          m_lVariants.Add(item);
          m_slValues[strName] = items[0];
          m_nIterations = 1;
-         m_nTotalIterations = Math.Max(m_nTotalIterations, 1) * (uint)items.Length;
+         m_nTotalIterations = Math.Max(m_nTotalIterations, 1) * items.Length;
       }
 
       public int this[string strName]
@@ -239,7 +239,7 @@ namespace FinancialObjects
          }
       }
 
-      public uint TotalIterations
+      public int TotalIterations
       {
          get
          {
@@ -247,7 +247,7 @@ namespace FinancialObjects
          }
       }
 
-      public uint Iterations
+      public int Iterations
       {
          get
          {
@@ -258,7 +258,7 @@ namespace FinancialObjects
       /// <summary>
       /// Liefert den Fertigstellungsgrad in Prozent zwischen 0 und 100
       /// </summary>
-      public uint Completeness
+      public int Completeness
       {
          get
          {

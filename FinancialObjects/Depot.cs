@@ -40,7 +40,7 @@ namespace FinancialObjects
       private double m_dCash;
       private double m_dInitialCash;
       private double m_dProvisionRate;
-      private uint m_nTrades;
+      private int m_nTrades;
 
       /// <summary>
       /// Erzeugt ein neues Depot-Objekt und fuehr einen Reset() durch.
@@ -80,12 +80,9 @@ namespace FinancialObjects
       /// <summary>
       /// Liefert die Anzahl der Kaeufe.
       /// </summary>
-      public uint Trades
+      public int Trades
       {
-         get
-         {
-            return m_nTrades;
-         }
+         get { return m_nTrades; }
       }
 
       /// <summary>
@@ -95,21 +92,15 @@ namespace FinancialObjects
       /// <returns></returns>
       public DepotPosition this[int iIndex]
       {
-         get
-         {
-            return m_positions.Values[iIndex];
-         }
+         get { return m_positions.Values[iIndex]; }
       }
 
       /// <summary>
       /// Liefert die Anzahl der Positionen im Depot
       /// </summary>
-      public uint Count
+      public int Count
       {
-         get
-         {
-            return (uint)m_positions.Count;
-         }
+         get { return m_positions.Count; }
       }
 
       /// <summary>
@@ -118,14 +109,8 @@ namespace FinancialObjects
       /// </summary>
       public double ProvisionRate
       {
-         get
-         {
-            return m_dProvisionRate;
-         }
-         set
-         {
-            m_dProvisionRate = value;
-         }
+         get { return m_dProvisionRate; }
+         set { m_dProvisionRate = value; }
       }
 
       /// <summary>
@@ -136,10 +121,7 @@ namespace FinancialObjects
       /// </summary>
       public double Cash
       {
-         get
-         {
-            return m_dCash;
-         }
+         get { return m_dCash; }
          set
          {
             m_dCash = value;
@@ -152,10 +134,7 @@ namespace FinancialObjects
       /// </summary>
       public double Equity
       {
-         get
-         {
-            return this.Cash + this.Asset;
-         }
+         get { return this.Cash + this.Asset; }
       }
 
       /// <summary>
@@ -164,13 +143,10 @@ namespace FinancialObjects
       /// </summary>
       public double Performance
       {
-         get
-         {
-            return Math.Log(this.Equity / m_dInitialCash, 2.0) * 100.0;
-         }
-
-         //get { return (((m_dCash + this.Amount) / m_dInitialCash) - 1.0) * 100.0; }
+         get { return Math.Log(this.Equity / m_dInitialCash, 2.0) * 100.0; }
       }
+
+      //get { return (((m_dCash + this.Amount) / m_dInitialCash) - 1.0) * 100.0; }
 
       /// <summary>
       /// Prueft, ob ein Wertpapier (WKN) im Depot vorhanden ist.
@@ -207,16 +183,15 @@ namespace FinancialObjects
       /// <param name="nQuantity">Stueckzahl</param>
       /// <param name="buyDate">Kaufdatum</param>
       /// <param name="dBuyPrice">Kaufpreis</param>
-      public void Buy(string strWKN, uint nQuantity, WorkDate buyDate, double dBuyPrice)
+      public void Buy(string strWKN, int nQuantity, WorkDate buyDate, double dBuyPrice)
       {
          DepotPosition depotposition = null;
 
          if (m_positions.ContainsKey(strWKN))
          {
             depotposition = m_positions[strWKN];
-            uint nNewQuantity = nQuantity + depotposition.Quantity;
-            double dNewPrice = (depotposition.Quantity * depotposition.BuyPrice +
-                                nQuantity * dBuyPrice) / nNewQuantity;
+            int nNewQuantity = nQuantity + depotposition.Quantity;
+            double dNewPrice = (depotposition.Quantity * depotposition.BuyPrice + nQuantity * dBuyPrice) / nNewQuantity;
 
             depotposition.Quantity = nNewQuantity;
             depotposition.BuyDate = buyDate;
@@ -241,7 +216,7 @@ namespace FinancialObjects
       /// <param name="strWKN">WKN, bzw. ID</param>
       /// <param name="nQuantity">Stueckzahl</param>
       /// <param name="sellDate">Verkaufsdatum</param>
-      public void Sell(string strWKN, uint nQuantity, WorkDate sellDate)
+      public void Sell(string strWKN, int nQuantity, WorkDate sellDate)
       {
          if (m_positions.ContainsKey(strWKN))
          {
@@ -273,16 +248,7 @@ namespace FinancialObjects
 
          foreach (DepotPosition position in m_positions.Values)
          {
-            Console.Out.WriteLine("{0:00} {1:0000} {2} {3:0000.00} {4} {5:0000.00} {6:000} {7:000.0} {8:0000.00}   ",
-                                  nPosition,
-                                  position.Quantity,
-                                  position.WKN,
-                                  position.BuyPrice,
-                                  position.BuyDate,
-                                  position.Price,
-                                  position.Age(today),
-                                  position.Performance,
-                                  position.StopLoss);
+            Console.Out.WriteLine("{0:00} {1:0000} {2} {3:0000.00} {4} {5:0000.00} {6:000} {7:000.0} {8:0000.00}   ", nPosition, position.Quantity, position.WKN, position.BuyPrice, position.BuyDate, position.Price, position.Age(today), position.Performance, position.StopLoss);
             nPosition++;
          }
 
@@ -291,11 +257,7 @@ namespace FinancialObjects
             Console.Out.WriteLine("                                                        ");
          }
 
-         Console.Out.WriteLine("Trades: {0:00}  Depotwert: {1:n}   Cash: {2:n}   Equity: {3:n}",
-                               this.Trades,
-                               this.Asset,
-                               this.Cash,
-                               this.Equity);
+         Console.Out.WriteLine("Trades: {0:00}  Depotwert: {1:n}   Cash: {2:n}   Equity: {3:n}", this.Trades, this.Asset, this.Cash, this.Equity);
       }
    }
 }

@@ -48,7 +48,7 @@ namespace Indicators
       /// <param name="source">Datensatz, von dem die ReturnRiskRatio gebildet werden soll</param>
       /// <param name="nRange">Anzahl der einzubeziehenden Daten pro Berechnung</param>
       /// <returns>Neuer DatenContainer mit den Ergebnisdaten</returns>
-      public static DataContainer CreateFrom(DataContainer source, uint nRange)
+      public static DataContainer CreateFrom(DataContainer source, int nRange)
       {
          //DataContainer sourceperf   = RelativePerformance.CreateFrom(source);
          DataContainer sourcechange = RelativeChange.CreateFrom(source);
