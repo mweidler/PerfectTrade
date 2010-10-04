@@ -32,6 +32,7 @@ namespace Analyzer
 {
    public interface IAnalyzerEngine
    {
-      void Setup();
+      string GetApplicationName();
+      void   Analyze();
    }
 }

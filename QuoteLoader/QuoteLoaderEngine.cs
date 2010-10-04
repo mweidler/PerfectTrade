@@ -36,17 +36,58 @@ namespace QuoteLoader
 {
    public abstract class QuoteLoaderEngine
    {
+      /// <summary>
+      /// Build a URI to download a set of quotes from a public web site.
+      /// </summary>
+      /// <param name="stock">The stock object that a URI should be build for downloading quotes</param>
+      /// <param name="startdate">The date to start updating quotes</param>
+      /// <param name="enddate">The date to end updating quotes</param>
+      /// <returns>The complete URI that downloaded the quotes from a web site</returns>
       protected abstract string BuildURI(Stock stock, WorkDate startdate, WorkDate enddate);
+
+      /// <summary>
+      /// Parse a line of the downloaded quotes web page, parses the quotes data and stores
+      /// them into the stock object.
+      /// </summary>
+      /// <param name="strLine">The data line to be parsed and stored.</param>
+      /// <param name="stock">The stock object to be filled with the downloaded data</param>
+      /// <returns>True, if the line could be successfully parsed, otherwise false</returns>
       protected abstract bool ParseAndStore(string strLine, Stock stock);
+
+      /// <summary>
+      /// Evaluates, if the parsing of the downloaded web page should be started.
+      /// This method can be used to skip the header of the html page or other elements
+      /// contained in the html page that should be ignored. If you download e.g. a
+      /// CSV file, this method can simply return true.
+      /// </summary>
+      /// <param name="strLine">The data line that should be evaluated.</param>
+      /// <returns>True, if the import should start now</returns>
       protected abstract bool EnableImport(string strLine);
+
+      /// <summary>
+      /// Evaluates, if the parsing of the downloaded web page should be ended.
+      /// This method can be used to skip the footer of the html page or other elements
+      /// contained in the html page that should be ignored.  If you download e.g. a
+      /// CSV file, this method can simply return false.
+      /// </summary>
+      /// <param name="strLine">The data line that should be evaluated.</param>
+      /// <returns>True, if the import should stopped now</returns>
       protected abstract bool DisableImport(string strLine);
+
 
       DBEngine dbengine = DBEngine.GetInstance();
 
+      /// <summary>
+      /// Creates a new QuoteLoaderEngine object.
+      /// </summary>
       public QuoteLoaderEngine()
       {
       }
 
+      /// <summary>
+      /// Initializes a new stock file in the quotes directory.
+      /// </summary>
+      /// <param name="strISIN">The ISIN of the stock</param>
       public void Init(string strISIN)
       {
          Stock stock = new Stock();
@@ -64,23 +105,41 @@ namespace QuoteLoader
          }
       }
 
+      /// <summary>
+      /// Updates the stock quotes to the most actual date.
+      /// </summary>
+      /// <param name="strStockFilename">The stock's path and filename to update</param>
       public void Update(string strStockFilename)
       {
-         string strWKN = Path.GetFileNameWithoutExtension(strStockFilename);
+         int    nTotalImported = 0;
+         int    nImported      = 0;
+         string strWKN         = Path.GetFileNameWithoutExtension(strStockFilename);
+
          Stock stock = dbengine.GetStock(strWKN);
          System.Console.WriteLine("Updating {0}", strWKN);
-         int nImported = Load(stock);
 
-         System.Console.WriteLine("{0} quotes imported.", nImported);
+         do
+         {
+            nImported = Load(stock);
+            nTotalImported += nImported;
+         }
+         while (nImported > 0);
+
+         System.Console.WriteLine("{0} quotes imported.", nTotalImported);
          System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
          System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
 
-         if (nImported > 0)
+         if (nTotalImported > 0)
          {
             stock.Save();
          }
       }
 
+      /// <summary>
+      /// Download the most recent stock's quote data from a quote server.
+      /// </summary>
+      /// <param name="stock">The stock object to be updated</param>
+      /// <returns>The number of imported days</returns>
       public int Load(Stock stock)
       {
          bool bDoImport = false;
@@ -103,6 +162,11 @@ namespace QuoteLoader
             webres = webreq.GetResponse();
          }
          catch (UriFormatException)
+         {
+            System.Console.WriteLine("URI invalid. Can not send a web request.");
+            return 0;
+         }
+         catch (WebException)
          {
             System.Console.WriteLine("Can not send a web request. No network?");
             return 0;
@@ -138,7 +202,7 @@ namespace QuoteLoader
          return nImported;
       }
 
-      public int Read(Stock stock)
+      /*public int Read(Stock stock)
       {
          bool bDoImport = false;
          int nImported = 0;
@@ -171,6 +235,6 @@ namespace QuoteLoader
          }
 
          return nImported;
-      }
+      }*/
    }
 }

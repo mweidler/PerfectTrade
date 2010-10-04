@@ -45,8 +45,7 @@ namespace QuoteLoader
 
       public static void Main(string[] args)
       {
-         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-         World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+         World.GetInstance().SetWorldPaths("QuoteLoader");
 
          if (args.Length < 1)
          {

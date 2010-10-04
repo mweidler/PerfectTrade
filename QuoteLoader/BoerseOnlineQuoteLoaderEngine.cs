@@ -26,8 +26,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Net;
 using System.Xml;
@@ -45,16 +43,19 @@ namespace QuoteLoader
          //&endtag=12&endmonat=08&endjahr=2010
          //&x=17&y=9
 
-         string strQuoteString = "http://www.boerse-online.de/kurse-tools/historische-kurse?do=historie";
+         string strQuoteString = "http://";
+
+         strQuoteString += "www.boerse-online.de/kurse-tools/historische-kurse?do=historie";
          strQuoteString += "&isin=" + stock.ISIN;
          strQuoteString += "&land=276&boerse=XETRA";
-         strQuoteString += "&starttag=" + ((startdate.Day<10)?"0":"") + startdate.Day;
-         strQuoteString += "&startmonat=" + ((startdate.Month<10)?"0":"") + startdate.Month;
-         strQuoteString += "&startjahr=" + startdate.Year;
-         strQuoteString += "&endtag=" + ((enddate.Day<10)?"0":"") + enddate.Day;
-         strQuoteString += "&endmonat=" + ((enddate.Month<10)?"0":"") + enddate.Month;
-         strQuoteString += "&endjahr=" + enddate.Year;
+         strQuoteString += string.Format("&starttag={0:00}",    startdate.Day);
+         strQuoteString += string.Format("&startmonat={0:00}",  startdate.Month);
+         strQuoteString += string.Format("&startjahr={0:0000}", startdate.Year);
+         strQuoteString += string.Format("&endtag={0:00}",      enddate.Day);
+         strQuoteString += string.Format("&endmonat={0:00}",    enddate.Month);
+         strQuoteString += string.Format("&endjahr={0:0000}",   enddate.Year);
          strQuoteString += "&x=17&y=9";
+
          return strQuoteString;
       }
 
@@ -76,7 +77,7 @@ namespace QuoteLoader
 
       protected override bool ParseAndStore(string input, Stock stock)
       {
-         // plausibility check, if the quotes line can match
+         // plausibility check, if the quotes line matches the expectation
          if (input.Contains("<tr><td>&nbsp;") == false)
             return false;
 

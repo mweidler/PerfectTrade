@@ -36,36 +36,17 @@ namespace Analyzer
    {
       public RelativeStrength()
       {
-      }
-
-      static void SetWorldPaths(string strApplicationName)
-      {
-         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-
-         string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
-
-         if (Directory.Exists(strResultPath) == false)
-         {
-            Directory.CreateDirectory(strResultPath);
-         }
-
-         string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
-
-         if (Directory.Exists(strDataPath) == false)
-         {
-            Directory.CreateDirectory(strDataPath);
-         }
-
-         World.GetInstance().ResultPath = strResultPath;
-         World.GetInstance().DataPath = strDataPath;
-         World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
+         // empty
       }
 
       #region IAnalyzerEngine Member
-      public void Setup()
+      public string GetApplicationName()
       {
-         SetWorldPaths("RelativeStrength");
+         return "RelativeStrength";
+      }
 
+      public void Analyze()
+      {
          DBEngine dbengine = DBEngine.GetInstance();
 
          if (dbengine.Exists("846900") == false)
@@ -78,33 +59,31 @@ namespace Analyzer
          Stock dax = dbengine.GetStock("846900");
          DataContainer quotes = dax.Quotes;
          DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
-         DataContainer dax_ma200 = MovingAverage.CreateFrom(quotes, 200);
 
          WorkDate startDate = quotes.YoungestDate.Clone();
-         startDate.Set(startDate.Year - 1, startDate.Month, 1);
+         startDate.Set(startDate.Year - 20, startDate.Month, 1);
 
          DataContainer dax_ranged = quotes.Clone(startDate);
 
 
          chart.Clear();
          chart.SubSectionsX = 6;
+         chart.LogScaleY = true;
+         chart.TicsYInterval = 1000;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte";
          chart.Add(dax_ranged, 1, "DAX");
          chart.Add(dax_ma38, 2, "DAX (ma38)");
-         chart.Add(dax_ma200, 3, "DAX (ma200)");
          chart.Create(World.GetInstance().ResultPath + "dax.png");
 
          DataContainer dax_diff_ma38 = Difference.CreateFrom(quotes, dax_ma38).Clone(startDate);
-         DataContainer dax_diff_ma200 = Difference.CreateFrom(quotes, dax_ma200);
 
          DataContainer dax_rel_diff_38 = RelativeDifference.CreateFrom(quotes, dax_ma38);
-         DataContainer dax_rel_diff_200 = RelativeDifference.CreateFrom(quotes, dax_ma200);
          dax_rel_diff_38 = dax_rel_diff_38.Clone(startDate);
          chart.Clear();
+         chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "dB%";
          chart.Add(dax_rel_diff_38, 2, "DAX (rel diff 38)");
-         chart.Add(dax_rel_diff_200, 3, "DAX (rel diff 200)");
          chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
 
          DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, startDate);
@@ -118,22 +97,8 @@ namespace Analyzer
          //chart.Add(dax_ma38, 2, "DAX (ma38)");
          //chart.Add(dax_ma200, 3, "DAX (ma200)");
          chart.Add(dax_diff_ma38, 2, "DAX rel. ma38");
-         chart.Add(dax_diff_ma200, 3, "DAX rel. ma200");
          chart.Create(World.GetInstance().ResultPath + "dax_relperf.png");
-
-         /*            chart.Clear();
-                     chart.Title = "DAX";
-                     chart.LogScaleY = true;
-                     //chart.LabelsY = labels;
-                     chart.LabelY = "Punkte";
-                     chart.TicsYInterval = 500;
-
-                     chart.Add(dax_ranged, "DAX(Performance)");
-                     chart.Add(dax_ma38, "Moving Average (38)");
-                     chart.Add(dax_ma200, "Moving Average (200)");
-                     chart.Create(World.GetInstance().ResultPath + "dax.png");*/
       }
       #endregion
    }
 }
-

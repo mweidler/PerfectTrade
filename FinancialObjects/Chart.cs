@@ -368,7 +368,7 @@ namespace FinancialObjects
          }
 
          sw.WriteLine("");
-         sw.WriteLine("set decimalsign \",\"");
+         sw.WriteLine("set decimalsign locale");
          sw.WriteLine("set datafile separator \";\"");
          sw.WriteLine("");
          sw.WriteLine("set output \"{0}\"", "plot.png");

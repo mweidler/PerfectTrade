@@ -26,7 +26,7 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace FinancialObjects
@@ -37,7 +37,6 @@ namespace FinancialObjects
       private string m_strQuotesPath = null;
       private string m_strDataPath = null;
       private string m_strResultPath = null;
-      private SortedList<string, Instrument> m_instruments = new SortedList<string, Instrument>();
 
       private World()
       {
@@ -53,48 +52,43 @@ namespace FinancialObjects
          return m_WorldObject;
       }
 
+      public void SetWorldPaths(string strApplicationName)
+      {
+         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+         string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
+         string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
+
+         if (Directory.Exists(strResultPath) == false)
+         {
+            Directory.CreateDirectory(strResultPath);
+         }
+
+         if (Directory.Exists(strDataPath) == false)
+         {
+            Directory.CreateDirectory(strDataPath);
+         }
+
+         this.ResultPath = strResultPath;
+         this.DataPath   = strDataPath;
+         this.QuotesPath = strBasePath + "/tradedata/quotes/";
+      }
+
       public string QuotesPath
       {
-         get
-         {
-            return m_strQuotesPath;
-         }
-         set
-         {
-            m_strQuotesPath = value;
-         }
+         get { return m_strQuotesPath; }
+         set { m_strQuotesPath = value; }
       }
 
       public string DataPath
       {
-         get
-         {
-            return m_strDataPath;
-         }
-         set
-         {
-            m_strDataPath = value;
-         }
+         get { return m_strDataPath; }
+         set { m_strDataPath = value; }
       }
 
       public string ResultPath
       {
-         get
-         {
-            return m_strResultPath;
-         }
-         set
-         {
-            m_strResultPath = value;
-         }
-      }
-
-      public SortedList<string, Instrument> Instruments
-      {
-         get
-         {
-            return m_instruments;
-         }
+         get { return m_strResultPath; }
+         set { m_strResultPath = value; }
       }
    }
 }
