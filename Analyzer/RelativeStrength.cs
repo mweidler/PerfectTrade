@@ -34,17 +34,7 @@ namespace Analyzer
 {
    public class RelativeStrength : IAnalyzerEngine
    {
-      public RelativeStrength()
-      {
-         // empty
-      }
-
       #region IAnalyzerEngine Member
-      public string GetApplicationName()
-      {
-         return "RelativeStrength";
-      }
-
       public void Analyze()
       {
          DBEngine dbengine = DBEngine.GetInstance();

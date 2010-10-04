@@ -26,11 +26,8 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using System.Text;
 using System.IO;
+using System.Reflection;
 using System.ComponentModel;
 using FinancialObjects;
 using Indicators;
@@ -43,15 +40,72 @@ namespace Analyzer
       {
          try
          {
-            IAnalyzerEngine analyzer = new RelativeStrength();
-
-            World.GetInstance().SetWorldPaths(analyzer.GetApplicationName());
-            analyzer.Analyze();
+            if (args.Length > 0)
+            {
+               World.GetInstance().SetWorldPaths(args[0]);
+               IAnalyzerEngine analyzer = InvokeAnalyzerEngine(args[0]);
+               analyzer.Analyze();
+            }
+            else
+            {
+               DumpEngines();
+            }
+         }
+         catch (NotSupportedException e)
+         {
+            System.Console.WriteLine(e.Message);
          }
          catch (Exception e)
          {
             System.Console.WriteLine(e.Message);
             System.Console.WriteLine(e.StackTrace);
+         }
+      }
+
+      public static IAnalyzerEngine InvokeAnalyzerEngine(string strClassName)
+      {
+         Assembly assembly = Assembly.GetExecutingAssembly();
+
+         // Walk through each type in the assembly looking for our class
+         foreach (Type type in assembly.GetTypes())
+         {
+            if (type.IsClass == true)
+            {
+               // e.g. AnalyzerEngine.RelativeStrength
+               if (type.FullName.EndsWith("." + strClassName))
+               {
+                  // create an instance of the object
+                  return (IAnalyzerEngine)Activator.CreateInstance(type);
+               }
+            }
+         }
+
+         throw(new System.NotSupportedException("Analyzer engine not found: " + strClassName));
+      }
+
+      public static void DumpEngines()
+      {
+         int nEngine = 1;
+
+         Assembly assembly = Assembly.GetExecutingAssembly();
+         string strAssemblyName = assembly.FullName.Substring(0, assembly.FullName.IndexOf(','));
+
+         System.Console.WriteLine("Possible analyzer engines:");
+
+         // Walk through each type in the assembly looking for our class
+         foreach (Type type in assembly.GetTypes())
+         {
+            if (type.IsClass == true)
+            {
+               // e.g. AnalyzerEngine.RelativeStrength
+               string strEngineName = type.FullName.Substring(type.FullName.IndexOf('.') + 1);
+
+               if (strAssemblyName.Equals(strEngineName) == false)
+               {
+                  System.Console.WriteLine("{0: 0}) " + strEngineName, nEngine);
+                  nEngine++;
+               }
+            }
          }
       }
    }
