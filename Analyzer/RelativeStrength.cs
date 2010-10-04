@@ -43,7 +43,6 @@ namespace Analyzer
             return;
 
          Chart chart = new Chart();
-         chart.AutoDeleteTempFiles = false;
          chart.Width = 1500;
          chart.Height = 900;
          Stock dax = dbengine.GetStock("846900");
