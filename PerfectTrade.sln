@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer", "Analyzer\Analyz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuoteLoader", "QuoteLoader\QuoteLoader.csproj", "{3BFD0C7E-FDAA-4ECA-9054-74D6371EB91A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simulator.csproj", "{EA486864-C893-4549-A598-FFA422B4611A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,6 +39,10 @@ Global
 		{D300D50B-FE4E-4972-82D5-8387FDBF24CF}.Debug|x86.Build.0 = Debug|x86
 		{D300D50B-FE4E-4972-82D5-8387FDBF24CF}.Release|x86.ActiveCfg = Release|x86
 		{D300D50B-FE4E-4972-82D5-8387FDBF24CF}.Release|x86.Build.0 = Release|x86
+		{EA486864-C893-4549-A598-FFA422B4611A}.Debug|x86.ActiveCfg = Debug|x86
+		{EA486864-C893-4549-A598-FFA422B4611A}.Debug|x86.Build.0 = Debug|x86
+		{EA486864-C893-4549-A598-FFA422B4611A}.Release|x86.ActiveCfg = Release|x86
+		{EA486864-C893-4549-A598-FFA422B4611A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Analyzer\Analyzer.csproj
