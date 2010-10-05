@@ -40,23 +40,20 @@ namespace Simulator
    class Simulator
    {
       private IRuleEngine m_TradeRule = null;
-      private string m_strResultPath;
-      private string m_strDataPath;
-      private string m_strQuotesPath;
       //private Thread[] threads = null;
 
       static void Main(string[] args)
       {
-         //try
+         try
          {
             Simulator simulator = new Simulator("EfficientPortfolio");
             simulator.Simulate();
          }
-         /*catch (Exception e)
+         catch (Exception e)
          {
              System.Console.WriteLine(e.Message);
              System.Console.WriteLine(e.StackTrace);
-         }*/
+         }
       }
 
       public IRuleEngine InvokeTradeRule(string strClassName)
@@ -76,33 +73,12 @@ namespace Simulator
             }
          }
 
-         throw(new System.Exception("Rule engine not found!"));
+         throw new System.Exception("Rule engine not found :" + strClassName);
       }
 
       public Simulator(string strRuleEngine)
       {
-         m_strDataPath = "c:/work/TradeTools/Data/";
-         m_strDataPath += strRuleEngine + "/";
-
-         m_strResultPath = "c:/work/TradeTools/Results/";
-         m_strResultPath += strRuleEngine + "/";
-
-         if (Directory.Exists(m_strResultPath) == false)
-         {
-            Directory.CreateDirectory(m_strResultPath);
-         }
-
-         m_strQuotesPath = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/TradeTools/";
-
-         if (Directory.Exists(m_strQuotesPath) == false)
-         {
-            Directory.CreateDirectory(m_strQuotesPath);
-         }
-
-         World.GetInstance().DataPath = m_strDataPath;
-         World.GetInstance().ResultPath = m_strResultPath;
-         World.GetInstance().QuotesPath = m_strQuotesPath;
-
+         World.GetInstance().SetWorldPaths(strRuleEngine);
          m_TradeRule = InvokeTradeRule(strRuleEngine);
          //int nThreads = System.Environment.ProcessorCount;
          //threads = new Thread[nThreads];
@@ -115,7 +91,7 @@ namespace Simulator
          //ReadInstrumentList();
          m_TradeRule.Setup();
 
-         StreamWriter sw = new StreamWriter(m_strResultPath + "results.csv", false);
+         StreamWriter sw = new StreamWriter(World.GetInstance().ResultPath + "results.csv", false);
          sw.AutoFlush = true;
          SimulateVariants(sw);
          sw.Close();
@@ -191,9 +167,9 @@ namespace Simulator
             m_TradeRule.StepDate();
          }
 
-         dcPerformance.Save(m_strResultPath + "performance" + ".dat");
-         dcDepotPositions.Save(m_strResultPath + "positions" + ".dat");
-         dcInvestmentRate.Save(m_strResultPath + "investmentrate" + ".dat");
+         dcPerformance.Save(World.GetInstance().ResultPath + "performance" + ".dat");
+         dcDepotPositions.Save(World.GetInstance().ResultPath + "positions" + ".dat");
+         dcInvestmentRate.Save(World.GetInstance().ResultPath + "investmentrate" + ".dat");
 
          return depot.Performance;
       }
@@ -291,14 +267,14 @@ namespace Simulator
        */
       public void CallGnuPlot()
       {
-         string[] strGPLFiles = Directory.GetFiles(m_strResultPath, "*.gpl");
+         string[] strGPLFiles = Directory.GetFiles(World.GetInstance().ResultPath, "*.gpl");
 
          foreach (string strGPLPathName in strGPLFiles)
          {
             string strGPLName = strGPLPathName.Substring(strGPLPathName.LastIndexOf("/") + 1);
 
             System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.WorkingDirectory = m_strResultPath;
+            p.StartInfo.WorkingDirectory = World.GetInstance().ResultPath;
             p.StartInfo.FileName = "pgnuplot";
             p.StartInfo.Arguments = strGPLName;
             p.StartInfo.UseShellExecute = false;
