@@ -62,11 +62,17 @@ namespace Analyzer
          }
       }
 
+
+      /// <summary>
+      /// Search the desired class in the current assembly, instantiate and return it.
+      /// </summary>
+      /// <param name="strClassName">Name of the class to be searched and instantiated.</param>
+      /// <returns>The newly created analyzer engine object.</returns>
       public static IAnalyzerEngine InvokeAnalyzerEngine(string strClassName)
       {
          Assembly assembly = Assembly.GetExecutingAssembly();
 
-         // Walk through each type in the assembly looking for our class
+         // Walk through each type in the assembly looking for the class
          foreach (Type type in assembly.GetTypes())
          {
             if (type.IsClass == true)
@@ -80,12 +86,16 @@ namespace Analyzer
             }
          }
 
-         throw(new System.NotSupportedException("Analyzer engine not found: " + strClassName));
+         throw new NotSupportedException("Analyzer engine not found: " + strClassName);
       }
 
+
+      /// <summary>
+      /// List all available analyzer engines.
+      /// </summary>
       public static void DumpEngines()
       {
-         int nEngine = 1;
+         int nEngineCounter = 1;
 
          Assembly assembly = Assembly.GetExecutingAssembly();
          string strAssemblyName = assembly.FullName.Substring(0, assembly.FullName.IndexOf(','));
@@ -102,8 +112,8 @@ namespace Analyzer
 
                if (strAssemblyName.Equals(strEngineName) == false)
                {
-                  System.Console.WriteLine("{0: 0}) " + strEngineName, nEngine);
-                  nEngine++;
+                  System.Console.WriteLine("{0: 0}) " + strEngineName, nEngineCounter);
+                  nEngineCounter++;
                }
             }
          }

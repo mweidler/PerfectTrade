@@ -123,7 +123,7 @@ namespace QuoteLoader
             nImported = Load(stock);
             nTotalImported += nImported;
          }
-         while (nImported > 0);
+         while (nImported > 2);
 
          System.Console.WriteLine("{0} quotes imported.", nTotalImported);
          System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
@@ -197,44 +197,9 @@ namespace QuoteLoader
 
          strrdr.Close();
          stream.Close();
-
          Log.Info("Leaving Load");
+
          return nImported;
       }
-
-      /*public int Read(Stock stock)
-      {
-         bool bDoImport = false;
-         int nImported = 0;
-
-         string strFilename = "/home/mweidler/dax-kurse.htm";
-
-         if (File.Exists(strFilename))
-         {
-            StreamReader re = File.OpenText(strFilename);
-            string input = re.ReadLine();
-
-            while ((input = re.ReadLine()) != null)
-            {
-               if (EnableImport(input))
-                  bDoImport = true;
-
-               if (DisableImport(input))
-                  bDoImport = false;
-
-               if (bDoImport)
-               {
-                  if (ParseAndStore(input, stock))
-                  {
-                     nImported++;
-                  }
-               }
-            }
-
-            re.Close();
-         }
-
-         return nImported;
-      }*/
    }
 }
