@@ -140,14 +140,8 @@ namespace FinancialObjects
       /// </summary>
       public int Width
       {
-         get
-         {
-            return m_nWidth;
-         }
-         set
-         {
-            m_nWidth = value;
-         }
+         get { return m_nWidth; }
+         set { m_nWidth = value; }
       }
 
       /// <summary>
@@ -155,14 +149,8 @@ namespace FinancialObjects
       /// </summary>/
       public int Height
       {
-         get
-         {
-            return m_nHeight;
-         }
-         set
-         {
-            m_nHeight = value;
-         }
+         get { return m_nHeight; }
+         set { m_nHeight = value; }
       }
 
       /// <summary>
@@ -171,14 +159,8 @@ namespace FinancialObjects
       /// </summary>
       public bool AutoDateRange
       {
-         get
-         {
-            return m_bAutoDateRange;
-         }
-         set
-         {
-            m_bAutoDateRange = value;
-         }
+         get { return m_bAutoDateRange; }
+         set { m_bAutoDateRange = value; }
       }
 
       /// <summary>
@@ -186,14 +168,8 @@ namespace FinancialObjects
       /// </summary>
       public bool ShowLegend
       {
-         get
-         {
-            return m_bShowLegend;
-         }
-         set
-         {
-            m_bShowLegend = value;
-         }
+         get { return m_bShowLegend; }
+         set { m_bShowLegend = value; }
       }
 
       /// <summary>
@@ -201,14 +177,8 @@ namespace FinancialObjects
       /// </summary>
       public bool LogScaleY
       {
-         get
-         {
-            return m_bLogScaleY;
-         }
-         set
-         {
-            m_bLogScaleY = value;
-         }
+         get { return m_bLogScaleY; }
+         set { m_bLogScaleY = value; }
       }
 
       /// <summary>
@@ -216,14 +186,8 @@ namespace FinancialObjects
       /// </summary>
       public int TicsYInterval
       {
-         get
-         {
-            return m_nTicsYInterval;
-         }
-         set
-         {
-            m_nTicsYInterval = value;
-         }
+         get { return m_nTicsYInterval; }
+         set { m_nTicsYInterval = value; }
       }
 
       /// <summary>
@@ -232,14 +196,8 @@ namespace FinancialObjects
       /// </summary>
       public bool AutoDeleteTempFiles
       {
-         get
-         {
-            return m_bAutoDeleteTempFiles;
-         }
-         set
-         {
-            m_bAutoDeleteTempFiles = value;
-         }
+         get { return m_bAutoDeleteTempFiles; }
+         set { m_bAutoDeleteTempFiles = value; }
       }
 
       /// <summary>
@@ -247,14 +205,8 @@ namespace FinancialObjects
       /// </summary>
       public int SubSectionsX
       {
-         get
-         {
-            return m_nMinorXTics;
-         }
-         set
-         {
-            m_nMinorXTics = value > 0 ? value : 1;
-         }
+         get { return m_nMinorXTics; }
+         set { m_nMinorXTics = value > 0 ? value : 1; }
       }
 
       /// <summary>
@@ -262,14 +214,8 @@ namespace FinancialObjects
       /// </summary>
       public int[] TicsY
       {
-         get
-         {
-            return m_aiTicsY;
-         }
-         set
-         {
-            m_aiTicsY = value;
-         }
+         get { return m_aiTicsY; }
+         set { m_aiTicsY = value; }
       }
 
       /// <summary>
@@ -277,14 +223,8 @@ namespace FinancialObjects
       /// </summary>
       public string LabelY
       {
-         get
-         {
-            return m_strLabelY;
-         }
-         set
-         {
-            m_strLabelY = value;
-         }
+         get { return m_strLabelY; }
+         set { m_strLabelY = value; }
       }
 
       /// <summary>
@@ -292,14 +232,8 @@ namespace FinancialObjects
       /// </summary>
       public string Title
       {
-         get
-         {
-            return m_strTitle;
-         }
-         set
-         {
-            m_strTitle = value;
-         }
+         get { return m_strTitle; }
+         set { m_strTitle = value; }
       }
 
       /// <summary>
@@ -313,7 +247,7 @@ namespace FinancialObjects
 
          sw.WriteLine("# GNUplot script file");
          sw.WriteLine("#");
-         sw.WriteLine("# (c)2008 Marc Weidler");
+         sw.WriteLine("# (c)2010 Marc Weidler");
          sw.WriteLine("#");
          sw.WriteLine("");
          sw.WriteLine("set zeroaxis lw 9");
@@ -374,7 +308,7 @@ namespace FinancialObjects
          sw.WriteLine("set output \"{0}\"", "plot.png");
          sw.WriteLine("set xdata time");
          sw.WriteLine("set timefmt \"%d.%m.%Y\"");
-         sw.WriteLine("set format x \"%m/%y\"");
+         sw.WriteLine("set format x \"%m/%Y\"");
 
          if (m_bAutoDateRange)
             sw.WriteLine("set xrange [\"{0}\" : \"{1}\"]", m_fromDate, m_toDate);
@@ -387,7 +321,7 @@ namespace FinancialObjects
          foreach (PlotSet plotset in m_plotsets)
          {
             plotset.Data.Save("/tmp/gpdata" + n + ".csv", ";");
-            sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 1 lt {1} title \"{2}\"", n, (plotset.LineType >= 0) ? plotset.LineType : n, plotset.Label);
+            sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 2 lt {1} title \"{2}\"", n, (plotset.LineType >= 0) ? plotset.LineType : n, plotset.Label);
 
             if (n < m_plotsets.Count)
                sw.Write(",\\");
@@ -443,14 +377,8 @@ namespace FinancialObjects
          /// </summary>
          public DataContainer Data
          {
-            get
-            {
-               return m_data;
-            }
-            set
-            {
-               m_data = value;
-            }
+            get { return m_data; }
+            set { m_data = value; }
          }
 
          /// <summary>
@@ -458,14 +386,8 @@ namespace FinancialObjects
          /// </summary>
          public int LineType
          {
-            get
-            {
-               return m_nLineType;
-            }
-            set
-            {
-               m_nLineType = value;
-            }
+            get { return m_nLineType; }
+            set { m_nLineType = value; }
          }
 
          /// <summary>
@@ -473,14 +395,8 @@ namespace FinancialObjects
          /// </summary>
          public string Label
          {
-            get
-            {
-               return m_strLabel;
-            }
-            set
-            {
-               m_strLabel = value;
-            }
+            get { return m_strLabel; }
+            set { m_strLabel = value; }
          }
       }
    }
