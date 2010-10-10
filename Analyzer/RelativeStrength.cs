@@ -45,48 +45,53 @@ namespace Analyzer
          Chart chart = new Chart();
          chart.Width = 1500;
          chart.Height = 900;
+
          Stock dax = dbengine.GetStock("846900");
          DataContainer quotes = dax.Quotes;
          DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
 
          WorkDate startDate = quotes.YoungestDate.Clone();
-         startDate.Set(startDate.Year - 20, startDate.Month, 1);
-
+         startDate.Set(startDate.Year - 1, startDate.Month, 1);
          DataContainer dax_ranged = quotes.Clone(startDate);
 
 
+         #region DAX
          chart.Clear();
-         chart.SubSectionsX = 6;
+         chart.SubSectionsX = 8;
          chart.LogScaleY = true;
-         chart.TicsYInterval = 1000;
+         chart.TicsYInterval = 100;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
-         chart.LabelY = "Punkte";
-         chart.Add(dax_ranged, 1, "DAX");
-         chart.Add(dax_ma38, 2, "DAX (ma38)");
+         chart.LabelY = "Punkte (log.)";
+         chart.Add(dax_ranged, 8, "DAX");
+         chart.Add(dax_ma38, 14, "Moving Average (38)");
          chart.Create(World.GetInstance().ResultPath + "dax.png");
+         #endregion
 
-         DataContainer dax_diff_ma38 = Difference.CreateFrom(quotes, dax_ma38).Clone(startDate);
-
+         #region DAX relative diff
          DataContainer dax_rel_diff_38 = RelativeDifference.CreateFrom(quotes, dax_ma38);
          dax_rel_diff_38 = dax_rel_diff_38.Clone(startDate);
+
          chart.Clear();
+         chart.LogScaleY = false;
+         chart.TicsYInterval = 1;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "dB%";
-         chart.Add(dax_rel_diff_38, 2, "DAX (rel diff 38)");
+         chart.Add(dax_rel_diff_38, 8, "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
+         #endregion
 
+         #region DAX relative perf.
+         /*DataContainer dax_diff_ma38 = Difference.CreateFrom(quotes, dax_ma38).Clone(startDate);
          DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, startDate);
          dax_relperf = dax_relperf.Clone(startDate);
 
          chart.Clear();
-         chart.SubSectionsX = 2;
+         chart.TicsYInterval = 100;
          chart.Title = dax_diff_ma38.OldestDate.ToString() + " - " + dax_diff_ma38.YoungestDate.ToString();
          chart.LabelY = "Abstand zum Durchschnitt";
-         //chart.Add(dax_ranged, 1, "DAX (Performance)");
-         //chart.Add(dax_ma38, 2, "DAX (ma38)");
-         //chart.Add(dax_ma200, 3, "DAX (ma200)");
          chart.Add(dax_diff_ma38, 2, "DAX rel. ma38");
-         chart.Create(World.GetInstance().ResultPath + "dax_relperf.png");
+         chart.Create(World.GetInstance().ResultPath + "dax_relperf.png");*/
+         #endregion
       }
       #endregion
    }
