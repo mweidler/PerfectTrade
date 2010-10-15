@@ -65,7 +65,6 @@ namespace Analyzer
          chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
          chart.Add(dax_ma38, Chart.LineType.SeaGreen, "Moving Average (38)");
          chart.Create(World.GetInstance().ResultPath + "dax.png");
-
          #endregion
 
          #region DAX relative diff
@@ -78,15 +77,6 @@ namespace Analyzer
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "dB%";
          chart.Add(dax_rel_diff_38, Chart.LineType.Navy, "DAX rel. diff. to MA38");
-
-         DataContainer buy = new DataContainer();
-         buy[dax_ranged.YoungestDate-2] = 2;
-         chart.Add(buy, Chart.LineType.GoLong);
-
-         DataContainer sell = new DataContainer();
-         sell[dax_ranged.YoungestDate-1] = 2;
-         chart.Add(sell, Chart.LineType.GoShort);
-
          chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
          #endregion
 

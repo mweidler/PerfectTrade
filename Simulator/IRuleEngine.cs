@@ -35,6 +35,7 @@ namespace Simulator
    public interface IRuleEngine
    {
       void Setup();
+
       RuleEngineInfo RuleEngineInfo { get; }
 
       /*WorkDate FromDate { get; }
@@ -47,8 +48,9 @@ namespace Simulator
       bool IsValidVariant();
 
       void Prepare();
+      void Result();
       void Ranking();
-      void SellRule();
-      void BuyRule();
+      bool SellRule();
+      bool BuyRule();
    }
 }

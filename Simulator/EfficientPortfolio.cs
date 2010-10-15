@@ -37,9 +37,11 @@ namespace Simulator
    public class EfficientPortfolio : IRuleEngine
    {
       private RuleEngineInfo m_RuleEngineInfo = new RuleEngineInfo();
-      private Ranking m_ranking = new Ranking();
-      //Difference sellsig = new Difference();
-      //Difference buysig = new Difference();
+      private DataContainer dax_close;
+      private DataContainer dax_ma;
+      private DataContainer dax_rel_diff;
+      private DataContainer buy_events;
+      private DataContainer sell_events;
 
       /// <summary>
       ///
@@ -52,14 +54,36 @@ namespace Simulator
       // Called only once to init trade rule
       public void Setup()
       {
-         this.RuleEngineInfo.FromDate = new WorkDate(2006, 1, 1);
-         this.RuleEngineInfo.ToDate = new WorkDate(2006, 12, 30);
+         this.RuleEngineInfo.FromDate = new WorkDate(2009, 10, 1);
+         this.RuleEngineInfo.ToDate = new WorkDate(2010, 10, 10);
 
-         this.RuleEngineInfo.Variants.Add("averaging", new int[] { 63 });
+         this.RuleEngineInfo.Variants.Add("averaging", new int[] { 38 });
 
          this.RuleEngineInfo.MinimumInvestment = 5000.0;
          this.RuleEngineInfo.TargetPositions = 10;
          this.RuleEngineInfo.MaxLoss = 0.90;
+
+         // Create virtual instuments:
+         // Create DAXex from DAX-Index
+         DataContainer dax = DBEngine.GetInstance().GetQuotes("846900").Clone();
+         DataContainer put = new DataContainer();
+         double dRef = dax[dax.OldestDate];
+
+         for (WorkDate workdate = dax.OldestDate.Clone(); workdate <= dax.YoungestDate; workdate++)
+         {
+            put[workdate] = 100.0 * dRef / dax[workdate];
+            dax[workdate] = dax[workdate] / 100.0;
+         }
+
+         DBEngine.GetInstance().AddVirtualInvestment("dax_long", "DAX EX", dax);
+         DBEngine.GetInstance().AddVirtualInvestment("dax_short", "DAX EX Short", put);
+
+         // Create some fixed growth investment stocks
+         DataContainer fixedGrowth = FixedGrowthInvestment.CreateFrom(dax.OldestDate, dax.YoungestDate, 2);
+         DBEngine.GetInstance().AddVirtualInvestment("Bond", "Festgeld", fixedGrowth);
+
+         fixedGrowth = FixedGrowthInvestment.CreateFrom(dax.OldestDate, dax.YoungestDate, 10);
+         DBEngine.GetInstance().AddVirtualInvestment("TargetPerf", "Soll-Performance", fixedGrowth);
       }
 
       public void StepDate()
@@ -86,185 +110,33 @@ namespace Simulator
       /// <param name="strWKN"></param>
       public void Prepare()
       {
-         //RuleEngineInfo.Depot.Cash = 100000;   //    100000 is default
+         int nAveraging = this.RuleEngineInfo.Variants["averaging"];
+
+         Stock dax = DBEngine.GetInstance().GetStock("846900");
+         this.dax_close = dax.QuotesClose.Clone();
+         this.dax_ma = MovingAverage.CreateFrom(dax_close, nAveraging);
+         this.dax_rel_diff = RelativeDifference.CreateFrom(dax_close, dax_ma);
+         dax_rel_diff = dax_rel_diff.Clone(this.RuleEngineInfo.FromDate);
+         dax_ma = dax_ma.Clone(this.RuleEngineInfo.FromDate);
+         dax_close = dax_close.Clone(this.RuleEngineInfo.FromDate);
+         this.buy_events = new DataContainer();
+         this.sell_events = new DataContainer();
       }
 
-      private Ranking FilterByReturn(Ranking ranking, WorkDate today, int nRange)
+      public void Result()
       {
-         Ranking result = new Ranking();
-         WorkDate pastdate = today.Clone() - (int)(nRange);
-
-         DataContainer fixrateinvest = DBEngine.GetInstance().GetQuotes("fix_04").Clone(pastdate, today);
-         DataContainer relperffix = RelativePerformance.CreateFrom(fixrateinvest);
-
-         /* Ermittle fuer jedes Wertpapier die durchschnittliche (erwartete) Tagesrendite
-          * (Return) und dessen Volatilitaet (Standardabweichung, Risk).
-          * Fuer jedes Risk wird die Rendite des Wertpapieres gespeichert.
-          * Die Daten werden automatisch sortiert (SortedList).
-          */
-         foreach (string strWKN in ranking)
-         {
-            DataContainer quotes = DBEngine.GetInstance().GetQuotes(strWKN).Clone(pastdate, today);
-            DataContainer relperf = RelativePerformance.CreateFrom(quotes);
-
-            if (relperf[today] > relperffix[today])
-            {
-               result.Add(strWKN, relperf[today]);
-            }
-         }
-
-         string strDataPath = World.GetInstance().DataPath + "returnrisk/";
-         int i = 1;
-
-         foreach (string strWKN in ranking)
-         {
-            StreamWriter sw = new StreamWriter(strDataPath + strWKN, true, Encoding.ASCII);
-
-            if (result.Contains(strWKN))
-            {
-               sw.WriteLine(today + " " + i);
-            }
-            else
-            {
-               sw.WriteLine(today + " " + 0);
-            }
-
-            sw.Close();
-            i++;
-         }
-
-         return result;
-      }
-
-      private Ranking FilterByReturnRisk(Ranking ranking, WorkDate today, int nRange)
-      {
-         Ranking  result = new Ranking();
-         WorkDate pastdate = today.Clone() - (int)(3 * nRange);
-         SortedList<double, SortedList<double, string>> riskreturn =
-            new SortedList<double, SortedList<double, string>>();
-
-         /* Ermittle fuer jedes Wertpapier die durchschnittliche (erwartete) Tagesrendite
-          * (Return) und dessen Volatilitaet (Standardabweichung, Risk).
-          * Fuer jedes Risk wird die Rendite des Wertpapieres gespeichert.
-          * Die Daten werden automatisch sortiert (SortedList).
-          */
-         foreach (string strWKN in ranking)
-         {
-            DataContainer quotes       = DBEngine.GetInstance().GetQuotes(strWKN).Clone(pastdate, today);
-            //DataContainer movavg       = MovingAverage.CreateFrom(quotes, nRange);
-            DataContainer relchange    = RelativeChange.CreateFrom(quotes);
-            DataContainer changemovavg = MovingAverage.CreateFrom(relchange, nRange);
-            DataContainer volatility   = Volatility.CreateFrom(relchange, nRange);
-
-            double dReturn = changemovavg[today];
-            double dRisk = volatility[today];
-
-            if (riskreturn.ContainsKey(dRisk) == false)
-            {
-               riskreturn.Add(dRisk, new SortedList<double, string>());
-            }
-
-            riskreturn[dRisk][dReturn] = strWKN;
-         }
-
-         /* Als Ergebnis werden alle Wertpapiere ausgesucht, deren
-          * Renditen maximal für das entsprechende Risiko sind.
-          * Weiterhin muss die Rendite zu höheren Risiken steigen, begonnen
-          * mit der risikolosen Rendite des festverzinslichen Wertpapieres.
-          * Als Resultat sind alle Wertpapiere auf der Effizientlinie.
-          */
-         DataContainer fixrateinvest = DBEngine.GetInstance().GetQuotes("fix_04").Clone(pastdate, today);
-         DataContainer relchangefix  = RelativeChange.CreateFrom(fixrateinvest);
-         DataContainer fixmovavg     = MovingAverage.CreateFrom(relchangefix, nRange);
-         double   dPreviousMaxReturn = fixmovavg[today];
-
-         foreach (double dRisk in riskreturn.Keys)
-         {
-            SortedList<double, string> returns = riskreturn[dRisk];
-            int nCount = returns.Count;
-            double dReturn = returns.Keys[nCount - 1];
-            string strWKN = returns.Values[nCount - 1];
-
-            if (dReturn > dPreviousMaxReturn)
-            {
-               result.Add(strWKN, dReturn);
-               dPreviousMaxReturn = dReturn;
-            }
-         }
-
-         string strDataPath = World.GetInstance().DataPath + "returnrisk/";
-         int i = 1;
-
-         foreach (string strWKN in ranking)
-         {
-            StreamWriter sw = new StreamWriter(strDataPath + strWKN, true, Encoding.ASCII);
-
-            if (result.Contains(strWKN))
-            {
-               sw.WriteLine(today + " " + i);
-            }
-            else
-            {
-               sw.WriteLine(today + " " + 0);
-            }
-
-            sw.Close();
-            i++;
-         }
-
-         return result;
-      }
-
-      private void WriteReturnRiskTable(Ranking ranking, WorkDate today, int nRange, string strFilename)
-      {
-         WorkDate pastdate = today.Clone() - (int)nRange;
-         StreamWriter sw = new StreamWriter(strFilename, false, Encoding.ASCII);
-
-         foreach (string strWKN in ranking)
-         {
-            DataContainer quotes = DBEngine.GetInstance().GetQuotes(strWKN).Clone(pastdate, today);
-            DataContainer relchange = RelativeChange.CreateFrom(quotes);
-            DataContainer changemovavg = MovingAverage.CreateFrom(relchange, nRange);
-            DataContainer volatility = Volatility.CreateFrom(relchange, nRange);
-
-            double dReturn = changemovavg[today];
-            double dRisk = volatility[today];
-            sw.WriteLine(dRisk + " " + dReturn);
-         }
-
-         sw.Close();
-      }
-
-      private void WriteReturnRiskTableForGnuPlot(Ranking ranking, WorkDate today, int nRange, string strPath)
-      {
-         WorkDate pastdate = today.Clone() - (int)nRange;
-         WriteGnuPlotCfg("DrawRR.tpl", "DrawRR.gpl", "", ranking);
-         int i = 1;
-
-         foreach (string strWKN in ranking)
-         {
-            StreamWriter sw = new StreamWriter(strPath + strWKN, true, Encoding.ASCII);
-
-            DataContainer quotes = DBEngine.GetInstance().GetQuotes(strWKN).Clone(pastdate, today);
-            DataContainer relchange = RelativeChange.CreateFrom(quotes);
-            DataContainer changemovavg = MovingAverage.CreateFrom(relchange, nRange);
-            DataContainer volatility = Volatility.CreateFrom(relchange, nRange);
-
-            double dReturn = changemovavg[today];
-            double dRisk = volatility[today];
-
-            if (dReturn > 0.02)
-            {
-               sw.WriteLine(today + " " + dRisk + " " + i);
-            }
-            else
-            {
-               sw.WriteLine(today + " " + dRisk + " " + 0); // dReturn
-            }
-
-            i++;
-            sw.Close();
-         }
+         Chart chart = new Chart();
+         chart.Width = 1500;
+         chart.Height = 900;
+         chart.SubSectionsX = 8;
+         chart.LogScaleY = false;
+         chart.TicsYInterval = 1;
+         chart.Title = dax_rel_diff.OldestDate.ToString() + " - " + dax_rel_diff.YoungestDate.ToString();
+         chart.LabelY = "dB%";
+         chart.Add(dax_rel_diff, Chart.LineType.Navy, "DAX rel. diff. to MA38");
+         chart.Add(buy_events, Chart.LineType.GoLong);
+         chart.Add(sell_events, Chart.LineType.GoShort);
+         chart.Create(World.GetInstance().ResultPath + "dax_rel_diff.png");
       }
 
       private void WriteGnuPlotCfg(string strTemplateName, string strTargetName, string strSuffix, Ranking ranklist)
@@ -284,131 +156,46 @@ namespace Simulator
          gnuplot_p.Finish();*/
       }
 
-      private Ranking FilterByCorrelation(Ranking ranking, WorkDate today, int nRange)
-      {
-         Ranking newranking = new Ranking();
-
-         string strPath = World.GetInstance().DataPath + "cormatrix.dat";
-         StreamWriter sw = new StreamWriter(strPath, false, Encoding.ASCII);
-
-         Matrix matrix = new Matrix();
-         WorkDate pastdate = (today.Clone()) - (int)nRange;
-
-         foreach (string strWKNRow in ranking)
-         {
-            DataContainer datacontainerRow = DBEngine.GetInstance().GetQuotes(strWKNRow);
-            datacontainerRow = datacontainerRow.Clone(pastdate, today);
-            datacontainerRow = RelativeChange.CreateFrom(datacontainerRow);
-            datacontainerRow.Save(World.GetInstance().DataPath + strWKNRow + ".dat");
-
-            foreach (string strWKNCol in ranking)
-            {
-               DataContainer datacontainerCol = DBEngine.GetInstance().GetQuotes(strWKNCol);
-               datacontainerCol = datacontainerCol.Clone(pastdate, today);
-               datacontainerCol = RelativeChange.CreateFrom(datacontainerCol);
-               DataContainer corr = Correlation.CreateFrom(datacontainerCol, datacontainerRow, nRange);
-
-               matrix[strWKNRow, strWKNCol] = corr[today];
-               sw.WriteLine(strWKNRow + " " + strWKNCol + " " + corr[today]);
-
-               if (strWKNCol.Equals(strWKNRow))
-                  break;
-            }
-         }
-
-         sw.Close();
-
-         while (matrix.Count > this.RuleEngineInfo.TargetPositions)
-         {
-            string maxrow, maxcol;
-            matrix.SearchMaximum(out maxrow, out maxcol);
-            matrix.RemoveKey(maxrow);
-         }
-
-         while (matrix.Count > 0)
-         {
-            string maxrow, maxcol;
-            matrix.SearchMaximum(out maxrow, out maxcol);
-            matrix.RemoveKey(maxrow);
-            newranking.Add(maxrow, 10 - matrix.Count);
-         }
-
-         return newranking;
-      }
-
       public void Ranking()
       {
-         //SortedList<string, Instrument> instruments = World.GetInstance().Instruments;
-         //string strDataPath = World.GetInstance().DataPath;
-
-         int nAveraging = this.RuleEngineInfo.Variants["averaging"];
-         WorkDate today = this.RuleEngineInfo.Today;
-         WorkDate from = today - (int)nAveraging;
-
-         m_ranking.Clear();
-         //m_ranking.Add(instruments, 0.0);
-
-         //WriteReturnRiskTable(m_ranking, today, nAveraging, strDataPath + "returnrisk_org.dat");
-         Ranking filtered = FilterByReturn(m_ranking, today, nAveraging);
-         //WriteReturnRiskTable(filtered, today, nAveraging, strDataPath + "returnrisk_rrf.dat");
-         //WriteReturnRiskTableForGnuPlot(m_ranking, today, nAveraging, strDataPath + "returnrisk/");
-         filtered = FilterByCorrelation(filtered, today, nAveraging);
-         //WriteReturnRiskTable(filtered, today, nAveraging, strDataPath + "returnrisk_cof.dat");
-         m_ranking = filtered;
-
-         foreach (string strWKN in filtered)
-         {
-            DataContainer datacontainer = DBEngine.GetInstance().GetQuotes(strWKN);
-            datacontainer = datacontainer.Clone(from, today);
-            DataContainer datachange = RelativeChange.CreateFrom(datacontainer);
-            DataContainer dataperf = RelativePerformance.CreateFrom(datacontainer);
-            DataContainer volatility = Volatility.CreateFrom(datachange, nAveraging);
-            DataContainer returnrisk = ReturnRiskMargin.CreateFrom(datacontainer, nAveraging);
-            datachange.Save(World.GetInstance().DataPath + strWKN + "_c.dat");
-            dataperf.Save(World.GetInstance().DataPath + strWKN + "_p.dat");
-            volatility.Save(World.GetInstance().DataPath + strWKN + "_v.dat");
-            returnrisk.Save(World.GetInstance().DataPath + strWKN + "_r.dat");
-         }
-
-         WriteGnuPlotCfg("Draw_c.tpl", "Draw_c.gpl", "_c.dat", filtered);
-         WriteGnuPlotCfg("Draw_p.tpl", "Draw_p.gpl", "_p.dat", filtered);
-         WriteGnuPlotCfg("Draw_v.tpl", "Draw_v.gpl", "_v.dat", filtered);
-         WriteGnuPlotCfg("Draw_r.tpl", "Draw_r.gpl", "_r.dat", filtered);
-
-         DataContainer reference = DBEngine.GetInstance().GetQuotes("846900");
-         reference = reference.Clone(from, today);
-         //DataContainer relreference = RelativeChange.CreateFrom(reference);
-         DataContainer relperformance = RelativePerformance.CreateFrom(reference);
-         relperformance.Save(World.GetInstance().DataPath + "846900" + ".dat");
+         // do nothing
       }
 
-      public void SellRule()
+      public bool SellRule()
       {
-         // Verkaufe die Werte, die sich derzeit nicht in der Top10 befinden.
+         // Verkaufe, wenn RelDiff > 2.
          Depot depot = this.RuleEngineInfo.Depot;
+         WorkDate today = RuleEngineInfo.Today;
 
-         for (int i = 0; i < depot.Count; i++)
+         if (depot.ContainsKey("846900"))
          {
-            if (m_ranking.IsTopRanked(this.RuleEngineInfo.TargetPositions, depot[i].WKN) == false)
+            if (dax_rel_diff[today] > 3)
             {
-               Sell(depot[i].WKN);
-               i = -1; // Restart
+               Sell("846900");
+               sell_events[today] = dax_rel_diff[today];
+               return true;
             }
          }
+
+         return false;
       }
 
-      public void BuyRule()
+      public bool BuyRule()
       {
          Depot depot = this.RuleEngineInfo.Depot;
+         WorkDate today = RuleEngineInfo.Today;
 
-         // Kaufe die besten Wertpapiere im Ranking
-         for (int i = 0; i < m_ranking.Count && i < this.RuleEngineInfo.TargetPositions; i++)
+         if (depot.ContainsKey("846900") == false)
          {
-            if (depot.ContainsKey(m_ranking[i].ID) == false)
+            if (dax_rel_diff[today] < -3)
             {
-               Buy(m_ranking[i].ID);
+               Buy("846900");
+               buy_events[today] = dax_rel_diff[today];
+               return true;
             }
          }
+
+         return false;
       }
 
       public bool Sell(string strWKN)
@@ -422,26 +209,13 @@ namespace Simulator
 
       public bool Buy(string strWKN)
       {
-         double dMinInvestment = this.RuleEngineInfo.MinimumInvestment;
          WorkDate today = this.RuleEngineInfo.Today;
          Depot depot = this.RuleEngineInfo.Depot;
 
-         // ...buy this WKN if enough cash exists
-         double dAmount = depot.Equity / this.RuleEngineInfo.TargetPositions;
-         dAmount = Math.Max(dAmount, dMinInvestment);
-         dAmount = Math.Min(dAmount, depot.Cash);
-
-         if (dAmount >= dMinInvestment)
-         {
-            dAmount *= (1.0 - depot.ProvisionRate);
-            double dPrice = DBEngine.GetInstance().GetPrice(strWKN, today);
-            int nQuantity = (int)(dAmount / dPrice);
-
-            depot.Buy(strWKN, nQuantity, today, dPrice);
-            return true;
-         }
-
-         return false;
+         double dPrice = DBEngine.GetInstance().GetPrice(strWKN, today);
+         int nQuantity = (int)(depot.Cash / dPrice);
+         depot.Buy(strWKN, nQuantity, today, dPrice);
+         return true;
       }
       #endregion
    }

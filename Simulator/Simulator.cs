@@ -51,8 +51,8 @@ namespace Simulator
          }
          catch (Exception e)
          {
-             System.Console.WriteLine(e.Message);
-             System.Console.WriteLine(e.StackTrace);
+            System.Console.WriteLine(e.Message);
+            System.Console.WriteLine(e.StackTrace);
          }
       }
 
@@ -87,8 +87,6 @@ namespace Simulator
       public void Simulate()
       {
          Console.Clear();
-         CreateVirtualInstruments();
-         //ReadInstrumentList();
          m_TradeRule.Setup();
 
          StreamWriter sw = new StreamWriter(World.GetInstance().ResultPath + "results.csv", false);
@@ -141,10 +139,8 @@ namespace Simulator
       private double SimulatePerformance()
       {
          DataContainer dcPerformance = new DataContainer();
-         DataContainer dcDepotPositions = new DataContainer();
          DataContainer dcInvestmentRate = new DataContainer();
 
-         //World world = World.GetInstance();
          Depot depot = m_TradeRule.RuleEngineInfo.Depot;
 
          depot.Reset();
@@ -160,15 +156,15 @@ namespace Simulator
             m_TradeRule.BuyRule();
 
             dcPerformance[m_TradeRule.RuleEngineInfo.Today] = depot.Performance;
-            dcDepotPositions[m_TradeRule.RuleEngineInfo.Today] = depot.Count;
             dcInvestmentRate[m_TradeRule.RuleEngineInfo.Today] = 100.0 * depot.Asset / depot.Equity;
             PrintInfo();
 
             m_TradeRule.StepDate();
          }
 
+         m_TradeRule.Result();
+
          dcPerformance.Save(World.GetInstance().ResultPath + "performance" + ".dat");
-         dcDepotPositions.Save(World.GetInstance().ResultPath + "positions" + ".dat");
          dcInvestmentRate.Save(World.GetInstance().ResultPath + "investmentrate" + ".dat");
 
          return depot.Performance;
@@ -204,67 +200,6 @@ namespace Simulator
          }
       }
 
-      private void CreateVirtualInstruments()
-      {
-         // Create DAXex from DAX-Index
-         DataContainer dax = DBEngine.GetInstance().GetQuotes("846900").Clone();
-         DataContainer put = new DataContainer();
-         double dRef = dax[dax.OldestDate];
-
-         for (WorkDate workdate = dax.OldestDate.Clone(); workdate <= dax.YoungestDate; workdate++)
-         {
-            put[workdate] = 100.0 * dRef / dax[workdate];
-            dax[workdate] = dax[workdate] / 100.0;
-         }
-
-         DBEngine.GetInstance().AddVirtualInvestment("dax_long", "DAX EX", dax);
-         DBEngine.GetInstance().AddVirtualInvestment("dax_short", "DAX EX Short", put);
-
-         // Create some fixed growth investment stocks
-         DataContainer fixedGrowth = FixedGrowthInvestment.CreateFrom(dax.OldestDate, dax.YoungestDate, 4);
-         DBEngine.GetInstance().AddVirtualInvestment("fix_04", "Sparbuch", fixedGrowth);
-
-         fixedGrowth = FixedGrowthInvestment.CreateFrom(dax.OldestDate, dax.YoungestDate, 15);
-         DBEngine.GetInstance().AddVirtualInvestment("fix_15", "Zielperformance", fixedGrowth);
-
-         fixedGrowth = FixedGrowthInvestment.CreateFrom(dax.OldestDate, dax.YoungestDate, 0);
-         DBEngine.GetInstance().AddVirtualInvestment("fix_00", "KeineAnlage", fixedGrowth);
-      }
-
-      /*public void ReadInstrumentList()
-      {
-         DBEngine dbengine = DBEngine.GetInstance();
-         SortedList<string, Instrument> instruments = World.GetInstance().Instruments;
-
-         if (File.Exists(m_strDataPath + "Instruments.txt"))
-         {
-            StreamReader sr = new StreamReader(m_strDataPath + "Instruments.txt");
-
-            while (sr.Peek() >= 0)
-            {
-               string strLine = sr.ReadLine();
-
-               if (strLine.StartsWith("#") == false)
-               {
-                  if (strLine.Length >= 6)
-                  {
-                     string strWKN = strLine.Substring(0, 6);
-
-                     if (dbengine.Exists(strWKN))
-                     {
-                        Instrument instrument = new Instrument();
-                        instrument.ID = strWKN;
-                        instrument.Name = dbengine.GetName(strWKN);
-                        instruments.Add(strWKN, instrument);
-                     }
-                  }
-               }
-            }
-
-            sr.Close();
-         }
-      }
-       */
       public void CallGnuPlot()
       {
          string[] strGPLFiles = Directory.GetFiles(World.GetInstance().ResultPath, "*.gpl");
