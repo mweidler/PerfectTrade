@@ -54,6 +54,30 @@ namespace FinancialObjects
       double m_dMaxValue;
       List<PlotSet> m_plotsets = new List<PlotSet>();
 
+      public enum LineType
+      {
+         Undefined   = -1,
+         Black       = 0,
+         Red         = 1,
+         Green       = 2,
+         Blue        = 3,
+         Purple      = 4,
+         Cyan        = 5,
+         Brown       = 6,
+         Yellow      = 7,
+         Navy        = 8,
+         Orange      = 9,
+         Olive       = 10,
+         Slateblue   = 11,
+         Saddlebrown = 12,
+         Pink        = 13,
+         SeaGreen    = 14,
+         SkyBlue     = 15,
+         SteelBlue   = 16,
+         GoLong      = 17,
+         GoShort     = 18
+      };
+
       /// <summary>
       /// Creates a new chart object.
       /// </summary>
@@ -100,7 +124,12 @@ namespace FinancialObjects
       /// <param name="strLabel">A label, that describes the data in the chart's legend.</param>
       public void Add(DataContainer data, string strLabel)
       {
-         Add(data, -1, strLabel);
+         Add(data, LineType.Undefined, strLabel);
+      }
+
+      public void Add(DataContainer data, LineType type)
+      {
+         Add(data, type, "");
       }
 
       /// <summary>
@@ -109,17 +138,17 @@ namespace FinancialObjects
       /// <param name="data">The datacontainer that contains the data to be visualized.</param>
       /// <param name="LineType">The color of the pen used to draw this data on the chart.</param>
       /// <param name="strLabel">A label, that describes the data in the chart's legend.</param>
-      public void Add(DataContainer data, int LineType, string strLabel)
+      public void Add(DataContainer data, LineType type, string strLabel)
       {
          PlotSet plotset = new PlotSet();
 
          plotset.Label = strLabel;
          plotset.Data = data;
-         plotset.LineType = LineType;
+         plotset.LineType = type;
 
          m_plotsets.Add(plotset);
 
-         if (m_fromDate == null || m_fromDate < data.OldestDate)
+         if (m_fromDate == null || m_fromDate > data.OldestDate)
             m_fromDate = data.OldestDate.Clone();
 
          if (m_toDate == null || m_toDate < data.YoungestDate)
@@ -250,7 +279,6 @@ namespace FinancialObjects
          sw.WriteLine("# (c)2010 Marc Weidler");
          sw.WriteLine("#");
          sw.WriteLine("");
-         sw.WriteLine("set zeroaxis lw 9");
 
          if (m_strTitle != null)
             sw.WriteLine("set title \"{0}\"", m_strTitle);
@@ -259,6 +287,7 @@ namespace FinancialObjects
          sw.WriteLine("set data style lines");
          sw.WriteLine("set grid xtics ytics mytics");
          sw.WriteLine("set mxtics {0}", m_nMinorXTics);
+         sw.WriteLine("set xzeroaxis lt 14 lw 2");
 
          if (m_bShowLegend)
             sw.WriteLine("set key below box");
@@ -302,6 +331,8 @@ namespace FinancialObjects
          }
 
          sw.WriteLine("");
+         sw.WriteLine("set style arrow 1 head back filled linetype 1 size screen 0.01,30.0,0.0");
+         sw.WriteLine("set style arrow 2 head back filled linetype 14 size screen 0.01,30.0,0.0");
          sw.WriteLine("set decimalsign locale");
          sw.WriteLine("set datafile separator \";\"");
          sw.WriteLine("");
@@ -321,7 +352,24 @@ namespace FinancialObjects
          foreach (PlotSet plotset in m_plotsets)
          {
             plotset.Data.Save("/tmp/gpdata" + n + ".csv", ";");
-            sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 2 lt {1} title \"{2}\"", n, (plotset.LineType >= 0) ? plotset.LineType : n, plotset.Label);
+            switch (plotset.LineType)
+            {
+               case LineType.Undefined:
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 2 lt {1} title \"{2}\"", n, n, plotset.Label);
+                  break;
+
+               case LineType.GoShort:
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(0.1) notitle with vectors arrowstyle 1", n);
+                  break;
+
+               case LineType.GoLong:
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(0.1) notitle with vectors arrowstyle 2", n);
+                  break;
+
+               default:
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 2 lt {1} title \"{2}\"", n, (int)plotset.LineType, plotset.Label);
+                  break;
+            }
 
             if (n < m_plotsets.Count)
                sw.Write(",\\");
@@ -362,7 +410,7 @@ namespace FinancialObjects
       internal class PlotSet
       {
          private DataContainer m_data;
-         private int m_nLineType;
+         private LineType m_LineType;
          private string m_strLabel;
 
          /// <summary>
@@ -384,10 +432,10 @@ namespace FinancialObjects
          /// <summary>
          /// Specifies the line-type (color) of the drawing line.
          /// </summary>
-         public int LineType
+         public LineType LineType
          {
-            get { return m_nLineType; }
-            set { m_nLineType = value; }
+            get { return m_LineType; }
+            set { m_LineType = value; }
          }
 
          /// <summary>

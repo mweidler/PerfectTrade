@@ -53,7 +53,7 @@ namespace Analyzer
          WorkDate startDate = quotes.YoungestDate.Clone();
          startDate.Set(startDate.Year - 1, startDate.Month, 1);
          DataContainer dax_ranged = quotes.Clone(startDate);
-
+         dax_ma38 = dax_ma38.Clone(startDate);
 
          #region DAX
          chart.Clear();
@@ -62,9 +62,10 @@ namespace Analyzer
          chart.TicsYInterval = 100;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
-         chart.Add(dax_ranged, 8, "DAX");
-         chart.Add(dax_ma38, 14, "Moving Average (38)");
+         chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
+         chart.Add(dax_ma38, Chart.LineType.SeaGreen, "Moving Average (38)");
          chart.Create(World.GetInstance().ResultPath + "dax.png");
+
          #endregion
 
          #region DAX relative diff
@@ -76,7 +77,16 @@ namespace Analyzer
          chart.TicsYInterval = 1;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "dB%";
-         chart.Add(dax_rel_diff_38, 8, "DAX rel. diff. to MA38");
+         chart.Add(dax_rel_diff_38, Chart.LineType.Navy, "DAX rel. diff. to MA38");
+
+         DataContainer buy = new DataContainer();
+         buy[dax_ranged.YoungestDate-2] = 2;
+         chart.Add(buy, Chart.LineType.GoLong);
+
+         DataContainer sell = new DataContainer();
+         sell[dax_ranged.YoungestDate-1] = 2;
+         chart.Add(sell, Chart.LineType.GoShort);
+
          chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
          #endregion
 
