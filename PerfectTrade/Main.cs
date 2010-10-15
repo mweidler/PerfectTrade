@@ -78,7 +78,7 @@ namespace PerfectTrade
          DataContainer quotes = dax.QuotesLow;
 
          Chart chart = new Chart();
-         chart.Add(quotes, 1, "Test");
+         chart.Add(quotes, Chart.LineType.Red, "Test");
          chart.Create(World.GetInstance().ResultPath + "dax.png");
 
          DataContainer dax_relperf = RelativePerformance.CreateFrom(quotes, new WorkDate(2008, 4, 21));
