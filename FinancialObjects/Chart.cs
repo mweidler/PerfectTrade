@@ -352,6 +352,7 @@ namespace FinancialObjects
          foreach (PlotSet plotset in m_plotsets)
          {
             plotset.Data.Save("/tmp/gpdata" + n + ".csv", ";");
+
             switch (plotset.LineType)
             {
                case LineType.Undefined:
@@ -359,11 +360,11 @@ namespace FinancialObjects
                   break;
 
                case LineType.GoShort:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(0.1) notitle with vectors arrowstyle 1", n);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 notitle with points lw 10 lt 1", n);
                   break;
 
                case LineType.GoLong:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(0.1) notitle with vectors arrowstyle 2", n);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 notitle with points lw 10 lt 14", n);
                   break;
 
                default:

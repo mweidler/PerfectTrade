@@ -40,8 +40,13 @@ namespace Simulator
       private DataContainer dax_close;
       private DataContainer dax_ma;
       private DataContainer dax_rel_diff;
+      private DataContainer dax_price_osc;
+      private DataContainer dax_trend;
       private DataContainer buy_events;
       private DataContainer sell_events;
+      private DataContainer buy_events_dax;
+      private DataContainer sell_events_dax;
+
 
       /// <summary>
       ///
@@ -54,14 +59,16 @@ namespace Simulator
       // Called only once to init trade rule
       public void Setup()
       {
-         this.RuleEngineInfo.FromDate = new WorkDate(2009, 10, 1);
-         this.RuleEngineInfo.ToDate = new WorkDate(2010, 10, 10);
+         this.RuleEngineInfo.FromDate = new WorkDate(1990, 1, 1);
+         this.RuleEngineInfo.ToDate = new WorkDate(2010, 10, 15);
 
          this.RuleEngineInfo.Variants.Add("averaging", new int[] { 38 });
 
          this.RuleEngineInfo.MinimumInvestment = 5000.0;
          this.RuleEngineInfo.TargetPositions = 10;
          this.RuleEngineInfo.MaxLoss = 0.90;
+
+         this.RuleEngineInfo.Depot.DefaultTrailingGap = 10;
 
          // Create virtual instuments:
          // Create DAXex from DAX-Index
@@ -84,6 +91,8 @@ namespace Simulator
 
          fixedGrowth = FixedGrowthInvestment.CreateFrom(dax.OldestDate, dax.YoungestDate, 10);
          DBEngine.GetInstance().AddVirtualInvestment("TargetPerf", "Soll-Performance", fixedGrowth);
+
+         dax_trend = new DataContainer();
       }
 
       public void StepDate()
@@ -113,14 +122,27 @@ namespace Simulator
          int nAveraging = this.RuleEngineInfo.Variants["averaging"];
 
          Stock dax = DBEngine.GetInstance().GetStock("846900");
+         //Stock dax_short = DBEngine.GetInstance().GetStock("A0C4CT");
          this.dax_close = dax.QuotesClose.Clone();
          this.dax_ma = MovingAverage.CreateFrom(dax_close, nAveraging);
          this.dax_rel_diff = RelativeDifference.CreateFrom(dax_close, dax_ma);
+         this.dax_price_osc = PriceOscillator.CreateFrom(dax_close, 38, 200).Clone(this.RuleEngineInfo.FromDate);
+         dax_price_osc.Scale(100);
+
+         dax_trend.Clear();
+
+         foreach (WorkDate keyDate in dax_price_osc.Dates)
+         {
+            dax_trend[keyDate] = (dax_price_osc[keyDate] > 0) ? 10 : -10;
+         }
+
          dax_rel_diff = dax_rel_diff.Clone(this.RuleEngineInfo.FromDate);
          dax_ma = dax_ma.Clone(this.RuleEngineInfo.FromDate);
          dax_close = dax_close.Clone(this.RuleEngineInfo.FromDate);
          this.buy_events = new DataContainer();
          this.sell_events = new DataContainer();
+         this.buy_events_dax = new DataContainer();
+         this.sell_events_dax = new DataContainer();
       }
 
       public void Result()
@@ -128,32 +150,29 @@ namespace Simulator
          Chart chart = new Chart();
          chart.Width = 1500;
          chart.Height = 900;
+
          chart.SubSectionsX = 8;
+         chart.LogScaleY = true;
+         chart.TicsYInterval = 100;
+         chart.Title = dax_close.OldestDate.ToString() + " - " + dax_close.YoungestDate.ToString();
+         chart.LabelY = "Punkte (log.)";
+         chart.Add(dax_close, Chart.LineType.Navy, "DAX");
+         chart.Add(dax_ma, Chart.LineType.SeaGreen, "Moving Average (38)");
+         chart.Add(buy_events_dax, Chart.LineType.GoLong);
+         chart.Add(sell_events_dax, Chart.LineType.GoShort);
+         chart.Create(World.GetInstance().ResultPath + "dax.png");
+
+         chart.Clear();
          chart.LogScaleY = false;
          chart.TicsYInterval = 1;
          chart.Title = dax_rel_diff.OldestDate.ToString() + " - " + dax_rel_diff.YoungestDate.ToString();
          chart.LabelY = "dB%";
          chart.Add(dax_rel_diff, Chart.LineType.Navy, "DAX rel. diff. to MA38");
+         chart.Add(dax_price_osc, Chart.LineType.Slateblue, "DAX price osc.");
+         chart.Add(dax_trend, Chart.LineType.Red, "DAX Trend");
          chart.Add(buy_events, Chart.LineType.GoLong);
          chart.Add(sell_events, Chart.LineType.GoShort);
          chart.Create(World.GetInstance().ResultPath + "dax_rel_diff.png");
-      }
-
-      private void WriteGnuPlotCfg(string strTemplateName, string strTargetName, string strSuffix, Ranking ranklist)
-      {
-         // TODO
-
-         /*GnuPlotConfigFile gnuplot_p = new GnuPlotConfigFile();
-         gnuplot_p.Create(World.GetInstance().DataPath + strTemplateName, World.GetInstance().DataPath + strTargetName);
-         gnuplot_p.Options = "using 1:2";
-
-         for (int i = 0; i < ranklist.Count; i++)
-         {
-            string strName = DBEngine.GetInstance().GetName(ranklist[i].ID);
-            gnuplot_p.Write(ranklist[i].ID + strSuffix, strName + "(" + ranklist[i].Value + ")");
-         }
-
-         gnuplot_p.Finish();*/
       }
 
       public void Ranking()
@@ -167,12 +186,21 @@ namespace Simulator
          Depot depot = this.RuleEngineInfo.Depot;
          WorkDate today = RuleEngineInfo.Today;
 
-         if (depot.ContainsKey("846900"))
+         if (depot.Contains("846900"))
          {
-            if (dax_rel_diff[today] > 3)
+            if (dax_rel_diff[today] > 0)
+            {
+               depot[0].TrailingGap *= 0.8;
+            }
+
+            if (//dax_rel_diff[today] > 5 ||
+               dax_trend[today] != dax_trend[today - 1] ||
+               depot[0].StopLoss > depot[0].Price
+            )
             {
                Sell("846900");
                sell_events[today] = dax_rel_diff[today];
+               sell_events_dax[today] = dax_close[today];
                return true;
             }
          }
@@ -185,13 +213,18 @@ namespace Simulator
          Depot depot = this.RuleEngineInfo.Depot;
          WorkDate today = RuleEngineInfo.Today;
 
-         if (depot.ContainsKey("846900") == false)
+         if (dax_trend[today] >= 0)
          {
-            if (dax_rel_diff[today] < -3)
+            if (depot.Contains("846900") == false)
             {
-               Buy("846900");
-               buy_events[today] = dax_rel_diff[today];
-               return true;
+               if (dax_rel_diff[today] < -5 &&
+                     dax_close[today-1] < dax_close[today])
+               {
+                  Buy("846900");
+                  buy_events[today] = dax_rel_diff[today];
+                  buy_events_dax[today] = dax_close[today];
+                  return true;
+               }
             }
          }
 

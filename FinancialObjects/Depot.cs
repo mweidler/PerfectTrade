@@ -40,7 +40,8 @@ namespace FinancialObjects
       private double m_dCash;
       private double m_dInitialCash;
       private double m_dProvisionRate;
-      private int m_nTrades;
+      private double m_dDefaultTrailingGap;
+      private int    m_nTrades;
 
       /// <summary>
       /// Erzeugt ein neues Depot-Objekt und fuehr einen Reset() durch.
@@ -48,7 +49,9 @@ namespace FinancialObjects
       public Depot()
       {
          m_positions = new SortedList<string, DepotPosition>();
-         Reset();
+         Clear();
+         m_dDefaultTrailingGap = 0.0;
+         m_dProvisionRate = 0.0025;
       }
 
       /// <summary>
@@ -56,12 +59,11 @@ namespace FinancialObjects
       /// Werte (Cash, InitialCash, Provision, Anzahl der Transaktionen)
       /// auf 0.
       /// </summary>
-      public void Reset()
+      public void Clear()
       {
          m_positions.Clear();
          m_dCash = 0;
          m_dInitialCash = 0;
-         m_dProvisionRate = 0.0025;
          m_nTrades = 0;
       }
 
@@ -129,6 +131,18 @@ namespace FinancialObjects
          }
       }
 
+      public double DefaultTrailingGap
+      {
+         get { return m_dDefaultTrailingGap; }
+         set
+         {
+            if (value < 0)
+               throw new ArgumentOutOfRangeException("DefaultTrailingGap", value, "Must be greater or equal than zero.");
+
+            m_dDefaultTrailingGap = value;
+         }
+      }
+
       /// <summary>
       /// Liefert die Summe aus Depotwert und Bar-Kapital.
       /// </summary>
@@ -143,7 +157,15 @@ namespace FinancialObjects
       /// </summary>
       public double Performance
       {
-         get { return Math.Log(this.Equity / m_dInitialCash, 2.0) * 100.0; }
+         get
+         {
+            double dEquity = this.Equity;
+
+            if (dEquity == 0 || m_dInitialCash == 0)
+               return 0;
+
+            return Math.Log(this.Equity / m_dInitialCash, 2.0) * 100.0;
+         }
       }
 
       //get { return (((m_dCash + this.Amount) / m_dInitialCash) - 1.0) * 100.0; }
@@ -153,7 +175,7 @@ namespace FinancialObjects
       /// </summary>
       /// <param name="strWKN">Wertpapierkennnummer oder ID</param>
       /// <returns><c>true</c>, wenn das Wertpapier existiert, ansonsten <c>false</c></returns>
-      public bool ContainsKey(string strWKN)
+      public bool Contains(string strWKN)
       {
          return m_positions.ContainsKey(strWKN);
       }
@@ -173,6 +195,25 @@ namespace FinancialObjects
             }
 
             return dDepotAsset;
+         }
+      }
+
+      /// <summary>
+      /// Update StopLoss value in dependency to the TrailingGap.
+      /// </summary>
+      public void UpdateStopLoss()
+      {
+         foreach (DepotPosition position in m_positions.Values)
+         {
+            if (position.TrailingGap > 0)
+            {
+               double dNewStopLoss = position.Price * (1 - (position.TrailingGap / 100.0));
+
+               if (dNewStopLoss > position.StopLoss)
+               {
+                  position.StopLoss = dNewStopLoss;
+               }
+            }
          }
       }
 
@@ -200,12 +241,13 @@ namespace FinancialObjects
          else
          {
             depotposition = new DepotPosition(strWKN, nQuantity, buyDate, dBuyPrice);
+            depotposition.TrailingGap = this.DefaultTrailingGap;
             m_positions.Add(strWKN, depotposition);
          }
 
          m_dCash -= nQuantity * dBuyPrice * (1.0 + m_dProvisionRate);
          m_nTrades++;
-         Log.Info("Buy: " + strWKN + " " + buyDate + " " + nQuantity * dBuyPrice);
+         System.Console.WriteLine("Buy {0}: {1} on {2}", strWKN, nQuantity * dBuyPrice, buyDate);
       }
 
       /// <summary>
@@ -232,7 +274,7 @@ namespace FinancialObjects
                m_positions.RemoveAt(m_positions.IndexOfKey(strWKN));
             }
 
-            Log.Info("Sell: " + depotposition.WKN + " " + sellDate + " " + nQuantity);
+            System.Console.WriteLine("Sell {0}: {1} on {2}", depotposition.WKN, nQuantity, sellDate);
          }
       }
 

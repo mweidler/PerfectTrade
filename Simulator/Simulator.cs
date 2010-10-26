@@ -93,8 +93,6 @@ namespace Simulator
          sw.AutoFlush = true;
          SimulateVariants(sw);
          sw.Close();
-
-         CallGnuPlot();
       }
 
       public void SimulateVariants(StreamWriter sw)
@@ -143,29 +141,43 @@ namespace Simulator
 
          Depot depot = m_TradeRule.RuleEngineInfo.Depot;
 
-         depot.Reset();
+         depot.Clear();
          depot.Cash = 100000;
          m_TradeRule.Prepare();
          m_TradeRule.RuleEngineInfo.Today = m_TradeRule.RuleEngineInfo.FromDate;
 
          while (m_TradeRule.RuleEngineInfo.Today <= m_TradeRule.RuleEngineInfo.ToDate)
          {
-            UpdateDepotPositions(); PrintInfo();
+            UpdateDepotPositions();
             m_TradeRule.Ranking();
-            m_TradeRule.SellRule(); PrintInfo();
+            m_TradeRule.SellRule();
             m_TradeRule.BuyRule();
 
             dcPerformance[m_TradeRule.RuleEngineInfo.Today] = depot.Performance;
             dcInvestmentRate[m_TradeRule.RuleEngineInfo.Today] = 100.0 * depot.Asset / depot.Equity;
-            PrintInfo();
+
+            System.Console.Write("Performance on {0} is {1}            \r", m_TradeRule.RuleEngineInfo.Today, depot.Performance);
 
             m_TradeRule.StepDate();
          }
 
+         System.Console.WriteLine();
          m_TradeRule.Result();
 
-         dcPerformance.Save(World.GetInstance().ResultPath + "performance" + ".dat");
-         dcInvestmentRate.Save(World.GetInstance().ResultPath + "investmentrate" + ".dat");
+         Chart chart = new Chart();
+         chart.Width = 1500;
+         chart.Height = 900;
+         chart.SubSectionsX = 8;
+         chart.Title = dcPerformance.OldestDate.ToString() + " - " + dcPerformance.YoungestDate.ToString();
+         chart.LabelY = "Performance (%)";
+         chart.Add(dcPerformance, Chart.LineType.Navy, "Performance");
+         chart.Create(World.GetInstance().ResultPath + "performance.png");
+
+         chart.Clear();
+         chart.Title = dcInvestmentRate.OldestDate.ToString() + " - " + dcInvestmentRate.YoungestDate.ToString();
+         chart.LabelY = "Investment (%)";
+         chart.Add(dcInvestmentRate, Chart.LineType.Navy, "Investment");
+         chart.Create(World.GetInstance().ResultPath + "investment.png");
 
          return depot.Performance;
       }
@@ -198,26 +210,8 @@ namespace Simulator
             double dPrice = DBEngine.GetInstance().GetPrice(position.WKN, today);
             position.Price = dPrice;
          }
-      }
 
-      public void CallGnuPlot()
-      {
-         string[] strGPLFiles = Directory.GetFiles(World.GetInstance().ResultPath, "*.gpl");
-
-         foreach (string strGPLPathName in strGPLFiles)
-         {
-            string strGPLName = strGPLPathName.Substring(strGPLPathName.LastIndexOf("/") + 1);
-
-            System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.WorkingDirectory = World.GetInstance().ResultPath;
-            p.StartInfo.FileName = "pgnuplot";
-            p.StartInfo.Arguments = strGPLName;
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = true;
-            p.Start();
-            p.WaitForExit();
-            p.Close();
-         }
+         depot.UpdateStopLoss();
       }
    }
 }

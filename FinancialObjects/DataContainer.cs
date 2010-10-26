@@ -59,10 +59,7 @@ namespace FinancialObjects
       /// </summary>
       public int Count
       {
-         get
-         {
-            return m_data.Count;
-         }
+         get { return m_data.Count; }
       }
 
       /// <summary>
@@ -70,10 +67,7 @@ namespace FinancialObjects
       /// </summary>
       public WorkDate OldestDate
       {
-         get
-         {
-            return m_MinDate;
-         }
+         get { return m_MinDate; }
       }
 
 
@@ -82,10 +76,7 @@ namespace FinancialObjects
       /// </summary>
       public WorkDate YoungestDate
       {
-         get
-         {
-            return m_MaxDate;
-         }
+         get { return m_MaxDate; }
       }
 
 
@@ -106,21 +97,6 @@ namespace FinancialObjects
          m_data.Clear();
          m_MinDate = WorkDate.MaxDate;
          m_MaxDate = WorkDate.MinDate;
-      }
-
-      /// <summary>
-      /// Setzt alle Value-Elemente auf 0.
-      /// Alle Key-Value-Paare bleiben jedoch erhalten.
-      /// </summary>
-      public void Zero()
-      {
-         for (WorkDate keyDate = new WorkDate(m_MinDate); keyDate <= m_MaxDate; keyDate++)
-         {
-            if (this.Contains(keyDate))
-            {
-               m_data[keyDate] = 0;
-            }
-         }
       }
 
       /// <summary>
@@ -164,19 +140,54 @@ namespace FinancialObjects
       /// </code>
       public double this[WorkDate workdate]
       {
-         get
-         {
-            return m_data[workdate];
-         }
+         get { return m_data[workdate]; }
 
          set
          {
             WorkDate myworkdate = new WorkDate(workdate);
             m_data[myworkdate] = value;
 
-            if (myworkdate < m_MinDate) m_MinDate = myworkdate;
+            if (myworkdate < m_MinDate)
+               m_MinDate = myworkdate;
 
-            if (myworkdate > m_MaxDate) m_MaxDate = myworkdate;
+            if (myworkdate > m_MaxDate)
+               m_MaxDate = myworkdate;
+         }
+      }
+
+      /// <summary>
+      /// Removes all key-value-pairs from the container that are not
+      /// in the given range.
+      /// </summary>
+      public void Shape(WorkDate fromDate, WorkDate toDate)
+      {
+         WorkDate endDate = this.YoungestDate;
+
+         for (WorkDate keyDate = this.OldestDate.Clone(); keyDate <= endDate; keyDate++)
+         {
+            if (keyDate < fromDate || keyDate > toDate)
+            {
+               if (this.Contains(keyDate))
+               {
+                  this.m_data.Remove(keyDate);
+               }
+            }
+         }
+
+         m_MinDate = WorkDate.MaxDate;
+         m_MaxDate = WorkDate.MinDate;
+
+         foreach (WorkDate keyDate in m_data.Keys)
+         {
+            if (keyDate < m_MinDate)
+            {
+               m_MinDate = keyDate.Clone();
+            }
+
+            if (keyDate > m_MaxDate)
+            {
+               m_MaxDate = keyDate.Clone();
+            }
          }
       }
 
@@ -239,7 +250,20 @@ namespace FinancialObjects
          return dcTarget;
       }
 
-      static public void Copy(DataContainer source, DataContainer target)
+      /// <summary>
+      /// Multiplies all values of the container with the given factor.
+      /// </summary>
+      public void Scale(double dScale)
+      {
+         WorkDate endDate = this.YoungestDate;
+
+         for (WorkDate keyDate = this.OldestDate.Clone(); keyDate <= endDate; keyDate++)
+         {
+            this[keyDate] *= dScale;
+         }
+      }
+
+      public static void Copy(DataContainer source, DataContainer target)
       {
          target.Clear();
 
@@ -251,10 +275,7 @@ namespace FinancialObjects
 
       public IList<WorkDate> Dates
       {
-         get
-         {
-            return m_data.Keys;
-         }
+         get { return m_data.Keys; }
       }
 
       /// <summary>
@@ -313,6 +334,5 @@ namespace FinancialObjects
 
          sw.Close();
       }
-
    }
 }

@@ -37,23 +37,25 @@ namespace FinancialObjects
    public class DepotPosition
    {
       private readonly string m_strWKN;
-      private int     m_nQuantity;
+      private int      m_nQuantity;
       private WorkDate m_BuyDate;
-      private double m_dBuyPrice;
-      private double m_dStopLoss;
-      private double m_dPrice;
+      private double   m_dBuyPrice;
+      private double   m_dTrailingGap;
+      private double   m_dStopLoss;
+      private double   m_dPrice;
 
       /// <summary>
       /// Erzeugt eine neue Dpotposition
       /// </summary>
       public DepotPosition(string strWKN, int nQuantity, WorkDate buyDate, double dBuyPrice)
       {
-         m_strWKN      = strWKN;
-         this.Quantity = nQuantity;
-         this.BuyDate  = buyDate;
-         this.BuyPrice = dBuyPrice;
-         this.StopLoss = 0.0;
-         this.Price    = dBuyPrice;
+         this.m_strWKN    = strWKN;
+         this.Quantity    = nQuantity;
+         this.BuyDate     = buyDate;
+         this.BuyPrice    = dBuyPrice;
+         this.TrailingGap = 0.0;
+         this.StopLoss    = 0.0;
+         this.Price       = dBuyPrice;
       }
 
       /// <summary>
@@ -61,10 +63,7 @@ namespace FinancialObjects
       /// </summary>
       public string WKN
       {
-         get
-         {
-            return m_strWKN;
-         }
+         get { return m_strWKN; }
       }
 
       /// <summary>
@@ -72,12 +71,12 @@ namespace FinancialObjects
       /// </summary>
       public int Quantity
       {
-         get
-         {
-            return m_nQuantity;
-         }
+         get { return m_nQuantity; }
          set
          {
+            if (value < 0)
+               throw new ArgumentOutOfRangeException("Quantity", value, "Must be greater or equal than zero.");
+
             m_nQuantity = value;
          }
       }
@@ -87,14 +86,8 @@ namespace FinancialObjects
       /// </summary>
       public WorkDate BuyDate
       {
-         get
-         {
-            return m_BuyDate;
-         }
-         set
-         {
-            m_BuyDate = new WorkDate(value);
-         }
+         get { return m_BuyDate; }
+         set { m_BuyDate = new WorkDate(value); }
       }
 
       /// <summary>
@@ -102,13 +95,29 @@ namespace FinancialObjects
       /// </summary>
       public double BuyPrice
       {
-         get
-         {
-            return m_dBuyPrice;
-         }
+         get { return m_dBuyPrice; }
          set
          {
+            if (value < 0)
+               throw new ArgumentOutOfRangeException("BuyPrice", value, "Must be greater or equal than zero.");
+
             m_dBuyPrice = value;
+         }
+      }
+
+      /// <summary>
+      /// Trailing Stop-Loss-Distance in per cent.
+      /// Example: A value of 5 means 5% trailing stop loss.
+      /// </summary>
+      public double TrailingGap
+      {
+         get { return m_dTrailingGap; }
+         set
+         {
+            if (value < 0)
+               throw new ArgumentOutOfRangeException("TrailingGap", value, "Must be greater or equal than zero.");
+
+            m_dTrailingGap = value;
          }
       }
 
@@ -117,12 +126,12 @@ namespace FinancialObjects
       /// </summary>
       public double StopLoss
       {
-         get
-         {
-            return m_dStopLoss;
-         }
+         get { return m_dStopLoss; }
          set
          {
+            if (value < 0)
+               throw new ArgumentOutOfRangeException("StopLoss", value, "Must be greater or equal than zero.");
+
             m_dStopLoss = value;
          }
       }
@@ -132,27 +141,24 @@ namespace FinancialObjects
       /// </summary>
       public double Price
       {
-         get
-         {
-            return m_dPrice;
-         }
+         get { return m_dPrice; }
          set
          {
+            if (value < 0)
+               throw new ArgumentOutOfRangeException("Price", value, "Must be greater or equal than zero.");
+
             m_dPrice = value;
          }
       }
 
       /// <summary>
-      /// Liefert die aktuelle Positions-entwicklung in dB-Prozent.
+      /// Liefert die aktuelle Positions-Entwicklung in dB-Prozent.
       //  100 dB% bedeutet eine Verdoppelung, -100 dB% eine Halbierung
       /// </summary>
       public double Performance
       {
-         get
-         {
-            return Math.Log(m_dPrice / m_dBuyPrice, 2.0) * 100.0;
-            //return ((m_dPrice / m_dBuyPrice) - 1.0) * 100.0;
-         }
+         //return ((m_dPrice / m_dBuyPrice) - 1.0) * 100.0;
+         get { return Math.Log(m_dPrice / m_dBuyPrice, 2.0) * 100.0; }
       }
 
       /// <summary>
