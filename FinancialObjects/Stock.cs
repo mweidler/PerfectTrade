@@ -81,12 +81,20 @@ namespace FinancialObjects
          m_QuotesLow.Clear();
       }
 
-      public int FillGaps()
+      public int CheckPlausibility()
       {
-         int nFilledGaps = m_QuotesClose.FillGaps();
-         nFilledGaps +=    m_QuotesLow.FillGaps();
+         int nErrors = 0;
 
-         return nFilledGaps;
+         for (WorkDate workdate = m_QuotesClose.OldestDate.Clone(); workdate <= m_QuotesClose.YoungestDate; workdate++)
+         {
+            if (m_QuotesClose.Contains(workdate) == false)
+            {
+               System.Console.WriteLine("CheckPlausibility: {0} {0} missing", workdate.ToString(), m_strISIN);
+               nErrors++;
+            }
+         }
+
+         return nErrors;
       }
 
       /// <summary>
@@ -152,7 +160,8 @@ namespace FinancialObjects
       /// <summary>
       /// Liefert und setzt das Symbol
       /// </summary>
-      public string Symbol {
+      public string Symbol
+      {
          get { return m_strSymbol; }
          set { m_strSymbol = value; }
       }

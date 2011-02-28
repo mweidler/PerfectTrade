@@ -42,6 +42,8 @@ namespace Analyzer
  
          DBEngine dbengine = DBEngine.GetInstance();
 
+         DataContainer buy_events = new DataContainer();
+         DataContainer sell_events = new DataContainer();
          DataContainer[] dcPerformances = new DataContainer[5];
 
          for (int i = 0; i < dcPerformances.Length; i++)
@@ -55,7 +57,11 @@ namespace Analyzer
          Stock dax = dbengine.GetStock("846900");
          DataContainer quotes = dax.Quotes;
 
+         buy_events[new WorkDate(2011, 1,3)] =1;
+         buy_events[new WorkDate(2011, 1,14)] = 1;
+         buy_events[new WorkDate(2011, 1,23)] = 1;
 
+         sell_events[new WorkDate(2011, 2, 8)] = 1;
 
          WorkDate fromDate = quotes.YoungestDate.Clone();
          fromDate.Set(fromDate.Year - 1, fromDate.Month, 1);
@@ -87,7 +93,9 @@ namespace Analyzer
          chart.Add(dcPerformances[2], Chart.LineType.Orange,  "20");
          chart.Add(dcPerformances[3], Chart.LineType.Purple,  "25");
          chart.Add(dcPerformances[4], Chart.LineType.Red,  "30");
-         chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
+         chart.Add(buy_events, Chart.LineType.GoLong);
+         chart.Add(sell_events, Chart.LineType.GoShort);
+          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
          #endregion
       }
       #endregion

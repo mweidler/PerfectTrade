@@ -111,9 +111,9 @@ namespace QuoteLoader
       /// <param name="strStockFilename">The stock's path and filename to update</param>
       public void Update(string strStockFilename)
       {
-         int    nTotalImported = 0;
-         int    nImported      = 0;
-         string strWKN         = Path.GetFileNameWithoutExtension(strStockFilename);
+         int nTotalImported = 0;
+         int nImported = 0;
+         string strWKN = Path.GetFileNameWithoutExtension(strStockFilename);
 
          Stock stock = dbengine.GetStock(strWKN);
          System.Console.WriteLine("Updating {0}", strWKN);
@@ -125,9 +125,10 @@ namespace QuoteLoader
          }
          while (nImported > 2);
 
+         System.Console.WriteLine("{0} errors in plausibility check.", stock.CheckPlausibility());
          System.Console.WriteLine("{0} quotes imported.", nTotalImported);
-         System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
-         System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
+         //System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
+         //System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
 
          if (nTotalImported > 0)
          {

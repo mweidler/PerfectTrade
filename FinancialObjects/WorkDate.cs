@@ -43,8 +43,9 @@ namespace FinancialObjects
    public class WorkDate : IComparable<WorkDate>, ICloneable
    {
       private DateTime m_datetime;
+      private static Hashtable holidays = new Hashtable();
       public static WorkDate MaxDate = new WorkDate(DateTime.MaxValue.Year, DateTime.MaxValue.Month, DateTime.MaxValue.Day);
-      public static WorkDate MinDate = new WorkDate(DateTime.MinValue.Year, DateTime.MinValue.Month, DateTime.MinValue.Day);
+      public static WorkDate MinDate = new WorkDate(1000,                   DateTime.MinValue.Month, DateTime.MinValue.Day);
       public static WorkDate Today = new WorkDate();
 
       /// <summary>
@@ -136,7 +137,7 @@ namespace FinancialObjects
 
       private void SyncToWorkDate()
       {
-         while (isWeekend())
+         while (isWeekend() || isHoliday())
          {
             m_datetime = m_datetime.AddDays(1);
          }
@@ -196,6 +197,8 @@ namespace FinancialObjects
             NextDay();
          }
          while (nCurrentMonth == this.Month);
+
+         SyncToWorkDate();
       }
 
       /// <summary>
@@ -208,7 +211,72 @@ namespace FinancialObjects
             NextDay();
          }
          while (m_datetime.DayOfWeek != DayOfWeek.Monday);
+
+         SyncToWorkDate();
       }
+
+      /// <summary>
+      /// Validates, if the current date is a holiday
+      /// </summary>
+      /// <returns>True, if the current date is a holiday, otherwise false</returns>
+      private bool isHoliday()
+      {
+         if (holidays.ContainsKey("01.01." + m_datetime.Year) == false)
+         {
+            holidays.Add("01.01." + m_datetime.Year, "");
+            // Neujahr
+            holidays.Add("06.01." + m_datetime.Year, "");
+            // Heilige Drei Könige
+            holidays.Add("01.05." + m_datetime.Year, "");
+            // Tag der Arbeit
+            holidays.Add("03.10." + m_datetime.Year, "");
+            // Tag der dt. Einheit
+            holidays.Add("01.11." + m_datetime.Year, "");
+            // Allerheiligen
+            holidays.Add("25.12." + m_datetime.Year, "");
+            // 1. Weihnachtstag
+            holidays.Add("26.12." + m_datetime.Year, "");
+            // 2. Weihnachtstag
+            WorkDate ostersonntag = GetOsterSonntag(m_datetime.Year);
+            holidays.Add(ostersonntag.ToString(), "");
+            // Ostersonntag
+            holidays.Add((ostersonntag - 2).ToString(), "");
+            // Karfreitag
+            holidays.Add((ostersonntag + 1).ToString(), "");
+            // Ostermontag
+            holidays.Add((ostersonntag + 39).ToString(), "");
+            // Christi Himmelfahrt
+            holidays.Add((ostersonntag + 50).ToString(), "");
+            // Pfingstmontag
+            holidays.Add((ostersonntag + 60).ToString(), "");
+            // Fronleichnam
+         }
+
+         return holidays.ContainsKey(m_datetime.ToString());
+      }
+
+      /// <summary>
+      /// Returns the holiday "Ostersonntag"
+      /// </summary>
+      /// <param name="Year">Year of the requested holiday</param>
+      /// <returns>"Ostersonntag"</returns>
+      private WorkDate GetOsterSonntag(int Year)
+      {
+         int g, h, c, j, l, i;
+
+         g = Year % 19;
+         c = Year / 100;
+         h = ((c - (c / 4)) - (((8 * c) + 13) / 25) + (19 * g) + 15) % 30;
+         i = h - (h / 28) * (1 - (29 / (h + 1)) * ((21 - g) / 11));
+         j = (Year + (Year / 4) + i + 2 - c + (c / 4)) % 7;
+
+         l = i - j;
+         int month = (int)(3 + ((l + 40) / 44));
+         int day = (int)(l + 28 - 31 * (month / 4));
+
+         return new WorkDate(Year, month, day);
+      }
+
 
       /*************************
        * Duration
@@ -257,7 +325,7 @@ namespace FinancialObjects
          {
             m_datetime = m_datetime.AddDays(1);
          }
-         while (isWeekend());
+         while (isWeekend() || isHoliday());
       }
 
       /// <summary>
@@ -269,7 +337,7 @@ namespace FinancialObjects
          {
             m_datetime = m_datetime.AddDays(-1);
          }
-         while (isWeekend());
+         while (isWeekend() || isHoliday());
       }
 
       private bool isWeekend()
