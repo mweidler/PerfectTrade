@@ -148,7 +148,7 @@ namespace QuoteLoader
          WebRequest webreq;
          WebResponse webres;
 
-         WorkDate startdate = stock.QuotesClose.YoungestDate.Clone() - 1;
+         WorkDate startdate = stock.QuotesClose.YoungestDate.Clone() - 2;
          WorkDate enddate = new WorkDate();
 
          Log.Info("Load entered, startdate = " + startdate + ", enddate = " + enddate);
