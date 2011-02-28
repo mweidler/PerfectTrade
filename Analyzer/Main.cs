@@ -40,15 +40,14 @@ namespace Analyzer
       {
          try
          {
-            if (args.Length > 0)
+            DumpEngines();
+
+            for (int i=0; i < args.Length; i++)
             {
-               World.GetInstance().SetWorldPaths(args[0]);
-               IAnalyzerEngine analyzer = InvokeAnalyzerEngine(args[0]);
+               System.Console.WriteLine("Analyzing " + args[i]);
+               World.GetInstance().SetWorldPaths(args[i]);
+               IAnalyzerEngine analyzer = InvokeAnalyzerEngine(args[i]);
                analyzer.Analyze();
-            }
-            else
-            {
-               DumpEngines();
             }
          }
          catch (NotSupportedException e)
