@@ -41,6 +41,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="QuoteLoaderEngine.cs" />
     <Compile Include="BoerseOnlineQuoteLoaderEngine.cs" />
+    <Compile Include="YahooQuoteLoaderEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FinancialObjects\FinancialObjects.csproj">
