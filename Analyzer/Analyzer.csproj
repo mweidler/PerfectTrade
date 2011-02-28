@@ -21,7 +21,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>RelativeStrength</Commandlineparameters>
+    <Commandlineparameters>RelativeStrength ProfitStatistic</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -40,6 +40,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="IAnalyzerEngine.cs" />
     <Compile Include="RelativeStrength.cs" />
+    <Compile Include="ProfitStatistic.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
