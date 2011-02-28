@@ -41,6 +41,7 @@ namespace FinancialObjects
       private string   m_strName;
       private string   m_strShortName;
       private string   m_strISIN;
+      private string   m_strSymbol;
       private string   m_strWKN;
       private double   m_dBonusLevel;
       private double   m_dCap;
@@ -69,6 +70,7 @@ namespace FinancialObjects
          m_strShortName = "n.a";
          m_strISIN = "n.a";
          m_strWKN = "n.a";
+         m_strSymbol = "n.a.";
          m_dBonusLevel = 0;
          m_dCap = 0;
          m_dKnockOut = 0;
@@ -146,6 +148,15 @@ namespace FinancialObjects
             m_strWKN = value;
          }
       }
+
+      /// <summary>
+      /// Liefert und setzt das Symbol
+      /// </summary>
+      public string Symbol {
+         get { return m_strSymbol; }
+         set { m_strSymbol = value; }
+      }
+
 
       /// <summary>
       /// Liefert und setzt den BonusLevel
@@ -301,13 +312,20 @@ namespace FinancialObjects
 
          while (easystore.GetNextKeyValue(out strKey, out strValue))
          {
-            if (strKey.Equals("NAME"))       this.Name = strValue;
+            if (strKey.Equals("NAME"))
+               this.Name = strValue;
 
-            if (strKey.Equals("SHORTNAME"))  this.ShortName = strValue;
+            if (strKey.Equals("SHORTNAME"))
+               this.ShortName = strValue;
 
-            if (strKey.Equals("ISIN"))       this.ISIN = strValue;
+            if (strKey.Equals("ISIN"))
+               this.ISIN = strValue;
 
-            if (strKey.Equals("WKN"))        this.WKN = strValue;
+            if (strKey.Equals("WKN"))
+               this.WKN = strValue;
+
+            if (strKey.Equals("SYMBOL"))
+               this.Symbol = strValue;
 
             if (strKey.Equals("BONUSLEVEL")) this.m_dBonusLevel = Double.Parse(strValue);
 
@@ -362,6 +380,7 @@ namespace FinancialObjects
          easystore.WriteKeyValue("SHORTNAME", this.ShortName);
          easystore.WriteKeyValue("ISIN", this.ISIN);
          easystore.WriteKeyValue("WKN", this.WKN);
+         easystore.WriteKeyValue("SYMBOL", this.WKN);
          easystore.WriteKeyValue("BONUSLEVEL", this.BonusLevel.ToString());
          easystore.WriteKeyValue("CAP", this.Cap.ToString());
          easystore.WriteKeyValue("KNOCKOUT", this.KnockOut.ToString());
