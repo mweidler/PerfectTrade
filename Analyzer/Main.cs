@@ -42,7 +42,7 @@ namespace Analyzer
          {
             DumpEngines();
 
-            for (int i=0; i < args.Length; i++)
+            for (int i = 0; i < args.Length; i++)
             {
                System.Console.WriteLine("Analyzing " + args[i]);
                World.GetInstance().SetWorldPaths(args[i]);

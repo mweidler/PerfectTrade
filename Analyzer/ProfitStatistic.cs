@@ -39,7 +39,7 @@ namespace Analyzer
       {
          const int nInvestPeriodStep = 5;
          const int nMaxInvestPeriod = 30;
- 
+
          DBEngine dbengine = DBEngine.GetInstance();
 
          DataContainer buy_events = new DataContainer();
@@ -55,11 +55,12 @@ namespace Analyzer
             return;
 
          Stock dax = dbengine.GetStock("846900");
+         dax.CheckPlausibility();
          DataContainer quotes = dax.Quotes;
 
-         buy_events[new WorkDate(2011, 1,3)] =1;
-         buy_events[new WorkDate(2011, 1,14)] = 1;
-         buy_events[new WorkDate(2011, 1,23)] = 1;
+         buy_events[new WorkDate(2011, 1, 3)] = 1;
+         buy_events[new WorkDate(2011, 1, 14)] = 1;
+         buy_events[new WorkDate(2011, 1, 23)] = 1;
 
          sell_events[new WorkDate(2011, 2, 8)] = 1;
 
@@ -74,12 +75,11 @@ namespace Analyzer
          {
             for (int nInvestPeriod = 10; nInvestPeriod <= nMaxInvestPeriod; nInvestPeriod += nInvestPeriodStep)
             {
-               double dPerf = ((quotes[fromDate+nInvestPeriod] / quotes[fromDate])-1) * 100.0;
-               dcPerformances[(nInvestPeriod/nInvestPeriodStep)-2][fromDate] = dPerf;
+               double dPerf = ((quotes[fromDate + nInvestPeriod] / quotes[fromDate]) - 1) * 100.0;
+               dcPerformances[(nInvestPeriod / nInvestPeriodStep) - 2][fromDate] = dPerf;
             }
          }
- 
-         #region Chart
+
          Chart chart = new Chart();
          chart.Width = 1000;
          chart.Height = 500;
@@ -95,8 +95,7 @@ namespace Analyzer
          chart.Add(dcPerformances[4], Chart.LineType.Red,  "30");
          chart.Add(buy_events, Chart.LineType.GoLong);
          chart.Add(sell_events, Chart.LineType.GoShort);
-          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
-         #endregion
+         chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
       }
       #endregion
    }
