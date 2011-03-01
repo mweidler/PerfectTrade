@@ -64,6 +64,9 @@ namespace FinancialObjects
       }
 
 
+      /// <summary>
+      /// Sets all stock values to empty of initial values.
+      /// </summary>
       public void Clear()
       {
          m_strName = "n.a";
@@ -81,36 +84,60 @@ namespace FinancialObjects
          m_QuotesLow.Clear();
       }
 
+
+      /// <summary>
+      /// Checks the stock's contents for correctness, especially:
+      /// 1. If all workdays have quotes
+      /// 2. If the sum of all workdays is equal to the number of quote data
+      /// 3. If the change rate is below +-20% from day to day
+      /// </summary>
+      /// <returns>Number of errors detected in the stock data</returns>
       public int CheckPlausibility()
       {
+         int nDays = 0;
          int nErrors = 0;
 
          for (WorkDate workdate = m_QuotesClose.OldestDate.Clone(); workdate <= m_QuotesClose.YoungestDate; workdate++)
          {
+            nDays++;
+
             if (m_QuotesClose.Contains(workdate) == false)
             {
-               System.Console.WriteLine("CheckPlausibility: {0} {0} missing", workdate.ToString(), m_strISIN);
+               System.Console.WriteLine("CheckPlausibility: {0} {1} missing", workdate.ToString(), m_strISIN);
                nErrors++;
             }
+            else
+            {
+               if (nDays > 1)
+               {
+                  double dPerf = m_QuotesClose[workdate] / m_QuotesClose[workdate-1];
+
+                  if (dPerf > 1.2 || dPerf < 0.8)
+                  {
+                     System.Console.WriteLine("CheckPlausibility: Performance: {0} {1}", workdate.ToString(), dPerf);
+                  }
+               }
+            }
+         }
+
+         if (nDays != m_QuotesClose.Count)
+         {
+            System.Console.WriteLine("CheckPlausibility: Workdates: {0}, Count: {1}", nDays, m_QuotesClose.Count);
          }
 
          return nErrors;
       }
 
+
       /// <summary>
-      /// Liefert und setzt den Namen
+      /// Get or set the name of the stock
       /// </summary>
       public string Name
       {
-         get
-         {
-            return m_strName;
-         }
-         set
-         {
-            m_strName = value;
-         }
+         get { return m_strName; }
+         set { m_strName = value; }
       }
+
 
       /// <summary>
       /// Liefert und setzt den Kurz-Namen
