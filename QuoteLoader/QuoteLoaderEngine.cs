@@ -123,7 +123,7 @@ namespace QuoteLoader
             nImported = Load(stock);
             nTotalImported += nImported;
          }
-         while (nImported > 2);
+         while (nImported > 3);
 
          System.Console.WriteLine("{0} errors in plausibility check.", stock.CheckPlausibility());
          System.Console.WriteLine("{0} quotes imported.", nTotalImported);
@@ -138,6 +138,8 @@ namespace QuoteLoader
 
       /// <summary>
       /// Download the most recent stock's quote data from a quote server.
+      /// It downloads max. 500 quote days. This method should be repeatedly called
+      /// until it loads less than 4 quotes.
       /// </summary>
       /// <param name="stock">The stock object to be updated</param>
       /// <returns>The number of imported days</returns>
@@ -150,9 +152,13 @@ namespace QuoteLoader
          WebResponse webres;
 
          WorkDate startdate = stock.QuotesClose.YoungestDate.Clone() - 2;
-         WorkDate enddate = new WorkDate();
+         WorkDate enddate = startdate + 500;
+         if (enddate > WorkDate.Today)
+         {
+            enddate = WorkDate.Today;
+         }
 
-         Log.Info("Load entered, startdate = " + startdate + ", enddate = " + enddate);
+         Log.Info("Downloading quotes from " + startdate + " to " + enddate);
 
          string strURI = BuildURI(stock, startdate, enddate);
          Log.Info(strURI);
@@ -198,7 +204,7 @@ namespace QuoteLoader
 
          strrdr.Close();
          stream.Close();
-         Log.Info("Leaving Load");
+         Log.Info("Download and import finished.");
 
          return nImported;
       }
