@@ -416,7 +416,7 @@ namespace FinancialObjects
          easystore.WriteKeyValue("SHORTNAME", this.ShortName);
          easystore.WriteKeyValue("ISIN", this.ISIN);
          easystore.WriteKeyValue("WKN", this.WKN);
-         easystore.WriteKeyValue("SYMBOL", this.WKN);
+         easystore.WriteKeyValue("SYMBOL", this.Symbol);
          easystore.WriteKeyValue("BONUSLEVEL", this.BonusLevel.ToString());
          easystore.WriteKeyValue("CAP", this.Cap.ToString());
          easystore.WriteKeyValue("KNOCKOUT", this.KnockOut.ToString());
