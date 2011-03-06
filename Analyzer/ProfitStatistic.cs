@@ -42,10 +42,7 @@ namespace Analyzer
 
          DBEngine dbengine = DBEngine.GetInstance();
 
-         DataContainer buy_events = new DataContainer();
-         DataContainer sell_events = new DataContainer();
          DataContainer[] dcPerformances = new DataContainer[5];
-
          for (int i = 0; i < dcPerformances.Length; i++)
          {
             dcPerformances[i] = new DataContainer();
@@ -55,21 +52,17 @@ namespace Analyzer
             return;
 
          Stock dax = dbengine.GetStock("846900");
-         dax.CheckPlausibility();
          DataContainer quotes = dax.Quotes;
-
-         buy_events[new WorkDate(2011, 1, 3)] = 1;
-         buy_events[new WorkDate(2011, 1, 14)] = 1;
-         buy_events[new WorkDate(2011, 1, 23)] = 1;
-
-         sell_events[new WorkDate(2011, 2, 8)] = 1;
 
          WorkDate fromDate = quotes.YoungestDate.Clone();
          fromDate.Set(fromDate.Year - 1, fromDate.Month, 1);
          WorkDate endDate = quotes.YoungestDate.Clone() - nMaxInvestPeriod;
 
-         dcPerformances[0][quotes.YoungestDate] = 0;
-         dcPerformances[0].FillGaps();
+         DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
+         dax_ma38 = dax_ma38.Clone(fromDate);
+
+         DataContainer dax_rel_diff_38 = RelativeDifference.CreateFrom(quotes, dax_ma38);
+         dax_rel_diff_38 = dax_rel_diff_38.Clone(fromDate);
 
          for (; fromDate < endDate; fromDate++)
          {
@@ -80,21 +73,22 @@ namespace Analyzer
             }
          }
 
+
          Chart chart = new Chart();
-         chart.Width = 1000;
-         chart.Height = 500;
+         chart.Width = 1500;
+         chart.Height = 900;
          chart.Clear();
          chart.SubSectionsX = 8;
          chart.LogScaleY = false;
-         chart.Title = dcPerformances[0].OldestDate.ToString() + " - " + dcPerformances[0].YoungestDate.ToString();
+         chart.Title = dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
-         chart.Add(dcPerformances[0], Chart.LineType.SeaGreen, "10");
-         chart.Add(dcPerformances[1], Chart.LineType.Navy,    "15");
-         chart.Add(dcPerformances[2], Chart.LineType.Orange,  "20");
-         chart.Add(dcPerformances[3], Chart.LineType.Purple,  "25");
-         chart.Add(dcPerformances[4], Chart.LineType.Red,  "30");
-         chart.Add(buy_events, Chart.LineType.GoLong);
-         chart.Add(sell_events, Chart.LineType.GoShort);
+         chart.RightDate = quotes.YoungestDate;
+         chart.Add(dcPerformances[0], Chart.LineType.SkyBlue, "10");
+         chart.Add(dcPerformances[1], Chart.LineType.SkyBlue, "15");
+         chart.Add(dcPerformances[2], Chart.LineType.SkyBlue, "20");
+         chart.Add(dcPerformances[3], Chart.LineType.SkyBlue, "25");
+         chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");
+         chart.Add(dax_rel_diff_38,   Chart.LineType.Red,     "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
       }
       #endregion
