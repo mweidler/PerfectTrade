@@ -56,7 +56,7 @@ namespace QuoteLoader
          try
          {
 
-            QuoteLoaderEngine loaderEngine = new YahooQuoteLoaderEngine();
+            QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
 
             if (args[0].Equals("init"))
             {

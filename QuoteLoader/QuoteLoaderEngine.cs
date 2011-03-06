@@ -125,10 +125,9 @@ namespace QuoteLoader
          }
          while (nImported > 3);
 
-         System.Console.WriteLine("{0} errors in plausibility check.", stock.CheckPlausibility());
          System.Console.WriteLine("{0} quotes imported.", nTotalImported);
-         //System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
-         //System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
+         System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
+         System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
 
          if (nTotalImported > 0)
          {
