@@ -111,25 +111,19 @@ namespace QuoteLoader
       /// <param name="strStockFilename">The stock's path and filename to update</param>
       public void Update(string strStockFilename)
       {
-         int nTotalImported = 0;
          int nImported = 0;
          string strWKN = Path.GetFileNameWithoutExtension(strStockFilename);
 
          Stock stock = dbengine.GetStock(strWKN);
          System.Console.WriteLine("Updating {0}", strWKN);
 
-         do
-         {
-            nImported = Load(stock);
-            nTotalImported += nImported;
-         }
-         while (nImported > 3);
+         nImported = Load(stock);
 
-         System.Console.WriteLine("{0} quotes imported.", nTotalImported);
+         System.Console.WriteLine("{0} quotes imported.", nImported);
          System.Console.WriteLine("{0} close gaps filled.", stock.QuotesClose.FillGaps());
          System.Console.WriteLine("{0} low gaps filled.", stock.QuotesLow.FillGaps());
 
-         if (nTotalImported > 0)
+         if (nImported > 0)
          {
             stock.Save();
          }
@@ -151,11 +145,7 @@ namespace QuoteLoader
          WebResponse webres;
 
          WorkDate startdate = stock.QuotesClose.YoungestDate.Clone() - 2;
-         WorkDate enddate = startdate + 500;
-         if (enddate > WorkDate.Today)
-         {
-            enddate = WorkDate.Today;
-         }
+         WorkDate enddate = WorkDate.Today;
 
          Log.Info("Downloading quotes from " + startdate + " to " + enddate);
 
