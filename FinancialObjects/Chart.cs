@@ -39,17 +39,17 @@ namespace FinancialObjects
    {
       int m_nWidth = 640;
       int m_nHeight = 480;
-      bool m_bShowLegend = true;
-      string m_strTitle = null;
-      string m_strLabelY = null;
-      bool m_bAutoDeleteTempFiles = true;
-      bool m_bAutoDateRange = true;
-      WorkDate m_fromDate = null;
-      WorkDate m_toDate = null;
-      bool m_bLogScaleY = false;
       int[] m_aiTicsY = null;
       int m_nTicsYInterval = 0;
       int m_nMinorXTics = 1;
+      bool m_bShowLegend = true;
+      bool m_bAutoDeleteTempFiles = true;
+      bool m_bAutoDateRange = true;
+      bool m_bLogScaleY = false;
+      string m_strTitle = null;
+      string m_strLabelY = null;
+      WorkDate m_fromDate = null;
+      WorkDate m_toDate = null;
       double m_dMinValue;
       double m_dMaxValue;
       List<PlotSet> m_plotsets = new List<PlotSet>();
@@ -263,6 +263,24 @@ namespace FinancialObjects
       {
          get { return m_strTitle; }
          set { m_strTitle = value; }
+      }
+
+      /// <summary>
+      /// Specify the left date of the chart.
+      /// </summary>
+      public WorkDate LeftDate
+      {
+         get { return m_fromDate.Clone(); }
+         set { m_fromDate = value.Clone(); }
+      }
+
+      /// <summary>
+      /// Specify the right date of the chart.
+      /// </summary>
+      public WorkDate RightDate
+      {
+         get { return m_toDate.Clone(); }
+         set { m_toDate = value.Clone(); }
       }
 
       /// <summary>
