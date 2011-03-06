@@ -69,8 +69,6 @@ namespace PerfectTrade
             return;
 
          Stock dax = dbengine.GetStock("846900");
-         dax.CheckPlausibility();
-
          DataContainer quotes = dax.QuotesLow;
 
          Chart chart = new Chart();
