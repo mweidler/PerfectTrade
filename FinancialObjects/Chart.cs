@@ -42,6 +42,7 @@ namespace FinancialObjects
       int[] m_aiTicsY = null;
       int m_nTicsYInterval = 0;
       int m_nMinorXTics = 1;
+      int m_nLineWidth = 2;
       bool m_bShowLegend = true;
       bool m_bAutoDeleteTempFiles = true;
       bool m_bAutoDateRange = true;
@@ -115,6 +116,7 @@ namespace FinancialObjects
          m_bShowLegend = true;
          m_nTicsYInterval = 0;
          m_nMinorXTics = 1;
+         m_nLineWidth = 2;
       }
 
       /// <summary>
@@ -284,6 +286,16 @@ namespace FinancialObjects
       }
 
       /// <summary>
+      /// Specify the line width
+      /// </summary>
+      public int LineWidth
+      {
+         get { return m_nLineWidth; }
+         set { m_nLineWidth = value; }
+      }
+
+
+      /// <summary>
       /// Create the chart with the given name.
       /// </summary>
       /// <param name="strTargetFilename">A string that specifies the full path and name of the chart./></param>
@@ -374,7 +386,7 @@ namespace FinancialObjects
             switch (plotset.LineType)
             {
                case LineType.Undefined:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 2 lt {1} title \"{2}\"", n, n, plotset.Label);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt {2} title \"{3}\"", n, m_nLineWidth, n, plotset.Label);
                   break;
 
                case LineType.GoShort:
@@ -386,7 +398,7 @@ namespace FinancialObjects
                   break;
 
                default:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw 2 lt {1} title \"{2}\"", n, (int)plotset.LineType, plotset.Label);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt {2} title \"{3}\"", n, m_nLineWidth, (int)plotset.LineType, plotset.Label);
                   break;
             }
 

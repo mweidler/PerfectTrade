@@ -44,17 +44,17 @@ namespace Analyzer
 
          Chart chart = new Chart();
          chart.Width = 1500;
-         chart.Height = 900;
+         chart.Height = 800;
 
          Stock dax = dbengine.GetStock("846900");
-         Stock dax_short = dbengine.GetStock("A0C4CT");
+         //Stock dax_short = dbengine.GetStock("A0C4CT");
          DataContainer quotes = dax.Quotes;
          DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
 
          WorkDate startDate = quotes.YoungestDate.Clone();
-         startDate.Set(startDate.Year - 1, startDate.Month, 1);
+         startDate.Set(startDate.Year - 2, startDate.Month, 1);
          DataContainer dax_ranged = quotes.Clone(startDate);
-         DataContainer short_ranged = dax_short.Quotes.Clone(startDate);
+         //DataContainer short_ranged = dax_short.Quotes.Clone(startDate);
          dax_ma38 = dax_ma38.Clone(startDate);
 
          DataContainer fast = MovingAverage.CreateFrom(quotes, 38);
@@ -64,13 +64,13 @@ namespace Analyzer
 
          #region DAX
          chart.Clear();
-         chart.SubSectionsX = 8;
+         chart.SubSectionsX = 3;
          chart.LogScaleY = true;
-         chart.TicsYInterval = 100;
+         chart.TicsYInterval = 200;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
          chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
-         chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
+         //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
          chart.Add(fast, Chart.LineType.Orange, "Moving Average (fast)");
          chart.Add(slow, Chart.LineType.Purple, "Moving Average (slow)");
          chart.Create(World.GetInstance().ResultPath + "dax.png");

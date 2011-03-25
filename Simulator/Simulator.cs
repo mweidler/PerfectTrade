@@ -46,7 +46,7 @@ namespace Simulator
       {
          try
          {
-            Simulator simulator = new Simulator("EfficientPortfolio");
+            Simulator simulator = new Simulator("PropabilityTrader");
             simulator.Simulate();
          }
          catch (Exception e)

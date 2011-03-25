@@ -40,6 +40,7 @@
     <Compile Include="EfficientPortfolio.cs" />
     <Compile Include="IRuleEngine.cs" />
     <Compile Include="RuleEngineInfo.cs" />
+    <Compile Include="PropabilityTrader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

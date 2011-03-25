@@ -38,12 +38,6 @@ namespace Simulator
 
       RuleEngineInfo RuleEngineInfo { get; }
 
-      /*WorkDate FromDate { get; }
-      WorkDate ToDate { get; }
-      Variants Variants { get; }
-      Depot Depot { get; }
-      WorkDate Today { get; set; }*/
-
       void StepDate();
       bool IsValidVariant();
 
