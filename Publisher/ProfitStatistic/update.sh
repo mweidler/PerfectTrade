@@ -60,7 +60,12 @@ quit
 SCRIPT
 
 #
-# 4. Shutdown machine
+# 4. Cleanup
+#
+rm ProfitStatistik.png
+
+#
+# 5. Shutdown machine
 #
 sync
 sleep 5
