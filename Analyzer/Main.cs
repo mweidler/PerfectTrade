@@ -27,6 +27,7 @@
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel;
 using FinancialObjects;
@@ -40,14 +41,38 @@ namespace Analyzer
       {
          try
          {
-            DumpEngines();
+            List<string> strEngines = GetEnginesList();
 
-            for (int i = 0; i < args.Length; i++)
+            if (args.Length == 0)
             {
-               System.Console.WriteLine("Analyzing " + args[i]);
-               World.GetInstance().SetWorldPaths(args[i]);
-               IAnalyzerEngine analyzer = InvokeAnalyzerEngine(args[i]);
-               analyzer.Analyze();
+               System.Console.WriteLine("Usage:");
+               System.Console.WriteLine("{0} <Engine>", "Analyzer");
+               System.Console.WriteLine("    where <Engine> can be be:");
+               System.Console.Write("      all");
+
+               foreach (string strEngine in strEngines)
+               {
+                  System.Console.Write(",{0}", strEngine);
+               }
+
+               System.Console.WriteLine();
+            }
+            else
+            {
+               if (args[0] == "all")
+               {
+                  foreach (string strEngine in strEngines)
+                  {
+                     DoAnalyze(strEngine);
+                  }
+               }
+               else
+               {
+                  foreach (string param in args)
+                  {
+                     DoAnalyze(param);
+                  }
+               }
             }
          }
          catch (NotSupportedException e)
@@ -59,6 +84,18 @@ namespace Analyzer
             System.Console.WriteLine(e.Message);
             System.Console.WriteLine(e.StackTrace);
          }
+      }
+
+      /// <summary>
+      /// Execute Ananlyer engine with given name
+      /// </summary>
+      /// <param name="strEngineName">Name of analyer engine to execute.</param>
+      public static void DoAnalyze(string strEngineName)
+      {
+         System.Console.WriteLine("Analyzing " + strEngineName);
+         World.GetInstance().SetWorldPaths(strEngineName);
+         IAnalyzerEngine analyzer = InvokeAnalyzerEngine(strEngineName);
+         analyzer.Analyze();
       }
 
 
@@ -90,16 +127,14 @@ namespace Analyzer
 
 
       /// <summary>
-      /// List all available analyzer engines.
+      /// Returns available analyzer engines.
       /// </summary>
-      public static void DumpEngines()
+      public static List<string> GetEnginesList()
       {
-         int nEngineCounter = 1;
+         List<string> strEngines = new List<string>();
 
          Assembly assembly = Assembly.GetExecutingAssembly();
          string strAssemblyName = assembly.FullName.Substring(0, assembly.FullName.IndexOf(','));
-
-         System.Console.WriteLine("Possible analyzer engines:");
 
          // Walk through each type in the assembly looking for our class
          foreach (Type type in assembly.GetTypes())
@@ -111,11 +146,12 @@ namespace Analyzer
 
                if (strAssemblyName.Equals(strEngineName) == false)
                {
-                  System.Console.WriteLine("{0: 0}) " + strEngineName, nEngineCounter);
-                  nEngineCounter++;
+                  strEngines.Add(strEngineName);
                }
             }
          }
+
+         return strEngines;
       }
    }
 }
