@@ -5,13 +5,8 @@
 # Installs PerfectTrade in the $HOME/PerfectTrade and sets symbolic links
 # of Unix-like program names.
 #
-# Use the following names for the program suite:
-#   ql  - Starts the QuoteLoader
-#   an  - Starts the Analyzer
-#   si  - Starts the Simulator
-#   
 #
-# COPYRIGHT (C) 2010 AND ALL RIGHTS RESERVED BY
+# COPYRIGHT (C) 2011 AND ALL RIGHTS RESERVED BY
 # MARC WEIDLER, ULRICHSTR. 12/1, 71672 MARBACH, GERMANY (MARC.WEIDLER@WEB.DE).
 #
 # ALL RIGHTS RESERVED. THIS SOFTWARE AND RELATED DOCUMENTATION ARE PROTECTED BY
@@ -36,35 +31,81 @@
 #
 #set -x
 
-TARGET=Debug
-
-clear
-echo "      PerfectTrade installation"
-echo "------------------------------------"
-
-if [ -d $HOME/PerfectTrade ]
+#
+# Check mono installation
+#
+MONOVER=`mono --version | grep version | awk -F" " '{print $5}'`
+MONOVER1=`echo $MONOVER | awk -F"." '{print $1}'`
+MONOVER2=`echo $MONOVER | awk -F"." '{print $2}'`
+if [[ "$MONOVER" == "" ]]
 then
-   echo Target directory already exists, good.
+   echo "No mono runtime installed."
+   exit 1
 else
-   echo "Creating target directory $HOME/PerfectTrade"
-   mkdir $HOME/PerfectTrade
-   echo "Done."
+   if [[ $MONOVER1 < 2 ]] || [[ $MONOVER2 < 6 ]]
+   then
+     echo "PerfectTrade needs Mono 2.6 or higher. Installed is version $MONOVER."
+     exit 1
+   fi
 fi
 
-echo "Copying program files..."
-cp QuoteLoader/bin/$TARGET/QuoteLoader.exe $HOME/PerfectTrade
-cp QuoteLoader/bin/$TARGET/*.dll $HOME/PerfectTrade
-echo "Done."
+#
+# Create directories, if not already there
+#
+mkdir -p $HOME/PerfectTrade/bin
+mkdir -p $HOME/bin
 
-echo "Generating links..."
-cd $HOME/PerfectTrade
-ln -v -f -s QuoteLoader.exe ql
-cd -
-echo "Done."
+#
+# Install a binary tool
+#
+function installexe {
+   echo "... installing $1 to $HOME/PerfectTrade/bin"
+   if [[ -e ./$1/bin/Debug/$1.exe ]]
+   then
+     cp -f ./$1/bin/Debug/$1.exe $HOME/PerfectTrade/bin
+   fi
 
-echo "Installation complete."
-echo "Use the following names for the program suite"
-echo "    ql  - Starts the QuoteLoader"
-echo "    an  - Starts the Analyzer"
-echo "    si  - Starts the Simulator"
+   if [[ -e ./$1/bin/Release/$1.exe ]]
+   then
+     cp -u ./$1/bin/Release/$1.exe $HOME/PerfectTrade/bin
+   fi
+}
+
+#
+# Install a dll
+#
+function installdll {
+   echo "... installing $1 to $HOME/PerfectTrade/bin"
+   if [[ -e ./Analyzer/bin/Debug/$1.dll  ]]
+   then
+     cp -f ./Analyzer/bin/Debug/$1.dll $HOME/PerfectTrade/bin
+   fi
+
+   if [[ -e ./Analyzer/bin/Release/$1.dll  ]]
+   then
+     cp -u ./Analyzer/bin/Release/$1.dll $HOME/PerfectTrade/bin
+   fi
+}
+
+#
+# Install exes
+#
+installexe Analyzer
+installexe Simulator
+installexe QuoteLoader
+
+#
+# Install DLLs
+#
+installdll FinancialObjects
+installdll Indicators
+
+#
+# Install facade frontend
+#
+cp -f perfecttrade.sh $HOME/bin
+rm -f $HOME/bin/pt
+ln -s perfecttrade.sh $HOME/bin/pt
+
+echo "Installation in '$HOME/bin' and '$HOME/PerfectTrade/bin' done."
 
