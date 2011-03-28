@@ -105,6 +105,7 @@ installdll Indicators
 cp -f LICENSE $HOME/PerfectTrade
 cp -f README  $HOME/PerfectTrade
 
+cp -r Publisher $HOME/PerfectTrade
 #
 # Install facade frontend
 #
