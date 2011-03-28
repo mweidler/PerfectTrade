@@ -39,12 +39,12 @@ fi
 #
 # 1. Update quotes
 #
-~/projects/PerfectTrade/QuoteLoader/bin/Debug/QuoteLoader.exe update
+pt update
 
 #
 # 2. Run analyzer
 #
-~/projects/PerfectTrade/Analyzer/bin/Debug/Analyzer.exe all
+pt analyze all
 cp ~/tradedata/results/ProfitStatistic/ProfitStatistik.png .
 
 
@@ -70,3 +70,4 @@ rm ProfitStatistik.png
 sync
 sleep 5
 shutdown -h now
+
