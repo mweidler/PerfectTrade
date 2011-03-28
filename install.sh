@@ -101,6 +101,11 @@ installdll FinancialObjects
 installdll Indicators
 
 #
+# Install README and LICENSE
+cp -f LICENSE $HOME/PerfectTrade
+cp -f README  $HOME/PerfectTrade
+
+#
 # Install facade frontend
 #
 cp -f perfecttrade.sh $HOME/bin
