@@ -56,56 +56,11 @@ mkdir -p $HOME/PerfectTrade/bin
 mkdir -p $HOME/bin
 
 #
-# Install a binary tool
-#
-function installexe {
-   echo "... installing $1 to $HOME/PerfectTrade/bin"
-   if [[ -e ./$1/bin/Debug/$1.exe ]]
-   then
-     cp -f ./$1/bin/Debug/$1.exe $HOME/PerfectTrade/bin
-   fi
-
-   if [[ -e ./$1/bin/Release/$1.exe ]]
-   then
-     cp -u ./$1/bin/Release/$1.exe $HOME/PerfectTrade/bin
-   fi
-}
-
-#
-# Install a dll
-#
-function installdll {
-   echo "... installing $1 to $HOME/PerfectTrade/bin"
-   if [[ -e ./Analyzer/bin/Debug/$1.dll  ]]
-   then
-     cp -f ./Analyzer/bin/Debug/$1.dll $HOME/PerfectTrade/bin
-   fi
-
-   if [[ -e ./Analyzer/bin/Release/$1.dll  ]]
-   then
-     cp -u ./Analyzer/bin/Release/$1.dll $HOME/PerfectTrade/bin
-   fi
-}
-
-#
-# Install exes
-#
-installexe Analyzer
-installexe Simulator
-installexe QuoteLoader
-
-#
-# Install DLLs
-#
-installdll FinancialObjects
-installdll Indicators
-
-#
 # Install README and LICENSE
+#
 cp -f LICENSE $HOME/PerfectTrade
 cp -f README  $HOME/PerfectTrade
 
-cp -r Publisher $HOME/PerfectTrade
 #
 # Install facade frontend
 #
