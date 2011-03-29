@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuoteLoader", "QuoteLoader\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simulator.csproj", "{EA486864-C893-4549-A598-FFA422B4611A}"
 EndProject
-Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Results", "Publisher\Results.mdproj", "{AE09B374-608A-4AAC-BA2D-CEC9A184FE91}"
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Results", "Results\Results.mdproj", "{AE09B374-608A-4AAC-BA2D-CEC9A184FE91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
