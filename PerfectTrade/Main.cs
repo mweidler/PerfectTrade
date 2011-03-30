@@ -36,32 +36,9 @@ namespace PerfectTrade
 {
    class MainClass
    {
-      static void SetWorldPaths(string strApplicationName)
-      {
-         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-
-         string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
-
-         if (Directory.Exists(strResultPath) == false)
-         {
-            Directory.CreateDirectory(strResultPath);
-         }
-
-         string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
-
-         if (Directory.Exists(strDataPath) == false)
-         {
-            Directory.CreateDirectory(strDataPath);
-         }
-
-         World.GetInstance().ResultPath = strResultPath;
-         World.GetInstance().DataPath = strDataPath;
-         World.GetInstance().QuotesPath = strBasePath + "/tradedata/quotes/";
-      }
-
       public static void Main(string[] args)
       {
-         SetWorldPaths("Test");
+         World.GetInstance().SetWorldPaths("Test");
 
          DBEngine dbengine = DBEngine.GetInstance();
 
