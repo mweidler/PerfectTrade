@@ -1,0 +1,5 @@
+#ISIN       ;WKN   ;Symbol;Title
+DE0008469008;846900;^GDAXI;DAX Performance Index
+DE000A0C4CT0;A0C4CT;D1A9.DE;ShortDAX Performance Index
+DE000A0DMX99;A0DMX9;;VDAX-New Volatilitaets Index
+
