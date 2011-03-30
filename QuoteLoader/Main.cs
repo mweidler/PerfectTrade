@@ -55,16 +55,34 @@ namespace QuoteLoader
 
          try
          {
-
-            QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
-
             if (args[0].Equals("init"))
             {
-               string strISIN = args[1];
-               loaderEngine.Init(strISIN);
+               string strLine;
+               char[] chSplit = { ';' };
+
+               StreamReader strrdr = new StreamReader("/home/mweidler/PerfectTrade/Stocks.txt");
+               while ((strLine = strrdr.ReadLine()) != null) {
+                  strLine = strLine.Trim();
+                  if (strLine.StartsWith("#") == false && strLine.Length > 0) {
+
+                     string[] arrTokens = strLine.Split(chSplit);
+                     Stock stock = new Stock();
+                     stock.ISIN = arrTokens[0];
+                     stock.WKN = arrTokens[1];
+                     stock.Symbol = arrTokens[2];
+                     stock.Name = arrTokens[3];
+
+                     stock.Save(World.GetInstance().QuotesPath + stock.WKN + ".sto");
+                     System.Console.WriteLine("'{0}' initialized in {1}.sto", stock.Name, stock.WKN);
+                  }
+               }
+
+               strrdr.Close();
             }
             else if (args[0].Equals("update"))
             {
+               QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
+
                string[] strStockFilenames = Directory.GetFiles(World.GetInstance().QuotesPath, "*.sto");
 
                foreach (string strStockFilename in strStockFilenames)
