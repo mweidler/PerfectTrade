@@ -34,6 +34,7 @@ namespace FinancialObjects
    public class World
    {
       private static World m_WorldObject = null;
+      private string m_strBasePath = null;
       private string m_strQuotesPath = null;
       private string m_strDataPath = null;
       private string m_strResultPath = null;
@@ -55,8 +56,9 @@ namespace FinancialObjects
       public void SetWorldPaths(string strApplicationName)
       {
          string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-         string strResultPath = strBasePath + "/tradedata/results/" + strApplicationName + "/";
-         string strDataPath = strBasePath + "/tradedata/data/" + strApplicationName + "/";
+         string strResultPath = strBasePath + "/PerfectTrade/Results/" + strApplicationName + "/";
+         string strDataPath = strBasePath + "/PerfectTrade/Data/" + strApplicationName + "/";
+         string strQuotesPath = strBasePath + "/PerfectTrade/Quotes/";
 
          if (Directory.Exists(strResultPath) == false)
          {
@@ -68,27 +70,38 @@ namespace FinancialObjects
             Directory.CreateDirectory(strDataPath);
          }
 
-         this.ResultPath = strResultPath;
-         this.DataPath   = strDataPath;
-         this.QuotesPath = strBasePath + "/tradedata/quotes/";
+         if (Directory.Exists(strQuotesPath) == false)
+         {
+            Directory.CreateDirectory(strQuotesPath);
+         }
+
+         m_strBasePath   = strBasePath;
+         m_strResultPath = strResultPath;
+         m_strDataPath   = strDataPath;
+         m_strQuotesPath = strQuotesPath;
+      }
+
+      public string BasePath {
+         get { return m_strBasePath; }
+         //set { m_strQuotesPath = value; }
       }
 
       public string QuotesPath
       {
          get { return m_strQuotesPath; }
-         set { m_strQuotesPath = value; }
+         //set { m_strQuotesPath = value; }
       }
 
       public string DataPath
       {
          get { return m_strDataPath; }
-         set { m_strDataPath = value; }
+         //set { m_strDataPath = value; }
       }
 
       public string ResultPath
       {
          get { return m_strResultPath; }
-         set { m_strResultPath = value; }
+         //set { m_strResultPath = value; }
       }
    }
 }
