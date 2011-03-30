@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simu
 EndProject
 Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Results", "Results\Results.mdproj", "{AE09B374-608A-4AAC-BA2D-CEC9A184FE91}"
 EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Misc", "Misc\Misc.mdproj", "{90A53403-CA6E-47F8-BE62-230A32093ACA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -34,6 +36,12 @@ Global
 		{3BFD0C7E-FDAA-4ECA-9054-74D6371EB91A}.Debug|x86.Build.0 = Debug|x86
 		{3BFD0C7E-FDAA-4ECA-9054-74D6371EB91A}.Release|x86.ActiveCfg = Release|x86
 		{3BFD0C7E-FDAA-4ECA-9054-74D6371EB91A}.Release|x86.Build.0 = Release|x86
+		{90A53403-CA6E-47F8-BE62-230A32093ACA}.Debug|x86.ActiveCfg = Default|Any CPU
+		{90A53403-CA6E-47F8-BE62-230A32093ACA}.Debug|x86.Build.0 = Default|Any CPU
+		{90A53403-CA6E-47F8-BE62-230A32093ACA}.Default|Any CPU.ActiveCfg = Default|Any CPU
+		{90A53403-CA6E-47F8-BE62-230A32093ACA}.Default|Any CPU.Build.0 = Default|Any CPU
+		{90A53403-CA6E-47F8-BE62-230A32093ACA}.Release|x86.ActiveCfg = Default|Any CPU
+		{90A53403-CA6E-47F8-BE62-230A32093ACA}.Release|x86.Build.0 = Default|Any CPU
 		{AE09B374-608A-4AAC-BA2D-CEC9A184FE91}.Debug|x86.ActiveCfg = Default|Any CPU
 		{AE09B374-608A-4AAC-BA2D-CEC9A184FE91}.Debug|x86.Build.0 = Default|Any CPU
 		{AE09B374-608A-4AAC-BA2D-CEC9A184FE91}.Default|Any CPU.ActiveCfg = Default|Any CPU
