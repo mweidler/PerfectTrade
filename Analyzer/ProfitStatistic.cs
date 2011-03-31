@@ -98,13 +98,13 @@ namespace Analyzer
          chart.Title = dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
          chart.RightDate = quotes.YoungestDate;
-         /*         chart.Add(dcPerformances[0], Chart.LineType.SkyBlue, "10");
-                  chart.Add(dcPerformances[1], Chart.LineType.SkyBlue, "15");
-                  chart.Add(dcPerformances[2], Chart.LineType.SkyBlue, "20");
-                  chart.Add(dcPerformances[3], Chart.LineType.SkyBlue, "25");
-                  chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");*/
-         chart.Add(dcPerformancesAvg, Chart.LineType.Red,     "Average Profit (5/10/15/20/25/30)");
-         chart.Add(dax_rel_diff_38,   Chart.LineType.SkyBlue, "DAX rel. diff. to MA38");
+         /*chart.Add(dcPerformances[0], Chart.LineType.SkyBlue, "10");
+         chart.Add(dcPerformances[1], Chart.LineType.SkyBlue, "15");
+         chart.Add(dcPerformances[2], Chart.LineType.SkyBlue, "20");
+         chart.Add(dcPerformances[3], Chart.LineType.SkyBlue, "25");
+         chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");*/
+         chart.Add(dcPerformancesAvg, Chart.LineType.Red,  "Average Profit (5/10/15/20/25/30)");
+         chart.Add(dax_rel_diff_38,   Chart.LineType.Navy, "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
          #endregion
 
