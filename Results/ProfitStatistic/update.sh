@@ -30,7 +30,7 @@ fi
 #
 # Execute script only at 3am. Otherwise exit.
 #
-if [[ `date +%H` -gt 3 ]]
+if [[ `date +%H` -eq 3 ]]
 then
   echo "Script will only run at 3am."
   exit;
@@ -45,8 +45,6 @@ pt update
 # 2. Run analyzer
 #
 pt analyze all
-cp ~/tradedata/results/ProfitStatistic/ProfitStatistik.png .
-
 
 #
 # 3. Update website
@@ -58,11 +56,6 @@ put index.html
 put ProfitStatistik.png
 quit
 SCRIPT
-
-#
-# 4. Cleanup
-#
-rm ProfitStatistik.png
 
 #
 # 5. Shutdown machine

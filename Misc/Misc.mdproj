@@ -1,1 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?><Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  <PropertyGroup>    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>    <ItemType>GenericProject</ItemType>    <ProductVersion>9.0.21022</ProductVersion>    <SchemaVersion>2.0</SchemaVersion>    <ProjectGuid>{90A53403-CA6E-47F8-BE62-230A32093ACA}</ProjectGuid>  </PropertyGroup>  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|AnyCPU' ">    <OutputPath>.\</OutputPath>    <CustomCommands>      <CustomCommands xmlns="">        <Command type="Build" command="cp -u Stocks.txt /home/mweidler/PerfectTrade" />      </CustomCommands>    </CustomCommands>  </PropertyGroup>  <ItemGroup>    <None Include="Stocks.txt" />  </ItemGroup></Project>
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ItemType>GenericProject</ItemType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{90A53403-CA6E-47F8-BE62-230A32093ACA}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|AnyCPU' ">
+    <OutputPath>.</OutputPath>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Build" command="cp -u Stocks.txt perfecttrade.sh install.sh ../LICENSE ../README /home/mweidler/PerfectTrade" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Stocks.txt" />
+  </ItemGroup>
+</Project>
