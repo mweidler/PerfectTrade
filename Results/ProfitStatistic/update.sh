@@ -59,6 +59,7 @@ user $PT_FTP_USER $PT_FTP_PASSWD
 binary
 put index.html
 put ProfitStatistik.png
+put DaxOverview.png
 quit
 SCRIPT
 

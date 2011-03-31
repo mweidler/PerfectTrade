@@ -59,6 +59,10 @@ namespace Analyzer
          fromDate.Set(fromDate.Year - 4, fromDate.Month, 1);
          WorkDate endDate = quotes.YoungestDate.Clone() - nMaxInvestPeriod;
 
+         DataContainer dax_ranged = quotes.Clone(fromDate);
+         DataContainer dax_ma200 = MovingAverage.CreateFrom(quotes, 200);
+         dax_ma200 = dax_ma200.Clone(fromDate);
+
          DataContainer dax_ma38 = MovingAverage.CreateFrom(quotes, 38);
          dax_ma38 = dax_ma38.Clone(fromDate);
 
@@ -83,11 +87,13 @@ namespace Analyzer
             dcPerformancesAvg[keydate] = dAvg;
          }
 
+         #region DAX
          Chart chart = new Chart();
          chart.Width = 1500;
          chart.Height = 800;
          chart.Clear();
          chart.SubSectionsX = 3;
+         chart.TicsYInterval = 5;
          chart.LogScaleY = false;
          chart.Title = dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
@@ -100,6 +106,21 @@ namespace Analyzer
          chart.Add(dcPerformancesAvg, Chart.LineType.Red,     "Average Profit (5/10/15/20/25/30)");
          chart.Add(dax_rel_diff_38,   Chart.LineType.SkyBlue, "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
+         #endregion
+
+         #region DAX
+         chart.Clear();
+         chart.SubSectionsX = 3;
+         chart.LogScaleY = true;
+         chart.TicsYInterval = 200;
+         chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
+         chart.LabelY = "Punkte (log.)";
+         chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
+         //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
+         chart.Add(dax_ma38, Chart.LineType.Orange, "Moving Average (fast)");
+         chart.Add(dax_ma200, Chart.LineType.Purple, "Moving Average (slow)");
+         chart.Create(World.GetInstance().ResultPath + "DaxOverview.png");
+         #endregion
       }
       #endregion
    }
