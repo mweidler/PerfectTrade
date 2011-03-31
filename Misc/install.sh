@@ -2,8 +2,8 @@
 #
 # install.sh
 #
-# Installs PerfectTrade in the $HOME/PerfectTrade and sets symbolic links
-# of Unix-like program names.
+# Installs a Unix-like 'pt' command as a symbolic link in $HOME/bin.
+# To un-install PerfectTrade, delete $HOME/PerfectTrade and $HOME/bin/pt.
 #
 #
 # COPYRIGHT (C) 2011 AND ALL RIGHTS RESERVED BY
@@ -50,23 +50,11 @@ else
 fi
 
 #
-# Create directories, if not already there
-#
-mkdir -p $HOME/PerfectTrade/bin
-mkdir -p $HOME/bin
-
-#
-# Install README and LICENSE
-#
-cp -f LICENSE $HOME/PerfectTrade
-cp -f README  $HOME/PerfectTrade
-
-#
 # Install facade frontend
 #
-cp -f perfecttrade.sh $HOME/bin
-rm -f $HOME/bin/pt
-ln -s perfecttrade.sh $HOME/bin/pt
+mkdir -p $HOME/bin
+rm    -f $HOME/bin/pt
+ln    -s $HOME/PerfectTrade/perfecttrade.sh $HOME/bin/pt
 
-echo "Installation in '$HOME/bin' and '$HOME/PerfectTrade/bin' done."
+echo "Installation of 'pt' in '$HOME/bin' done."
 
