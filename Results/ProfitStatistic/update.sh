@@ -37,6 +37,11 @@ then
 fi
 
 #
+# Sleep 10 seconds to wait for system to be ready.
+#
+sleep 10
+
+#
 # 1. Update quotes
 #
 pt update
@@ -58,9 +63,8 @@ quit
 SCRIPT
 
 #
-# 5. Shutdown machine
+# 4. Shutdown machine
 #
 sync
 sleep 5
-shutdown -h now
-
+sudo shutdown -h now
