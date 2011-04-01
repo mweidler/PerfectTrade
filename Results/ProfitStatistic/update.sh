@@ -18,7 +18,7 @@
 # SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY
 # SERVICING, REPAIR OR CORRECTION.
 #
-#set -x
+set -x
 
 # Check login parameters
 if [[ "$PT_FTP_USER" == "" ]] || [[ "$PT_FTP_PASSWD" == "" ]]
@@ -28,6 +28,12 @@ then
 fi
 
 #
+# Sleep 10 seconds to wait for system to be ready.
+#
+sleep 10
+date
+
+#
 # Execute script only at 3am. Otherwise exit.
 #
 if [[ `date +%H` -gt 3 ]] || [[ `date +%H` -lt 3 ]]
@@ -35,11 +41,6 @@ then
   echo "Script will only run at 3am."
   exit;
 fi
-
-#
-# Sleep 10 seconds to wait for system to be ready.
-#
-sleep 10
 
 #
 # 1. Update quotes
@@ -69,4 +70,3 @@ SCRIPT
 sync
 sleep 5
 sudo shutdown -h +2 &
-
