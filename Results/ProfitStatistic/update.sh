@@ -30,7 +30,7 @@ fi
 #
 # Execute script only at 3am. Otherwise exit.
 #
-if [[ `date +%H` -eq 3 ]]
+if [[ `date +%H` -gt 3 ]] || [[ `date +%H` -lt 3 ]]
 then
   echo "Script will only run at 3am."
   exit;
@@ -68,4 +68,5 @@ SCRIPT
 #
 sync
 sleep 5
-sudo shutdown -h now
+sudo shutdown -h +2 &
+
