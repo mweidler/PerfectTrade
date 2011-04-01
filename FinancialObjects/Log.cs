@@ -48,11 +48,8 @@ namespace FinancialObjects
       {
          if (m_path == null)
          {
-            m_path = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            m_path += "/PerfectTrade.log";
+            m_path = World.GetInstance().BasePath + "PerfectTrade.log";
          }
-
-         //Console.WriteLine(strLogText);
 
          StreamWriter sw = new StreamWriter(m_path, true);
          sw.WriteLine(strLogText);

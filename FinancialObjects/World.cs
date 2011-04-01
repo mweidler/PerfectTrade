@@ -55,10 +55,10 @@ namespace FinancialObjects
 
       public void SetWorldPaths(string strApplicationName)
       {
-         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-         string strResultPath = strBasePath + "/PerfectTrade/Results/" + strApplicationName + "/";
-         string strDataPath = strBasePath + "/PerfectTrade/Data/" + strApplicationName + "/";
-         string strQuotesPath = strBasePath + "/PerfectTrade/Quotes/";
+         string strBasePath = System.Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/PerfectTrade/";
+         string strResultPath = strBasePath + "Results/" + strApplicationName + "/";
+         string strDataPath = strBasePath + "Data/" + strApplicationName + "/";
+         string strQuotesPath = strBasePath + "Quotes/";
 
          if (Directory.Exists(strResultPath) == false)
          {
@@ -83,25 +83,21 @@ namespace FinancialObjects
 
       public string BasePath {
          get { return m_strBasePath; }
-         //set { m_strQuotesPath = value; }
       }
 
       public string QuotesPath
       {
          get { return m_strQuotesPath; }
-         //set { m_strQuotesPath = value; }
       }
 
       public string DataPath
       {
          get { return m_strDataPath; }
-         //set { m_strDataPath = value; }
       }
 
       public string ResultPath
       {
          get { return m_strResultPath; }
-         //set { m_strResultPath = value; }
       }
    }
 }
