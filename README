@@ -1,10 +1,15 @@
-Description
+PerfectTrade is a command-line based toolset for analyzing and simulating
+financial stock trading strategies.
 
 Features:
-
-Assumptions:
+    - Quote update
+    - Chart analyzer & strategy builder
+    - Trading simulator
+    - Chart generator (based on gnuplot)
 
 Usage example:
+    pt update       # update quotes
+    pt analyze all  # run all analyzer engines (results are in results directory)
 
 
 COPYRIGHT (C) 2010 AND ALL RIGHTS RESERVED BY
