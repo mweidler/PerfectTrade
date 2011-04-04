@@ -19,6 +19,13 @@
 # SERVICING, REPAIR OR CORRECTION.
 #
 set -x
+LOGNAME=`date +%F`
+exec &>~/log$LOGNAME.txt
+
+PT_FTP_USER=$1
+PT_FTP_PASSWD=$2
+
+echo "Update-Script started at `date`"
 
 # Check login parameters
 if [[ "$PT_FTP_USER" == "" ]] || [[ "$PT_FTP_PASSWD" == "" ]]
@@ -34,11 +41,11 @@ sleep 10
 date
 
 #
-# Execute script only at 3am. Otherwise exit.
+# Execute script only at 5am. Otherwise exit.
 #
-if [[ `date +%H` -gt 3 ]] || [[ `date +%H` -lt 3 ]]
+if [[ `date +%H` -ne 5 ]]
 then
-  echo "Script will only run at 3am."
+  echo "Script will only run at 5am."
   exit;
 fi
 
@@ -70,3 +77,5 @@ SCRIPT
 sync
 sleep 5
 sudo shutdown -h +2 &
+
+echo "Update-Script ended at `date`"
