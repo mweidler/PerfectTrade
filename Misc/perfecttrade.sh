@@ -1,11 +1,10 @@
 #!/bin/bash
 #
-# pt
+# pt -> perfecttrade.sh
 #
 # Facade script for all PerfectTrade tools.
 #
-# Usage example:
-# pt update
+# see "usage" for details.
 #
 #
 # Copyright (C) 2010-2011 Marc Weidler (marc.weidler@web.de)
@@ -22,6 +21,7 @@
 
 ARGC=$#
 
+
 ###########################################################################
 # Usage
 #
@@ -29,15 +29,17 @@ function usage {
    echo "PerfectTrade - finance stock trading tools"
    echo "Copyright (C) 2011 Marc Weidler (marc.weidler@web.de)"
    echo ""
-   echo "TODO"
+   echo "PerfectTrade is a command-line based toolset for analyzing and simulating"
+   echo "financial stock trading strategies."
    echo ""
    echo "Usage:"
    echo "$0 [command] <options> ..."
    echo "where commands are:"
-   echo " analyze <engine>  start analyzer"
-   echo " help              print this help"
-   echo ""
-   echo "Usage example:"
+   echo "  init              initialize quotes"
+   echo "  update            update quotes"
+   echo "  analyze <engine>  start analyzer engine"
+   echo "  simulate          simulate trading strategie"
+   echo "  help              print this help"
    echo ""
    echo "See README file for further information."
    echo ""
@@ -70,10 +72,6 @@ case "$1" in
     init)
         shift
         ~/PerfectTrade/bin/QuoteLoader.exe init $@
-        ;;
-    publish)
-        shift
-        ~/PerfectTrade/bin/Publish/$@
         ;;
     -h|-help|-?|help)
         usage
