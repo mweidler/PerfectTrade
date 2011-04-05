@@ -61,10 +61,13 @@ namespace QuoteLoader
                char[] chSplit = { ';' };
 
                StreamReader strrdr = new StreamReader("/home/mweidler/PerfectTrade/Stocks.txt");
-               while ((strLine = strrdr.ReadLine()) != null) {
-                  strLine = strLine.Trim();
-                  if (strLine.StartsWith("#") == false && strLine.Length > 0) {
 
+               while ((strLine = strrdr.ReadLine()) != null)
+               {
+                  strLine = strLine.Trim();
+
+                  if (strLine.StartsWith("#") == false && strLine.Length > 0)
+                  {
                      string[] arrTokens = strLine.Split(chSplit);
                      Stock stock = new Stock();
                      stock.ISIN = arrTokens[0];

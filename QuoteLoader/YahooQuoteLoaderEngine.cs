@@ -41,11 +41,13 @@ namespace QuoteLoader
 
          string strQuoteString = "http://ichart.finance.yahoo.com/table.csv?";
          strQuoteString += "s=" + stock.Symbol;
+
          if (startdate.Year > 1900)
          {
             strQuoteString += string.Format("&a={0}&b={1}&c={2}", startdate.Month - 1, startdate.Day, startdate.Year);
             strQuoteString += string.Format("&d={0}&e={1}&f={2}", enddate.Month - 1, enddate.Day, enddate.Year);
          }
+
          strQuoteString += "&g=d";
          strQuoteString += "&ignore=.csv";
 

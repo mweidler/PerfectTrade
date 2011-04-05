@@ -48,6 +48,7 @@ namespace QuoteLoader
          strQuoteString += "www.boerse-online.de/kurse-tools/historische-kurse?do=historie";
          strQuoteString += "&isin=" + stock.ISIN;
          strQuoteString += "&land=276&boerse=XETRA";
+
          if (startdate.Year > 1900)
          {
             strQuoteString += string.Format("&starttag={0:00}", startdate.Day);
@@ -57,6 +58,7 @@ namespace QuoteLoader
             strQuoteString += string.Format("&endmonat={0:00}", enddate.Month);
             strQuoteString += string.Format("&endjahr={0:0000}", enddate.Year);
          }
+
          strQuoteString += "&x=17&y=9";
 
          return strQuoteString;

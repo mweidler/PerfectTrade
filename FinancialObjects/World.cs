@@ -81,7 +81,8 @@ namespace FinancialObjects
          m_strQuotesPath = strQuotesPath;
       }
 
-      public string BasePath {
+      public string BasePath
+      {
          get { return m_strBasePath; }
       }
 

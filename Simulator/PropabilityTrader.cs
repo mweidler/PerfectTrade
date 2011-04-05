@@ -184,7 +184,7 @@ namespace Simulator
          Console.WriteLine("{0} {1}", today, dax_rel_diff[today]);
 
          if (dax_rel_diff[today] < -5 &&
-             dax_rel_diff[today - 1] < dax_rel_diff[today]
+               dax_rel_diff[today - 1] < dax_rel_diff[today]
             )
          {
             if (Buy("dbx1da"))
@@ -192,8 +192,9 @@ namespace Simulator
                buy_events[today] = dax_rel_diff[today];
                buy_events_dax[today] = dax_close[today];
             }
+
             return true;
-          }
+         }
 
          return false;
       }
@@ -214,6 +215,7 @@ namespace Simulator
 
          double dPrice = DBEngine.GetInstance().GetPrice(strWKN, today);
          int nQuantity = (int)(depot.Cash * 0.5 / dPrice);
+
          if (nQuantity > 100)
          {
             depot.Buy(strWKN, nQuantity, today, dPrice);

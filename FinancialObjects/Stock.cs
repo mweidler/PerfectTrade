@@ -87,7 +87,7 @@ namespace FinancialObjects
       public int FillGaps()
       {
          int nFilledGaps = m_QuotesClose.FillGaps();
-      nFilledGaps += m_QuotesLow.FillGaps();
+         nFilledGaps += m_QuotesLow.FillGaps();
 
          return nFilledGaps;
       }
