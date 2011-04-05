@@ -7,12 +7,18 @@ Features:
     - Trading simulator
     - Chart generator (based on gnuplot)
 
+Environment:
+    PerfectTrade is optimized to run in a Mono environment on Ubuntu Linux.
+    Mono 2.6 or a higher version is required. Install- and run-scripts
+    are optimized for Ubuntu Linux 10.04 and higher versions.
+
 Usage example:
+    pt init         # initialize quotes
     pt update       # update quotes
     pt analyze all  # run all analyzer engines (results are in results directory)
 
 
-COPYRIGHT (C) 2010 AND ALL RIGHTS RESERVED BY
+COPYRIGHT (C) 2010-2011 AND ALL RIGHTS RESERVED BY
 MARC WEIDLER, ULRICHSTR. 12/1, 71672 MARBACH, GERMANY (MARC.WEIDLER@WEB.DE).
 
 ALL RIGHTS RESERVED. THIS SOFTWARE AND RELATED DOCUMENTATION ARE PROTECTED BY
