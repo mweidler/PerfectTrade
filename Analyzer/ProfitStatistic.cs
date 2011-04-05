@@ -87,17 +87,18 @@ namespace Analyzer
             dcPerformancesAvg[keydate] = dAvg;
          }
 
-         #region DAX
+         // Create ProfitStatistik
          Chart chart = new Chart();
          chart.Width = 1500;
          chart.Height = 800;
          chart.Clear();
+         chart.LineWidth = 1;
          chart.SubSectionsX = 3;
          chart.TicsYInterval = 5;
          chart.LogScaleY = false;
          chart.Title = dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
-         chart.RightDate = quotes.YoungestDate;
+         chart.RightDate = quotes.YoungestDate + 10;
          /*chart.Add(dcPerformances[0], Chart.LineType.SkyBlue, "10");
          chart.Add(dcPerformances[1], Chart.LineType.SkyBlue, "15");
          chart.Add(dcPerformances[2], Chart.LineType.SkyBlue, "20");
@@ -106,21 +107,20 @@ namespace Analyzer
          chart.Add(dcPerformancesAvg, Chart.LineType.Red,  "Average Profit (5/10/15/20/25/30)");
          chart.Add(dax_rel_diff_38,   Chart.LineType.Navy, "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
-         #endregion
 
-         #region DAX
+         // Create DAX
          chart.Clear();
          chart.SubSectionsX = 3;
          chart.LogScaleY = true;
          chart.TicsYInterval = 200;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
+         chart.RightDate = quotes.YoungestDate + 10;
          chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
          //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
-         chart.Add(dax_ma38, Chart.LineType.Orange, "Moving Average (fast)");
-         chart.Add(dax_ma200, Chart.LineType.Purple, "Moving Average (slow)");
+         chart.Add(dax_ma38, Chart.LineType.Green, "Moving Average (fast)");
+         chart.Add(dax_ma200, Chart.LineType.Saddlebrown, "Moving Average (slow)");
          chart.Create(World.GetInstance().ResultPath + "DaxOverview.png");
-         #endregion
       }
       #endregion
    }
