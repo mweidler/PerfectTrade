@@ -18,5 +18,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="Stocks.txt" />
+    <None Include="install.sh" />
+    <None Include="perfecttrade.sh" />
   </ItemGroup>
 </Project>
