@@ -65,6 +65,7 @@ pt analyze all
 ftp -n ftp.marcweidler.de <<SCRIPT
 user $PT_FTP_USER $PT_FTP_PASSWD
 binary
+lcd ~/PerfectTrade/Results/ProfitStatistic
 put index.html
 put ProfitStatistik.png
 put DaxOverview.png
