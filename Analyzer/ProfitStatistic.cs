@@ -104,8 +104,8 @@ namespace Analyzer
          chart.Add(dcPerformances[2], Chart.LineType.SkyBlue, "20");
          chart.Add(dcPerformances[3], Chart.LineType.SkyBlue, "25");
          chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");*/
-         chart.Add(dcPerformancesAvg, Chart.LineType.Red,  "Average Profit (5/10/15/20/25/30)");
-         chart.Add(dax_rel_diff_38,   Chart.LineType.Navy, "DAX rel. diff. to MA38");
+         chart.Add(dcPerformancesAvg, Chart.LineType.MediumRed,  "Average Profit (5/10/15/20/25/30)");
+         chart.Add(dax_rel_diff_38,   Chart.LineType.MediumBlue, "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
 
          // Create DAX
@@ -116,10 +116,10 @@ namespace Analyzer
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
          chart.RightDate = quotes.YoungestDate + 10;
-         chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
+         chart.Add(dax_ranged, Chart.LineType.MediumBlue, "DAX");
          //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
-         chart.Add(dax_ma38, Chart.LineType.Green, "Moving Average (fast)");
-         chart.Add(dax_ma200, Chart.LineType.Saddlebrown, "Moving Average (slow)");
+         chart.Add(dax_ma38, Chart.LineType.HeavyGreen, "Moving Average (fast)");
+         chart.Add(dax_ma200, Chart.LineType.MediumRed, "Moving Average (slow)");
          chart.Create(World.GetInstance().ResultPath + "DaxOverview.png");
       }
       #endregion

@@ -54,30 +54,91 @@ namespace FinancialObjects
       double m_dMinValue;
       double m_dMaxValue;
       List<PlotSet> m_plotsets = new List<PlotSet>();
+      OutputFormat m_format = OutputFormat.PNG;
+
+      public enum OutputFormat
+      {
+         PNG = 0,
+         SVG = 1
+      };
 
       public enum LineType
       {
-         Undefined   = -1,
-         Black       = 0,
-         Red         = 1,
-         Green       = 2,
-         Blue        = 3,
-         Purple      = 4,
-         Cyan        = 5,
-         Brown       = 6,
-         Yellow      = 7,
-         Navy        = 8,
-         Orange      = 9,
-         Olive       = 10,
-         Slateblue   = 11,
-         Saddlebrown = 12,
-         Pink        = 13,
-         SeaGreen    = 14,
-         SkyBlue     = 15,
-         SteelBlue   = 16,
-         GoLong      = 17,
-         GoShort     = 18
+         Undefined     = -1,
+         Black         =  0,
+         White         =  1,
+         Gray          =  2,
+         Red           =  3,
+         Green         =  4,
+         Blue          =  5,
+         Cyan          =  6,
+         Magenta       =  7,
+         Yellow        =  8,
+         PaleRed       =  9,
+         PaleGreen     = 10,
+         PaleBlue      = 11,
+         PaleCyan      = 12,
+         PaleMagenta   = 13,
+         PaleYellow    = 14,
+         PaleGray      = 15,
+         LightRed      = 16,
+         LightGreen    = 17,
+         LightBlue     = 18,
+         LightCyan     = 19,
+         LightMagenta  = 20,
+         LightYellow   = 21,
+         LightGray     = 22,
+         MediumRed     = 23,
+         MediumGreen   = 24,
+         MediumBlue    = 25,
+         MediumCyan    = 26,
+         MediumMagenta = 27,
+         MediumYellow  = 28,
+         MediumGray    = 29,
+         HeavyRed      = 30,
+         HeavyGreen    = 31,
+         HeavyBlue     = 32,
+         HeavyCyan     = 33,
+         HeavyMagenta  = 34,
+         LightOlive    = 35,
+         HeavyGray     = 36,
+         DeepRed       = 37,
+         DeepGreen     = 38,
+         DeepBlue      = 39,
+         DeepCyan      = 40,
+         DeepMagenta   = 41,
+         Olive         = 42,
+         DeepGray      = 43,
+         DarkRed       = 44,
+         DarkGreen     = 45,
+         DarkBlue      = 46,
+         DarkCyan      = 47,
+         DarkMagenta   = 48,
+         DarkOlive     = 49,
+         DarkGray      = 50,
+         Orange        = 51,
+         Fuchsia       = 52,
+         ChartReuse    = 53,
+         SpringGreen   = 54,
+         Purple        = 55,
+         RoyalBlue     = 56,
+         GoLong        = 100,
+         GoShort       = 101
       };
+
+      private string[] strColorCodes = { "#000000",
+                                         "#000000","#FFFFFF","#808080","#FF0000","#00FF00","#0000FF",
+                                         "#00FFFF","#FF00FF","#FFFF00","#FFBFBF","#BFFFBF","#BFBFFF",
+                                         "#BFFFFF","#FFBFFF","#FFFFBF","#F2F2F2","#FF8080","#80FF80",
+                                         "#8080FF","#80FFFF","#FF80FF","#FFFF80","#E5E5E5","#FF4040",
+                                         "#40FF40","#4040FF","#40FFFF","#FF40FF","#FFFF40","#BFBFBF",
+                                         "#BF0000","#00BF00","#0000BF","#00BFBF","#BF00BF","#BFBF00",
+                                         "#404040","#800000","#008000","#000080","#008080","#800080",
+                                         "#808000","#202020","#400000","#004000","#000040","#004040",
+                                         "#400040","#404000","#101010","#FF8000","#FF0080","#80FF00",
+                                         "#00FF80","#8000FF","#0080FF"
+                                       };
+
 
       /// <summary>
       /// Creates a new chart object.
@@ -117,6 +178,7 @@ namespace FinancialObjects
          m_nTicsYInterval = 0;
          m_nMinorXTics = 1;
          m_nLineWidth = 2;
+         m_format = OutputFormat.PNG;
       }
 
       /// <summary>
@@ -213,6 +275,15 @@ namespace FinancialObjects
       }
 
       /// <summary>
+      /// Specify the chart output format.
+      /// </summary>
+      public OutputFormat Format
+      {
+         get { return m_format; }
+         set { m_format = value; }
+      }
+
+      /// <summary>
       /// Specify the distance between two y-tics.
       /// </summary>
       public int TicsYInterval
@@ -302,6 +373,8 @@ namespace FinancialObjects
       public void Create(string strTargetFilename)
       {
          int n;
+         string strTmpFilename = "unknown";
+
          StreamWriter sw = new StreamWriter("/tmp/plot.gpl", false);
 
          sw.WriteLine("# GNUplot script file");
@@ -313,7 +386,19 @@ namespace FinancialObjects
          if (m_strTitle != null)
             sw.WriteLine("set title \"{0}\"", m_strTitle);
 
-         sw.WriteLine("set term png size {0},{1}", m_nWidth, m_nHeight);
+         switch (m_format)
+         {
+            case OutputFormat.PNG:
+               sw.WriteLine("set term png size {0},{1}", m_nWidth, m_nHeight);
+               strTmpFilename = "plot.png";
+               break;
+
+            case OutputFormat.SVG:
+               sw.WriteLine("set term svg size {0},{1} dynamic enhanced fname 'arial' fsize 11 butt solid", m_nWidth, m_nHeight);
+               strTmpFilename = "plot.svg";
+               break;
+         }
+
          sw.WriteLine("set data style lines");
          sw.WriteLine("set grid xtics ytics mytics");
          sw.WriteLine("set mxtics {0}", m_nMinorXTics);
@@ -366,7 +451,7 @@ namespace FinancialObjects
          sw.WriteLine("set decimalsign locale");
          sw.WriteLine("set datafile separator \";\"");
          sw.WriteLine("");
-         sw.WriteLine("set output \"{0}\"", "plot.png");
+         sw.WriteLine("set output \"{0}\"", strTmpFilename);
          sw.WriteLine("set xdata time");
          sw.WriteLine("set timefmt \"%d.%m.%Y\"");
          sw.WriteLine("set format x \"%m/%Y\"");
@@ -398,7 +483,7 @@ namespace FinancialObjects
                   break;
 
                default:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt {2} title \"{3}\"", n, m_nLineWidth, (int)plotset.LineType, plotset.Label);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt rgb \"{2}\" title \"{3}\"", n, m_nLineWidth, strColorCodes[((int)plotset.LineType)+1], plotset.Label);
                   break;
             }
 
@@ -421,12 +506,12 @@ namespace FinancialObjects
          p.WaitForExit();
          p.Close();
 
-         File.Copy("/tmp/plot.png", strTargetFilename, true);
+         File.Copy("/tmp/" + strTmpFilename, strTargetFilename, true);
 
          if (m_bAutoDeleteTempFiles)
          {
             File.Delete("/tmp/plot.gpl");
-            File.Delete("/tmp/plot.png");
+            File.Delete("/tmp/" + strTmpFilename);
 
             for (n = 1; n <= m_plotsets.Count; n++)
             {

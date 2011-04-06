@@ -156,8 +156,8 @@ namespace Simulator
          chart.TicsYInterval = 100;
          chart.Title = dax_close.OldestDate.ToString() + " - " + dax_close.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
-         chart.Add(dax_close, Chart.LineType.Navy, "DAX");
-         chart.Add(dax_ma, Chart.LineType.SeaGreen, "Moving Average (38)");
+         chart.Add(dax_close, Chart.LineType.Olive, "DAX");
+         chart.Add(dax_ma, Chart.LineType.PaleGray, "Moving Average (38)");
          chart.Add(buy_events_dax, Chart.LineType.GoLong);
          chart.Add(sell_events_dax, Chart.LineType.GoShort);
          chart.Create(World.GetInstance().ResultPath + "dax.png");
@@ -167,8 +167,8 @@ namespace Simulator
          chart.TicsYInterval = 1;
          chart.Title = dax_rel_diff.OldestDate.ToString() + " - " + dax_rel_diff.YoungestDate.ToString();
          chart.LabelY = "dB%";
-         chart.Add(dax_rel_diff, Chart.LineType.Navy, "DAX rel. diff. to MA38");
-         chart.Add(dax_price_osc, Chart.LineType.Slateblue, "DAX price osc.");
+         chart.Add(dax_rel_diff, Chart.LineType.Olive, "DAX rel. diff. to MA38");
+         chart.Add(dax_price_osc, Chart.LineType.RoyalBlue, "DAX price osc.");
          chart.Add(dax_trend, Chart.LineType.Red, "DAX Trend");
          chart.Add(buy_events, Chart.LineType.GoLong);
          chart.Add(sell_events, Chart.LineType.GoShort);

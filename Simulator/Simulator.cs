@@ -170,13 +170,13 @@ namespace Simulator
          chart.SubSectionsX = 8;
          chart.Title = dcPerformance.OldestDate.ToString() + " - " + dcPerformance.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
-         chart.Add(dcPerformance, Chart.LineType.Navy, "Performance");
+         chart.Add(dcPerformance, Chart.LineType.Olive, "Performance");
          chart.Create(World.GetInstance().ResultPath + "performance.png");
 
          chart.Clear();
          chart.Title = dcInvestmentRate.OldestDate.ToString() + " - " + dcInvestmentRate.YoungestDate.ToString();
          chart.LabelY = "Investment (%)";
-         chart.Add(dcInvestmentRate, Chart.LineType.Navy, "Investment");
+         chart.Add(dcInvestmentRate, Chart.LineType.Olive, "Investment");
          chart.Create(World.GetInstance().ResultPath + "investment.png");
 
          return depot.Performance;

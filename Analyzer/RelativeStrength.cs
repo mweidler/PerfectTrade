@@ -69,7 +69,7 @@ namespace Analyzer
          chart.TicsYInterval = 200;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
-         chart.Add(dax_ranged, Chart.LineType.Navy, "DAX");
+         chart.Add(dax_ranged, Chart.LineType.LightBlue, "DAX");
          //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
          chart.Add(fast, Chart.LineType.Orange, "Moving Average (fast)");
          chart.Add(slow, Chart.LineType.Purple, "Moving Average (slow)");
@@ -85,7 +85,7 @@ namespace Analyzer
          chart.TicsYInterval = 1;
          chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "dB%";
-         chart.Add(dax_rel_diff_38, Chart.LineType.Navy, "DAX rel. diff. to MA38");
+         chart.Add(dax_rel_diff_38, Chart.LineType.LightBlue, "DAX rel. diff. to MA38");
          chart.Create(World.GetInstance().ResultPath + "dax_rel_diff_38.png");
          #endregion
 
