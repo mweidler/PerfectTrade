@@ -119,8 +119,8 @@ namespace Analyzer
          chart.RightDate = quotes.YoungestDate + 10;
          chart.Add(dax_ranged, Chart.LineType.MediumBlue, "DAX");
          //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
-         chart.Add(dax_ma38, Chart.LineType.HeavyGreen, "Moving Average (fast)");
-         chart.Add(dax_ma200, Chart.LineType.MediumRed, "Moving Average (slow)");
+         chart.Add(dax_ma38, Chart.LineType.HeavyGreen, "Moving Average (38)");
+         chart.Add(dax_ma200, Chart.LineType.MediumRed, "Moving Average (200)");
          chart.Create(World.GetInstance().ResultPath + "DaxOverview");
       }
       #endregion
