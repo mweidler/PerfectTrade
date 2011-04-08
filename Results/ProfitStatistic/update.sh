@@ -19,7 +19,7 @@
 # SERVICING, REPAIR OR CORRECTION.
 #
 set -x
-LOGNAME=`date +%F`
+LOGNAME=`date +%F-%H-%M`
 exec &>~/log$LOGNAME.txt
 
 PT_FTP_USER=$1
@@ -43,7 +43,7 @@ date
 #
 # Execute script only at 5am. Otherwise exit.
 #
-if [[ `date +%H` -ne 5 ]]
+if [[ `date +%k` -ne 5 ]]
 then
   echo "Script will only run at 5am."
   exit;
