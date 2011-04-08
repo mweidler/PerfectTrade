@@ -91,6 +91,7 @@ namespace Analyzer
          Chart chart = new Chart();
          chart.Width = 1500;
          chart.Height = 800;
+         chart.Format = Chart.OutputFormat.SVG;
          chart.Clear();
          chart.LineWidth = 1;
          chart.SubSectionsX = 3;
@@ -106,7 +107,7 @@ namespace Analyzer
          chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");*/
          chart.Add(dcPerformancesAvg, Chart.LineType.MediumRed,  "Average Profit (5/10/15/20/25/30)");
          chart.Add(dax_rel_diff_38,   Chart.LineType.MediumBlue, "DAX rel. diff. to MA38");
-         chart.Create(World.GetInstance().ResultPath + "ProfitStatistik.png");
+         chart.Create(World.GetInstance().ResultPath + "ProfitStatistik");
 
          // Create DAX
          chart.Clear();
@@ -120,7 +121,7 @@ namespace Analyzer
          //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
          chart.Add(dax_ma38, Chart.LineType.HeavyGreen, "Moving Average (fast)");
          chart.Add(dax_ma200, Chart.LineType.MediumRed, "Moving Average (slow)");
-         chart.Create(World.GetInstance().ResultPath + "DaxOverview.png");
+         chart.Create(World.GetInstance().ResultPath + "DaxOverview");
       }
       #endregion
    }
