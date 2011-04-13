@@ -59,7 +59,7 @@ namespace Simulator
       public void Setup()
       {
          DataContainer dax = DBEngine.GetInstance().GetQuotes("846900");
-         this.RuleEngineInfo.FromDate = new WorkDate(2001, 1, 1);
+         this.RuleEngineInfo.FromDate = new WorkDate(2008, 1, 1);
          this.RuleEngineInfo.ToDate = dax.YoungestDate.Clone();
 
          this.RuleEngineInfo.Variants.Add("averaging", new int[] { 38 });
@@ -119,7 +119,7 @@ namespace Simulator
       public void Result()
       {
          Chart chart = new Chart();
-         chart.Width = 6000;
+         chart.Width = 1500;
          chart.Height = 900;
 
          chart.SubSectionsX = 8;
