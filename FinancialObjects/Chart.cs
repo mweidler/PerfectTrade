@@ -126,8 +126,7 @@ namespace FinancialObjects
          GoShort       = 101
       };
 
-      private string[] strColorCodes = { "#000000",
-                                         "#000000", "#FFFFFF", "#808080", "#FF0000", "#00FF00", "#0000FF",
+      private string[] strColorCodes = { "#000000", "#FFFFFF", "#808080", "#FF0000", "#00FF00", "#0000FF",
                                          "#00FFFF", "#FF00FF", "#FFFF00", "#FFBFBF", "#BFFFBF", "#BFBFFF",
                                          "#BFFFFF", "#FFBFFF", "#FFFFBF", "#F2F2F2", "#FF8080", "#80FF80",
                                          "#8080FF", "#80FFFF", "#FF80FF", "#FFFF80", "#E5E5E5", "#FF4040",
@@ -455,8 +454,8 @@ namespace FinancialObjects
          }
 
          sw.WriteLine("");
-         sw.WriteLine("set style arrow 1 head back filled linetype 1 size screen 0.01,30.0,0.0");
-         sw.WriteLine("set style arrow 2 head back filled linetype 14 size screen 0.01,30.0,0.0");
+         sw.WriteLine("set style arrow 1 head back filled lt rgb \"{0}\" size screen 0.01,30.0,0.0", strColorCodes[(int)LineType.LightRed]);
+         sw.WriteLine("set style arrow 2 head back filled lt rgb \"{0}\" size screen 0.01,30.0,0.0", strColorCodes[(int)LineType.LightGreen]);
          sw.WriteLine("set decimalsign locale");
          sw.WriteLine("set datafile separator \";\"");
          sw.WriteLine("");
@@ -484,15 +483,15 @@ namespace FinancialObjects
                   break;
 
                case LineType.GoShort:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 notitle with points lw 10 lt 1", n);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(-1) notitle with vectors arrowstyle 1", n);
                   break;
 
                case LineType.GoLong:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 notitle with points lw 10 lt 14", n);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(1) notitle with vectors arrowstyle 2", n);
                   break;
 
                default:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt rgb \"{2}\" title \"{3}\"", n, m_nLineWidth, strColorCodes[((int)plotset.LineType)+1], plotset.Label);
+                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt rgb \"{2}\" title \"{3}\"", n, m_nLineWidth, strColorCodes[(int)plotset.LineType], plotset.Label);
                   break;
             }
 
