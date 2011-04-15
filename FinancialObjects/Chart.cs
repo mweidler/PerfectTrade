@@ -64,7 +64,6 @@ namespace FinancialObjects
 
       public enum LineType
       {
-         Undefined     = -1,
          Black         =  0,
          White         =  1,
          Gray          =  2,
@@ -184,12 +183,7 @@ namespace FinancialObjects
       /// Add a new data set to the chart.
       /// </summary>
       /// <param name="data">The datacontainer that contains the data to be visualized.</param>
-      /// <param name="strLabel">A label, that describes the data in the chart's legend.</param>
-      public void Add(DataContainer data, string strLabel)
-      {
-         Add(data, LineType.Undefined, strLabel);
-      }
-
+      /// <param name="LineType">The color of the pen used to draw this data on the chart.</param>
       public void Add(DataContainer data, LineType type)
       {
          Add(data, type, "");
@@ -407,7 +401,6 @@ namespace FinancialObjects
          sw.WriteLine("set style data lines");
          sw.WriteLine("set grid xtics ytics mytics");
          sw.WriteLine("set mxtics {0}", m_nMinorXTics);
-         sw.WriteLine("set xzeroaxis lt 14 lw 2");
 
          if (m_bShowLegend)
             sw.WriteLine("set key below box");
@@ -475,10 +468,6 @@ namespace FinancialObjects
 
             switch (plotset.LineType)
             {
-               case LineType.Undefined:
-                  sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2 lw {1} lt {2} title \"{3}\"", n, m_nLineWidth, n, plotset.Label);
-                  break;
-
                case LineType.GoShort:
                   sw.Write("\"/tmp/gpdata{0}.csv\" using 1:2:(0):(-1) notitle with vectors arrowstyle 1", n);
                   break;
@@ -526,7 +515,7 @@ namespace FinancialObjects
       }
 
       /// <summary>
-      /// Data structure for holding information about one drawing element.
+      /// Data structure for holding information about one graph element.
       /// </summary>
       internal class PlotSet
       {
