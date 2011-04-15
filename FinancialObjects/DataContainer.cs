@@ -232,7 +232,6 @@ namespace FinancialObjects
          return dcTarget;
       }
 
-
       /// <summary>
       /// Liefert einen neuen DataContainer, der inhaltlich die
       /// gleichen Key-Value-Paare enhaelt, wie der aktuelle DataContainer.
@@ -260,6 +259,19 @@ namespace FinancialObjects
          for (WorkDate keyDate = this.OldestDate.Clone(); keyDate <= endDate; keyDate++)
          {
             this[keyDate] *= dScale;
+         }
+      }
+
+      /// <summary>
+      /// Sets all existing values to the given value.
+      /// </summary>
+      public void Set(double dNewValue)
+      {
+         WorkDate endDate = this.YoungestDate;
+         
+         for (WorkDate keyDate = this.OldestDate.Clone(); keyDate <= endDate; keyDate++)
+         {
+            this[keyDate] = dNewValue;
          }
       }
 
