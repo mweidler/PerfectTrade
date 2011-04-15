@@ -87,6 +87,12 @@ namespace Analyzer
             dcPerformancesAvg[keydate] = dAvg;
          }
 
+         DataContainer upperBarrier = dax_ranged.Clone();
+         upperBarrier.Set(5);
+
+         DataContainer lowerBarrier = dax_ranged.Clone();
+         lowerBarrier.Set(-5);
+
          // Create ProfitStatistik
          Chart chart = new Chart();
          chart.Width = 1500;
@@ -105,8 +111,10 @@ namespace Analyzer
          chart.Add(dcPerformances[2], Chart.LineType.SkyBlue, "20");
          chart.Add(dcPerformances[3], Chart.LineType.SkyBlue, "25");
          chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");*/
-         chart.Add(dcPerformancesAvg, Chart.LineType.MediumRed,  "Average Profit (5/10/15/20/25/30)");
+         chart.Add(dcPerformancesAvg, Chart.LineType.Fuchsia,  "Average Profit (5/10/15/20/25/30)");
          chart.Add(dax_rel_diff_38,   Chart.LineType.MediumBlue, "DAX rel. diff. to MA38");
+         chart.Add(upperBarrier, Chart.LineType.MediumRed);
+         chart.Add(lowerBarrier, Chart.LineType.MediumGreen);
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik");
 
          // Create DAX
