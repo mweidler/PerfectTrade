@@ -90,6 +90,9 @@ namespace Analyzer
          DataContainer upperBarrier = dax_ranged.Clone();
          upperBarrier.Set(5);
 
+         DataContainer middleBarrier = dax_ranged.Clone();
+         middleBarrier.Set(0);
+
          DataContainer lowerBarrier = dax_ranged.Clone();
          lowerBarrier.Set(-5);
 
@@ -114,6 +117,7 @@ namespace Analyzer
          chart.Add(dcPerformancesAvg, Chart.LineType.Fuchsia,  "Average Profit (5/10/15/20/25/30)");
          chart.Add(dax_rel_diff_38,   Chart.LineType.MediumBlue, "DAX rel. diff. to MA38");
          chart.Add(upperBarrier, Chart.LineType.MediumRed);
+         chart.Add(middleBarrier, Chart.LineType.Black);
          chart.Add(lowerBarrier, Chart.LineType.MediumGreen);
          chart.Create(World.GetInstance().ResultPath + "ProfitStatistik");
 
