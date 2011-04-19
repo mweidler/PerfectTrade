@@ -60,7 +60,7 @@ namespace QuoteLoader
                string strLine;
                char[] chSplit = { ';' };
 
-               StreamReader strrdr = new StreamReader("/home/mweidler/PerfectTrade/Stocks.txt");
+               StreamReader strrdr = new StreamReader(World.GetInstance().BasePath + "Stocks.txt");
 
                while ((strLine = strrdr.ReadLine()) != null)
                {
