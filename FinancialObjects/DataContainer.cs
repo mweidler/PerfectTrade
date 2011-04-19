@@ -268,7 +268,7 @@ namespace FinancialObjects
       public void Set(double dNewValue)
       {
          WorkDate endDate = this.YoungestDate;
-         
+
          for (WorkDate keyDate = this.OldestDate.Clone(); keyDate <= endDate; keyDate++)
          {
             this[keyDate] = dNewValue;
