@@ -12,7 +12,7 @@
     <OutputPath>.</OutputPath>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="cp -u Stocks.txt perfecttrade.sh install.sh ../LICENSE ../README /home/mweidler/PerfectTrade" />
+        <Command type="Build" command="OnBuild.sh" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -20,5 +20,6 @@
     <None Include="Stocks.txt" />
     <None Include="install.sh" />
     <None Include="perfecttrade.sh" />
+    <None Include="OnBuild.sh" />
   </ItemGroup>
 </Project>
