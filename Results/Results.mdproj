@@ -12,7 +12,7 @@
     <OutputPath>.</OutputPath>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="cp -r -u . /home/mweidler/PerfectTrade/Results" workingdir="" />
+        <Command type="Build" command="OnBuild.sh" workingdir="" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -22,5 +22,6 @@
   <ItemGroup>
     <None Include="ProfitStatistic\index.html" />
     <None Include="ProfitStatistic\update.sh" />
+    <None Include="OnBuild.sh" />
   </ItemGroup>
 </Project>
