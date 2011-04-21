@@ -106,7 +106,8 @@ namespace Analyzer
          chart.SubSectionsX = 3;
          chart.TicsYInterval = 5;
          chart.LogScaleY = false;
-         chart.Title = dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
+         chart.Title = "DAX Average Profit vs. Relative Difference to MA38\\n" +
+                       dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
          chart.RightDate = quotes.YoungestDate + 10;
          /*chart.Add(dcPerformances[0], Chart.LineType.SkyBlue, "10");
@@ -126,7 +127,8 @@ namespace Analyzer
          chart.SubSectionsX = 3;
          chart.LogScaleY = true;
          chart.TicsYInterval = 200;
-         chart.Title = dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
+         chart.Title = "DAX Performance and MA 38/200\\n" +
+                       dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
          chart.RightDate = quotes.YoungestDate + 10;
          chart.Add(dax_ranged, Chart.LineType.MediumBlue, "DAX");
