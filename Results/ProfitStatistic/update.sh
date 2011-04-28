@@ -20,7 +20,7 @@
 #
 set -x
 LOGNAME=`date +%F-%H-%M`
-exec &>~/log$LOGNAME.txt
+#exec &>~/log$LOGNAME.txt
 
 PT_FTP_USER=$1
 PT_FTP_PASSWD=$2
