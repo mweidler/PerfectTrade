@@ -103,7 +103,7 @@ namespace Analyzer
          chart.Format = Chart.OutputFormat.SVG;
          chart.Clear();
          chart.LineWidth = 1;
-         chart.SubSectionsX = 3;
+         chart.SubSectionsX = 6;
          chart.TicsYInterval = 5;
          chart.LogScaleY = false;
          chart.Title = "DAX Average Profit vs. Relative Difference to MA38\\n" +
@@ -124,7 +124,6 @@ namespace Analyzer
 
          // Create DAX
          chart.Clear();
-         chart.SubSectionsX = 3;
          chart.LogScaleY = true;
          chart.TicsYInterval = 200;
          chart.Title = "DAX Performance and MA 38/200\\n" +
