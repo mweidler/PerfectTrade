@@ -41,11 +41,11 @@ sleep 10
 date
 
 #
-# Execute script only at 5am. Otherwise exit.
+# Execute script only at 7am. Otherwise exit.
 #
-if [[ `date +%k` -ne 5 ]]
+if [[ `date +%k` -ne 7 ]]
 then
-  echo "Script will only run at 5am."
+  echo "Script will only run at 7am."
   exit;
 fi
 
