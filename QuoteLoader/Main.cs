@@ -84,7 +84,7 @@ namespace QuoteLoader
             }
             else if (args[0].Equals("update"))
             {
-               QuoteLoaderEngine loaderEngine = new BoerseOnlineQuoteLoaderEngine();
+               QuoteLoaderEngine loaderEngine = new YahooQuoteLoaderEngine();
 
                string[] strStockFilenames = Directory.GetFiles(World.GetInstance().QuotesPath, "*.sto");
 
