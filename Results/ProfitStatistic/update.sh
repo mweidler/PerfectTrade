@@ -77,6 +77,12 @@ SCRIPT
 #
 sync
 sleep 5
-sudo shutdown -h +2 &
+
+zenity --warning --text="Der Computer wird automatisch ausgeschaltet.\n\nAbbrechen?" --timeout 30
+if [[ $? != 0 ]]
+then
+  sudo shutdown -h +2 &
+  zenity --info --text="Der Computer wird in 2 Minuten automatisch ausgeschaltet."
+fi
 
 echo "Update-Script ended at `date`"
