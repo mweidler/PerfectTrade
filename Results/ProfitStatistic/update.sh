@@ -20,7 +20,7 @@
 #
 set -x
 LOGNAME=`date +%F-%H-%M`
-#exec &>~/log$LOGNAME.txt
+exec &>~/log$LOGNAME.txt
 
 PT_FTP_USER=$1
 PT_FTP_PASSWD=$2
@@ -41,11 +41,11 @@ sleep 10
 date
 
 #
-# Execute script only at 7am. Otherwise exit.
+# Execute script only at 4am. Otherwise exit.
 #
-if [[ `date +%k` -ne 7 ]]
+if [[ `date +%k` -ne 4 ]]
 then
-  echo "Script will only run at 7am."
+  echo "Script will only run at 4am."
   exit;
 fi
 
@@ -77,12 +77,6 @@ SCRIPT
 #
 sync
 sleep 5
-
-zenity --warning --text="Der Computer wird automatisch ausgeschaltet.\n\nAbbrechen?" --timeout 30
-if [[ $? != 0 ]]
-then
-  sudo shutdown -h +2 &
-  zenity --info --text="Der Computer wird in 2 Minuten automatisch ausgeschaltet."
-fi
+sudo shutdown -h +2 &
 
 echo "Update-Script ended at `date`"
