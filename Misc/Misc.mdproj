@@ -17,9 +17,14 @@
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Stocks.txt" />
     <None Include="install.sh" />
     <None Include="perfecttrade.sh" />
     <None Include="OnBuild.sh" />
+    <None Include="TechDAX.csv" />
+    <None Include="Stocks.csv" />
+    <None Include="SP500Selection.csv" />
+    <None Include="MDAX.csv" />
+    <None Include="DowJones.csv" />
+    <None Include="DAX.csv" />
   </ItemGroup>
 </Project>
