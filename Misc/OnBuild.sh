@@ -30,5 +30,5 @@
 #
 #set -x
 
-cp -u Stocks.txt perfecttrade.sh install.sh ../LICENSE ../README $HOME/PerfectTrade
+cp -u *.csv perfecttrade.sh install.sh ../LICENSE ../README $HOME/PerfectTrade
 
