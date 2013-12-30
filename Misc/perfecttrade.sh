@@ -59,19 +59,19 @@ fi
 case "$1" in
     analyze)
         shift
-        ~/PerfectTrade/bin/Analyzer.exe $@
+        mono ~/PerfectTrade/bin/Analyzer.exe $@
         ;;
     simulate)
         shift
-        ~/PerfectTrade/bin/Simulator.exe $@
+        mono ~/PerfectTrade/bin/Simulator.exe $@
         ;;
     update)
         shift
-        ~/PerfectTrade/bin/QuoteLoader.exe update $@
+        mono ~/PerfectTrade/bin/QuoteLoader.exe update $@
         ;;
     init)
         shift
-        ~/PerfectTrade/bin/QuoteLoader.exe init $@
+        mono ~/PerfectTrade/bin/QuoteLoader.exe init $@
         ;;
     -h|-help|-?|help)
         usage
