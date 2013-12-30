@@ -60,27 +60,32 @@ namespace QuoteLoader
                string strLine;
                char[] chSplit = { ';' };
 
-               StreamReader strrdr = new StreamReader(World.GetInstance().BasePath + "Stocks.txt");
+               string[] strInitFilenames = Directory.GetFiles(World.GetInstance().BasePath, "*.csv");
 
-               while ((strLine = strrdr.ReadLine()) != null)
+               foreach (string strInitFilename in strInitFilenames)
                {
-                  strLine = strLine.Trim();
+                  StreamReader strrdr = new StreamReader(strInitFilename);
 
-                  if (strLine.StartsWith("#") == false && strLine.Length > 0)
+                  while ((strLine = strrdr.ReadLine()) != null)
                   {
-                     string[] arrTokens = strLine.Split(chSplit);
-                     Stock stock = new Stock();
-                     stock.ISIN = arrTokens[0];
-                     stock.WKN = arrTokens[1];
-                     stock.Symbol = arrTokens[2];
-                     stock.Name = arrTokens[3];
+                     strLine = strLine.Trim();
 
-                     stock.Save(World.GetInstance().QuotesPath + stock.WKN + ".sto");
-                     System.Console.WriteLine("'{0}' initialized in {1}.sto", stock.Name, stock.WKN);
+                     if (strLine.StartsWith("#") == false && strLine.Length > 0)
+                     {
+                        string[] arrTokens = strLine.Split(chSplit);
+                        Stock stock = new Stock();
+                        stock.ISIN = arrTokens[0];
+                        stock.WKN = arrTokens[1];
+                        stock.Symbol = arrTokens[2];
+                        stock.Name = arrTokens[3];
+
+                        stock.Save(World.GetInstance().QuotesPath + stock.WKN + ".sto");
+                        System.Console.WriteLine("'{0}' initialized in {1}.sto", stock.Name, stock.WKN);
+                     }
                   }
-               }
 
-               strrdr.Close();
+                  strrdr.Close();
+               }
             }
             else if (args[0].Equals("update"))
             {
