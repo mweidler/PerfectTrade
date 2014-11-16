@@ -67,8 +67,10 @@ user $PT_FTP_USER $PT_FTP_PASSWD
 binary
 lcd ~/PerfectTrade/Results/ProfitStatistic
 put index.html
-put ProfitStatistik.svg
-put DaxOverview.svg
+put DAXProfitStatistik.svg
+put DAXOverview.svg
+put Nasdaq100ProfitStatistik.svg
+put Nasdaq100Overview.svg
 quit
 SCRIPT
 

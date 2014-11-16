@@ -37,6 +37,13 @@ namespace Analyzer
       #region IAnalyzerEngine Member
       public void Analyze()
       {
+         analyzeFor("846900", "DAX");
+         analyzeFor("A0AE1X", "Nasdaq100");
+      }
+      #endregion
+
+      private void analyzeFor(String wkn, String title)
+      {
          const int nInvestPeriodStep = 5;
          const int nMaxInvestPeriod = 30;
 
@@ -44,15 +51,15 @@ namespace Analyzer
          DataContainer dcPerformancesAvg = new DataContainer();
          DataContainer[] dcPerformances = new DataContainer[5];
 
-         for (int i = 0; i < dcPerformances.Length; i++)
+         for(int i = 0; i < dcPerformances.Length; i++)
          {
             dcPerformances[i] = new DataContainer();
          }
 
-         if (dbengine.Exists("846900") == false)
+         if(dbengine.Exists(wkn) == false)
             return;
 
-         Stock dax = dbengine.GetStock("846900");
+         Stock dax = dbengine.GetStock(wkn);
          DataContainer quotes = dax.Quotes;
 
          WorkDate fromDate = quotes.YoungestDate.Clone();
@@ -69,9 +76,9 @@ namespace Analyzer
          DataContainer dax_rel_diff_38 = RelativeDifference.CreateFrom(quotes, dax_ma38);
          dax_rel_diff_38 = dax_rel_diff_38.Clone(fromDate);
 
-         for (; fromDate < endDate; fromDate++)
+         for(; fromDate < endDate; fromDate++)
          {
-            for (int nInvestPeriod = 10; nInvestPeriod <= nMaxInvestPeriod; nInvestPeriod += nInvestPeriodStep)
+            for(int nInvestPeriod = 10; nInvestPeriod <= nMaxInvestPeriod; nInvestPeriod += nInvestPeriodStep)
             {
                double dPerf = ((quotes[fromDate + nInvestPeriod] / quotes[fromDate]) - 1) * 100.0;
                dcPerformances[(nInvestPeriod / nInvestPeriodStep) - 2][fromDate] = dPerf;
@@ -79,7 +86,7 @@ namespace Analyzer
          }
 
 
-         foreach (WorkDate keydate in dcPerformances[0].Dates)
+         foreach(WorkDate keydate in dcPerformances[0].Dates)
          {
             double dAvg = dcPerformances[0][keydate] + dcPerformances[1][keydate] + dcPerformances[2][keydate] +
                           dcPerformances[3][keydate] + dcPerformances[4][keydate];
@@ -106,7 +113,7 @@ namespace Analyzer
          chart.SubSectionsX = 6;
          chart.TicsYInterval = 5;
          chart.LogScaleY = false;
-         chart.Title = "DAX Average Profit vs. Relative Difference to MA38\\n" +
+         chart.Title = title + " Performance and MA 38/200\\n" +
                        dax_rel_diff_38.OldestDate.ToString() + " - " + dax_rel_diff_38.YoungestDate.ToString();
          chart.LabelY = "Performance (%)";
          chart.RightDate = quotes.YoungestDate + 10;
@@ -116,26 +123,25 @@ namespace Analyzer
          chart.Add(dcPerformances[3], Chart.LineType.SkyBlue, "25");
          chart.Add(dcPerformances[4], Chart.LineType.SkyBlue, "30");*/
          chart.Add(dcPerformancesAvg, Chart.LineType.Fuchsia,  "Average Profit (5/10/15/20/25/30)");
-         chart.Add(dax_rel_diff_38,   Chart.LineType.MediumBlue, "DAX rel. diff. to MA38");
+         chart.Add(dax_rel_diff_38,   Chart.LineType.MediumBlue, "Rel. diff. to MA38");
          chart.Add(upperBarrier, Chart.LineType.MediumRed);
          chart.Add(middleBarrier, Chart.LineType.Black);
          chart.Add(lowerBarrier, Chart.LineType.MediumGreen);
-         chart.Create(World.GetInstance().ResultPath + "ProfitStatistik");
+         chart.Create(World.GetInstance().ResultPath + title + "ProfitStatistik");
 
          // Create DAX
          chart.Clear();
          chart.LogScaleY = true;
          chart.TicsYInterval = 200;
-         chart.Title = "DAX Performance and MA 38/200\\n" +
+         chart.Title = title + "\\n" +
                        dax_ranged.OldestDate.ToString() + " - " + dax_ranged.YoungestDate.ToString();
          chart.LabelY = "Punkte (log.)";
          chart.RightDate = quotes.YoungestDate + 10;
-         chart.Add(dax_ranged, Chart.LineType.MediumBlue, "DAX");
+         chart.Add(dax_ranged, Chart.LineType.MediumBlue, "Index");
          //chart.Add(short_ranged, Chart.LineType.SeaGreen, "DAX Short");
          chart.Add(dax_ma38, Chart.LineType.HeavyGreen, "Moving Average (38)");
          chart.Add(dax_ma200, Chart.LineType.MediumRed, "Moving Average (200)");
-         chart.Create(World.GetInstance().ResultPath + "DaxOverview");
+         chart.Create(World.GetInstance().ResultPath + title + "Overview");
       }
-      #endregion
    }
 }

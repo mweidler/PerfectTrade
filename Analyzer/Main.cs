@@ -43,14 +43,14 @@ namespace Analyzer
          {
             List<string> strEngines = GetEnginesList();
 
-            if (args.Length == 0)
+            if(args.Length == 0)
             {
                System.Console.WriteLine("Usage:");
                System.Console.WriteLine("{0} <Engine>", "Analyzer");
                System.Console.WriteLine("    where <Engine> can be be:");
                System.Console.Write("      all");
 
-               foreach (string strEngine in strEngines)
+               foreach(string strEngine in strEngines)
                {
                   System.Console.Write(",{0}", strEngine);
                }
@@ -59,27 +59,27 @@ namespace Analyzer
             }
             else
             {
-               if (args[0] == "all")
+               if(args[0] == "all")
                {
-                  foreach (string strEngine in strEngines)
+                  foreach(string strEngine in strEngines)
                   {
                      DoAnalyze(strEngine);
                   }
                }
                else
                {
-                  foreach (string param in args)
+                  foreach(string param in args)
                   {
                      DoAnalyze(param);
                   }
                }
             }
          }
-         catch (NotSupportedException e)
+         catch(NotSupportedException e)
          {
             System.Console.WriteLine(e.Message);
          }
-         catch (Exception e)
+         catch(Exception e)
          {
             System.Console.WriteLine(e.Message);
             System.Console.WriteLine(e.StackTrace);
@@ -109,12 +109,12 @@ namespace Analyzer
          Assembly assembly = Assembly.GetExecutingAssembly();
 
          // Walk through each type in the assembly looking for the class
-         foreach (Type type in assembly.GetTypes())
+         foreach(Type type in assembly.GetTypes())
          {
-            if (type.IsClass == true)
+            if(type.IsClass == true)
             {
                // e.g. AnalyzerEngine.RelativeStrength
-               if (type.FullName.EndsWith("." + strClassName))
+               if(type.FullName.EndsWith("." + strClassName))
                {
                   // create an instance of the object
                   return (IAnalyzerEngine)Activator.CreateInstance(type);
@@ -137,14 +137,14 @@ namespace Analyzer
          string strAssemblyName = assembly.FullName.Substring(0, assembly.FullName.IndexOf(','));
 
          // Walk through each type in the assembly looking for our class
-         foreach (Type type in assembly.GetTypes())
+         foreach(Type type in assembly.GetTypes())
          {
-            if (type.IsClass == true)
+            if(type.IsClass == true)
             {
                // e.g. AnalyzerEngine.RelativeStrength
                string strEngineName = type.FullName.Substring(type.FullName.IndexOf('.') + 1);
 
-               if (strAssemblyName.Equals(strEngineName) == false)
+               if(strAssemblyName.Equals(strEngineName) == false)
                {
                   strEngines.Add(strEngineName);
                }

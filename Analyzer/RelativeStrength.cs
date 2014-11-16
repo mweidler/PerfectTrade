@@ -39,7 +39,7 @@ namespace Analyzer
       {
          DBEngine dbengine = DBEngine.GetInstance();
 
-         if (dbengine.Exists("846900") == false)
+         if(dbengine.Exists("846900") == false)
             return;
 
          Chart chart = new Chart();
